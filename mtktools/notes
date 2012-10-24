@@ -1,0 +1,46 @@
+no1:
+sed 用法理解
+在找到指定行后，把指定文件的内容插入到
+此行下面
+Zero- or One- address commands
+接受没有地址或是一个地址的命令
+支持的命令包括有：
+       =      Print the current line number.
+       a \
+       text   Append text, which has each embedded newline preceded  by  a  back-
+              slash.
+       i \
+       text   Insert  text,  which  has each embedded newline preceded by a back-
+              slash.
+       q [exit-code]
+              Immediately quit the sed script without processing any more  input,
+              except that if auto-print is not disabled the current pattern space
+              will be printed.  The exit code argument is a GNU extension.
+       Q [exit-code]
+              Immediately quit the sed script without processing any more  input.
+              This is a GNU extension.
+       r filename
+              Append text read from filename.
+       R filename
+              Append  a  line read from filename.  Each invocation of the command
+              reads a line from the file.  This is a GNU extension.
+
+no2:
+命令行参数的双引号与没有双引号的区别
+	在命令行输入的参数，如果带有通配符：比如：
+		*12345* 以及 "*12345*"
+	*12345*	 传进子参数时会shell会自动先处理,找到当前配对的文件先,
+		然后定位到:一个个的参数[$1 $2 ...]
+		比如当前目录有：
+			qq12345aa uu12345ll 123 56788
+		./mytest *12345*
+		会出现 
+		[root@localhost temp]# strace ./a *12345*
+		execve("./a", ["./a", "qq12345aa", "uu12345ll"], [/* 57 vars */]) = 0
+
+		表示什么呢？
+		第一参数为：qq12345aa
+		第二参数为：uu12345ll
+
+	"*12345*":会直接传进去，并去除双引号
+no3:
