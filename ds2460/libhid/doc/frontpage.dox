@@ -1,0 +1,104 @@
+/** @file frontpage.dox
+ *  @brief libhid HTML front page
+ */
+/** @mainpage libhid - a portable HID API
+
+@section sec_intro Introduction
+
+<p><b>Note</b>: the libhid home page at <a 
+href="http://libhid.alioth.debian.org/">http://libhid.alioth.debian.org</a> is
+generally updated more often than this page.</p>
+
+<p>libhid is a user-space HID access library written in C. It provides
+a generic and flexible way to access and interact with USB HID devices, much
+like libusb does for plain USB devices. It is based on <a
+href="http://libusb.sourceforge.net/" target="_blank">libusb 0.1</a>, thus it
+requires no HID support in the kernel. Furthermore, it aims to support all
+operating system supported by libusb: Linux, BSD, OS X, and Windows.</p>
+
+<p>For more information, please consult the <a href="./README"
+target="_blank">README</a>.</p>
+
+@section sec_licence Licence
+
+<p>libhid is released under the <a
+href="http://www.opensource.org/licenses/gpl-license.php"
+target="_blank">GPL</a>.</p>
+
+@section sec_abount About
+
+<p>libhid was developed by:</p>
+
+<ul>
+
+<li>Martin F. Krafft &lt;<a
+href="mailto:libhid@pobox.madduck.net">libhid@pobox.madduck.net</a>&gt;</li>
+<li>Arnaud Quette &lt;<a
+href="mailto:aquette.dev@gmail.com">aquette.dev@gmail.com</a>&gt;</li>
+<li>Charles Lepple &lt;<a
+href="mailto:clepple+libhid@ghz.cc">clepple+libhid@ghz.cc</a>&gt;</li>
+</ul>
+
+<p>It was targeted to be used in a rewrite of the <a href="http://www.networkupstools.org/"
+target="_blank">Network UPS Tools</a> USB driver (newhidups/usbhid-ups) and as a basis
+for <a href="http://libphidgets.alioth.debian.org/"
+target="_blank">libphidgets</a>.</p>
+
+@section sec_links Links
+
+<ul>
+
+<li><a href="http://libphidgets.alioth.debian.org/"
+target="_blank"><strong>libphidgets</strong></a> -- a library to access <a
+href="http://www.phidgets.com/" target="_blank">Phidget</a> devices. It uses
+libhid to communicate with the devices.</li>
+
+<li><a href="http://www.networkupstools.org/"
+target="_blank"><strong>Network UPS Tools</strong></a> -- a toolkit for
+reliable monitoring of UPS hardware and ensure safe shutdowns of the systems
+which are connected. It was the reason why libHID started, and is currently
+being ported from libHID to libhid.</li>
+
+<li><a href="http://www.swig.org/" target="_blank"><strong>Swig</strong></a> -- a software
+development tool that connects programs written in C and C++ with a variety of
+high-level programming languages. libhid uses it to provide the Python
+bindings (and other languages on request).</li>
+
+<li><a href="http://www.mgeups.com/opensource/projects/hidparser.htm"
+target="_blank"><strong>MGE UPS SYSTEMS HID Parser</strong></a> -- a library
+to enumerate and parse the HID namespace. libhid uses it to find the device to
+talk to.</li>
+
+<li><a href="http://www.mgeups.com/" target="_blank"><strong>MGE UPS
+SYSTEMS</strong></a> -- the company behind the HID parser. They also employ
+one of the libhid developers (Arnaud) and fund his development on libhid. In
+addition, MGE UPS SYSTEMS have made UPS devices available to Charles and
+Martin, for testing, and to express their gratitude.</li>
+
+</ul>
+
+<!-- not even close... -->
+<!-- <p><a href="http://validator.w3.org/check?uri=referer"><img border="0"
+src="http://www.w3.org/Icons/valid-xhtml11" alt="Valid XHTML 1.1!" height="31"
+width="88"></img></a></p> -->
+
+<pre>
+$Id: frontpage.dox 361 2008-03-30 15:25:49Z clepple-guest $
+</pre>
+*/
+
+/*
+COPYRIGHT:
+
+This file is part of libhid, a user-space HID access library.
+libhid is (c) 2003-2008
+  Martin F. Krafft <libhid@pobox.madduck.net>
+  Charles Lepple <clepple+libhid@ghz.cc>
+  Arnaud Quette <aquette.dev@gmail.com>
+and distributed under the terms of the GNU General Public License.
+See the ./COPYING file in the source tree root for more information.
+
+THIS PACKAGE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES
+OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+*/
