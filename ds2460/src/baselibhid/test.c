@@ -15,7 +15,9 @@ int read_romid(void)
 	cmd[6] = 0x01; 
 	cmd[7] = 0xbb; 
 
-	ret = read_a_packet(cmd,  retbuf); 
+	ret = send_device_command(cmd);
+	printf("================11111111111\n");
+	ret = get_device_package(retbuf);
 	if (ret) {
 		fprintf(stderr, "read_a_packet error\n");
 		return 1;
@@ -44,7 +46,9 @@ int write_input_info(void)
 	cmd[7] = 0xbd; 
 	sendbuf[0] = 0x12; 
 
-	ret = write_a_packet(cmd, sendbuf,  retbuf); 
+	ret = send_device_command(cmd);
+	ret = put_device_package(sendbuf);
+	ret = get_device_package(retbuf);
 	if (ret) {
 		fprintf(stderr, "read_a_packet error\n");
 		return 1;
@@ -70,7 +74,8 @@ int read_input_info()
 	cmd[6] = 0x03; 
 	cmd[7] = 0xbb; 
 
-	ret = read_a_packet(cmd,  retbuf); 
+	ret = send_device_command(cmd);
+	ret = get_device_package(retbuf);
 	if (ret) {
 		fprintf(stderr, "read_a_packet error\n");
 		return 1;

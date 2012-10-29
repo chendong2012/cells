@@ -1,3 +1,9 @@
+/*
+ * 写流程(通用)：
+ * send_device_command->put_device_package->get_device_package
+ * 读流程
+ * send_device_command->get_device_package
+ * */
 #include <hid.h>
 #include <stdio.h>
 #include <string.h>
@@ -73,7 +79,7 @@ int close_usb_device()
  /*
   * set cmd len is 8
   * */
-int send_cmd(unsigned char *cmd)
+int send_device_command(unsigned char *cmd)
 {
 	hid_return ret;
 	ret = hid_set_output_report(hid, PATH_IN, PATHLEN, cmd, 8);
@@ -87,12 +93,9 @@ int send_cmd(unsigned char *cmd)
  *set cmd len is 8
  *set retbuf len is 64
  * */
-int read_a_packet(unsigned char *cmd,  unsigned char *retbuf)
+int get_device_package( unsigned char *retbuf)
 {
 	hid_return ret;
-	if (send_cmd(cmd)) {
-		return -1; 
-	}
 	ret = hid_interrupt_read(hid, 3, retbuf, 64, 1000); 
 
 	if (ret != HID_RET_SUCCESS) {
@@ -104,27 +107,16 @@ int read_a_packet(unsigned char *cmd,  unsigned char *retbuf)
 
 /*
  *set cmd len is 8
- *set retbuf len is 64
  *set sendbuf len is 64
  * */
-int write_a_packet(unsigned char *cmd,  unsigned char *sendbuf,  unsigned char *retbuf)
+int put_device_package(unsigned char *sendbuf)
 {
 	hid_return ret;
-	if (send_cmd(cmd)) {
-		return -1; 
-	}
 	ret = hid_interrupt_write(hid, 4, sendbuf, 64, 1000); 
 
 	if (ret != HID_RET_SUCCESS) {
 		fprintf(stderr, "hid_close failed with return code %d\n", ret);
 		return -1;
 	}
-
-	ret = hid_interrupt_read(hid, 3, retbuf, 64, 1000); 
-	if (ret != HID_RET_SUCCESS) {
-		fprintf(stderr, "hid_close failed with return code %d\n", ret);
-		return -1;
-	}
-
 	return 0; 
 }
