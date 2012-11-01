@@ -10,3 +10,6 @@ svn co svn://svn.debian.org/libhid/trunk libhid
 3、加入到~/.bashrc
 然后执行ldconfig
 
+
+网上一个据于libusb1.0的开源项目：
+http://www.vanheusden.com/clewarecontrol/#contents
