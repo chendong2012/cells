@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+<title>libhid</title>
+
+<link href="libhid.css" type="text/css" rel="stylesheet"/>
+<link rev="made" href="mailto:libhid@pobox.madduck.net" />
+<link rev="start" href="./" title="Front page" />
+<meta name="keywords" content="HID USB user-space access library Linux" />
+ 
+</head>
+
+<body>
+
+<h1>UPro</h1>
+<h2 class="tagline">
+是一款基于USB接口、具有更高安全性、SHA-1安全散列算法的加密产品。
+</h2>
+
+<h2>产品应用领域</h2>
+<ul>
+<li>IP保护/授权管理 </li>
+<li>外置flash程序存储器的系统,如ARM, DSP,Xscale等</li>
+<li>打印机/复印机耗材（墨盒、硒鼓）</li>
+<li>医疗设备的附件ID</li>
+<li>电池组ID</li>
+<li>DRM10</li>
+<li>MP3/MP4/PMP播放器</li>
+<li>DVB-C/S/T</li>
+<li>POS</li>
+<li>电源适配器ID</li>
+</ul>
+
+<h2>产品介绍</h2>
+<ul>
+<li>采用usb接口并从usb取电，使用简单方便</li>
+<li>透过usb接口，把对ds2460复杂的各种各样的操作，进行封装。让客户得以最快的速度把加密功能集成到产品里面去。</li>
+<li>支持linux(fedora, ubuntu)操作系统，提供全面的源码开发包,以及使用说明书。</li>
+<li>采用Dallas的硬件加密IC DS2460</li>
+</ul>
+
+
+<h2>硬件加密 IC DS2460 介绍</h2>
+<p>
+硬件加密IC DS2460 程序代码保护和授权管理解决方案是由Dallas Semiconductor/Maxim (世界上最具价值的四个半导体公司之一)提供。 
+<p>
+Dallas的DS2460产品线提供三种安全等级的IP保护和授权管理解决方案：
+<ul>
+<li>简单的、低成本ID解决方案</li>
+<ul>
+	<li>提供全球唯一的、不可更改的64-bit ROM ID</li>
+	<li>3组64位密码</li>
+	<li>112个字节用户EEPROM，最多支持8个字节一次写入</li>
+	<li>内置快速（1ms)的SHA-1引擎，计算生成160位的信息认证码（MAC</li>
+	<li>更加隐蔽的软件陷阱
+	<ul>
+		<li>应用于开机或实时合法性认证</li>
+		<li>应用于程序运行过程中不定期的合法性认证, 以设置更为隐蔽的软件陷阱</li>
+		</ul>
+</ul>
+</p>
+
+<li>更高安全性、基于SHA-1安全散列算法的解决方案</li>
+内部具有112个字节通用EEPROM、内置SHA-1处理器 当系统包括EEPROM或flash存储器时， 可通过算法提高器件认证的安全性。例如开辟flash存储器的一个扇区， 如16或64等字节，作为设备/系统合法性的认证数据区。<br>
+具体可以这样处理：<br>
+即基于不可更改的64-bit ROM ID、部分flash存储器数据和用户自定义的密钥， 通过加密安全算法生成一定长度的认证信息码，并将此认证信息存储在flash存储器内， 以便主机进行数据的完整性和器件合法性的认证。
+<br><br>
+<li>I2C接口的DS2460的额外安全性</li>
+	<ul>
+	<li>3组64位密钥，支持最多3级64位密钥的SHA-1安全认证,如开机认证,条件触发认证,长时间软件陷阱等</li>
+	<li>主机最多可输入47个字节的随机数，以生成随机的160位认证信息码</li>
+	</ul>
+</ul>
+
+
+
+<p><a href="http://validator.w3.org/check?uri=referer"><img border="0"
+src="http://www.w3.org/Icons/valid-xhtml11" alt="Valid XHTML 1.1!" height="31"
+width="88" /></a></p>
+
+<h2>产品外观</h2>
+<pre>
+$Id: index.html 362 2008-04-27 18:00:10Z clepple-guest $
+</pre>
+
+</body>
+</html>
