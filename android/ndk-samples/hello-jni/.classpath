@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="lib" path="/usr/local/temp-server/android-ndk-r8b/samples/hello-jni/libs/afinal-0.2-bin.jar" sourcepath="/usr/local/temp-server/afinal/src/net/tsz/afinal"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>
