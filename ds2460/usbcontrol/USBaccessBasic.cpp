@@ -61,7 +61,17 @@ void cwCloseCleware()
 int cwOpenCleware()
 {
 	int handleCount = 0, n = 0, index;
+	int transferred, i;
 	struct libusb_device **devs = NULL;
+	unsigned char bytes[64];
+	bytes[0] = 0; 
+	bytes[1] = 0; 
+	bytes[2] = 0; 
+	bytes[3] = 0; 
+	bytes[4] = 0; 
+	bytes[5] = 0; 
+	bytes[6] = 0x01; 
+	bytes[7] = 0xbb; 
 
 	cwCloseCleware();
 
@@ -81,7 +91,7 @@ int cwOpenCleware()
 
 		libusb_get_device_descriptor(devs[index], &desc);
 
-		if (desc.idVendor != 0x0d50) // ignore
+		if (desc.idVendor != 0x1130) // ignore
 			continue;
 
 		if ((rc = libusb_open(devs[index], &data[handleCount].handle)) < 0)
@@ -92,26 +102,57 @@ int cwOpenCleware()
 
 		if (libusb_kernel_driver_active(data[handleCount].handle, 0))
 		{
+			printf("1111111111111111111111111\n");
 			if ((rc = libusb_detach_kernel_driver(data[handleCount].handle, 0)) < 0)
 				fprintf(stderr, "Cannot detach driver: %s\n", libusb_error_name(rc));
 		}
 
+		if (libusb_kernel_driver_active(data[handleCount].handle, 1))
+		{
+			printf("22222222222222222222222\n");
+			if ((rc = libusb_detach_kernel_driver(data[handleCount].handle, 1)) < 0)
+				fprintf(stderr, "Cannot detach driver: %s\n", libusb_error_name(rc));
+		}
+#if 1
 		if ((rc = libusb_set_configuration(data[handleCount].handle, 1)) < 0)
 			fprintf(stderr, "Cannot set device configuration: %s\n", libusb_error_name(rc));
+#endif
 
 		if ((rc = libusb_claim_interface(data[handleCount].handle, 0)) < 0)
 			fprintf(stderr, "Cannot claim device: %s\n", libusb_error_name(rc));
-
+		if ((rc = libusb_claim_interface(data[handleCount].handle, 1)) < 0)
+			fprintf(stderr, "Cannot claim device: %s\n", libusb_error_name(rc));
+#if 1
 		if ((rc = libusb_set_interface_alt_setting(data[handleCount].handle, 0, 0)) < 0)
 			fprintf(stderr, "libusb_set_interface_alt_setting failed: %s\n", libusb_error_name(rc));
+#endif
 
 		data[handleCount].gadgettype = (enum cwUSBtype_enum)desc.idProduct;
 		data[handleCount].gadgetVersionNo = desc.bcdDevice;
-
+#if 1
 		if ((rc = libusb_get_string_descriptor_ascii(data[handleCount].handle, desc.iSerialNumber, (unsigned char *)serial, sizeof serial)) < 0)
 			fprintf(stderr, "libusb_get_string_descriptor_ascii(serial) failed: %s\n", libusb_error_name(rc));
 
 		data[handleCount].SerialNumber = strtol(serial, NULL, 16);
+#endif
+
+
+#if 1
+		if ((rc = libusb_control_transfer(data[handleCount].handle, 0x21, 0x09, 0x200, 0x01, bytes, 8, 0)) < 0) {
+			fprintf(stderr, "libusb_interrupt_transfer(0x01) failed: %s\n", libusb_error_name(rc));
+
+			return 0;
+		} else {
+			printf("libusb_control_transfer  ok!!!!!!!!!!!!!\n");
+		}
+
+		libusb_interrupt_transfer(data[handleCount].handle, 0x83, bytes, 64, &transferred, 1000);
+
+		for (i = 0;  i < 64;  i++) {
+			printf("0x%02x ", bytes[i]); 
+		}
+		printf("\n"); 
+#endif
 
 		handleCount++;
 	}

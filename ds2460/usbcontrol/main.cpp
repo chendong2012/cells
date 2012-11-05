@@ -69,6 +69,8 @@ const char * device_id_to_string(int id)
 		return "Contact 15 device";
 	case CUSBaccess::ENCODER01_DEVICE:
 		return "Encoder 01 device";
+	case CUSBaccess::SECRECT_DEVICE:
+		return "secrect device";
 	case CUSBaccess::BUTTON_NODEVICE:
 		return "Button no device";
 	}
