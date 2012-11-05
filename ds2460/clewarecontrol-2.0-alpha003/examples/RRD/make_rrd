@@ -1,3 +1,0 @@
-#!/bin/sh
-
-rrdtool create cleware_data.rrd DS:temperature:GAUGE:300:U:U RRA:AVERAGE:0:1:105192

@@ -1,5 +1,0 @@
-#!/bin/sh
-
-rrdtool graph graph.png -a PNG \
-	DEF:temp=cleware_data.rrd:temperature:AVERAGE \
-	LINE1:temp#FF0000:"temperatures"

@@ -1,4 +1,0 @@
-Please also check:
-http://www.vanheusden.com/nagamp/
-
-That tool shows the current Nagios status using the Cleware 'ample' (trafficlight) device.
