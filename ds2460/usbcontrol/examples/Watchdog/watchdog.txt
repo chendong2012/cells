@@ -1,0 +1,19 @@
+Watchdog
+--------
+
+files:
+ - watchdog.txt
+ - clewarewatchdog
+
+1. copy clewarewatchdog to /etc/init.d
+
+2. enable the watchdog:
+   RedHat/SuSE:   chkconfig --level 12345 clewarewatchdog on
+   Debian/Ubuntu: update-rc.d clewarewatchdog start 1 1 2 3 4 5 . stop 99 1 2 3 4 5 .
+
+3. physically install the watchdog, of course one needs
+   to reboot the computer to accomplish this
+
+
+For any question related to Cleware devices under Linux, feel free to
+contact me at the following e-mail address: folkert@vanheusden.com

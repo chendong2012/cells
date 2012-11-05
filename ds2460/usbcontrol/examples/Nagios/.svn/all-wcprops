@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/cleware/!svn/ver/3/branches/libusb-0.1/examples/Nagios
+END
+nagios.txt
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/cleware/!svn/ver/3/branches/libusb-0.1/examples/Nagios/nagios.txt
+END
+cleware_nagios_script
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/cleware/!svn/ver/3/branches/libusb-0.1/examples/Nagios/cleware_nagios_script
+END
+seealso.txt
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/cleware/!svn/ver/3/branches/libusb-0.1/examples/Nagios/seealso.txt
+END

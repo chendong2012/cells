@@ -1,0 +1,43 @@
+10
+
+dir
+11
+http://localhost/svn/cleware/branches/libusb-0.1/examples
+http://localhost/svn/cleware
+
+
+
+2012-05-09T09:23:56.112659Z
+2
+folkert
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+e9b39d3d-7cf6-472a-b434-eefdcc740f39
+
+Nagios
+dir
+
+Watchdog
+dir
+
+Munin
+dir
+
+RRD
+dir
+
+ampel
+dir
+

@@ -1,0 +1,18 @@
+Blinkin' lights
+---------------
+
+Files:
+ - ampel.txt
+ - script.sh
+
+1. Run 'script.sh':
+   either:
+   	./script.sh
+   or:
+   	sh script.sh
+
+4. Enjoy the lights!
+
+
+For any question related to Cleware devices under Linux, feel free to
+contact me at the following e-mail address: folkert@vanheusden.com

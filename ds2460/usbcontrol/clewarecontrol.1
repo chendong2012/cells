@@ -1,0 +1,110 @@
+.\" Copyright Folkert van Heusden, 2005
+.\"
+.\" This file may be copied under the conditions described
+.\" in the GNU GENERAL PUBLIC LICENSE, Version 1, September 1998
+.\" that should have been distributed together with this file.
+.\"
+.TH CLEWARECONTROL 1 2005-06 "clewarecontrol"
+.SH NAME
+clewarecontrol \- control the USB devices made by Cleware GmbH
+.SH SYNOPSIS
+.BI "clewarecontrol [" options "]
+.sp
+options:
+.BI "[\-l] [\-d serialnr] [\-c retrycount] [\-rt] [\-rs switchnr] [\-ar] [\-as switch state] [\-ag] [\-al led state] [\-w] [\-rp] [\-b] [\-o offset]"
+.sp
+.SH DESCRIPTION
+The program
+.B clewarecontrol
+lets you control all USB devices created by Cleware GmbH. Measuring the temperature, switching a led on or off, etc.
+.PP
+.SH OPTIONS
+.TP
+.B "\-p"
+Directory where to look for the 'hiddev'-devices. Normally this is in /dev/usb (default location) but with -p you can also select e.g. /dev When using this switch, put it in front of all other commandlineswitches.
+.TP
+.B "\-l"
+Lists all Cleware GmbH devices and their capabilities.
+.TP
+.B "\-d serialnr"
+Selects the device to control by its serial number. You can find the serial number on the USB-connector as well as with the 
+.BI "\-l"
+switch.
+.TP
+.B "\-c retrycount"
+Sometimes commands to a device seem to fail. With this switch you can set the number of retries. The default is 10.
+.TP
+.B "\-o offset"
+Adds an offset value to the temperature/humidity (in case the sensor returns a too low/high value).
+.TP
+.B "\-rt"
+Shows the temperature measured by a device capable of doing so.
+.TP
+.B "\-rh"
+Shows the humidity measured by a device capable of doing so.
+.TP
+.B "\-rs x"
+Shows the state of switch
+.BI "x"
+of a device which has switches.
+.TP
+.B "\-ar"
+Resets a device.
+.TP
+.B "\-ag"
+Starts a device (for example the humidity sensor).
+.TP
+.B "\-w"
+With this switch the program will become a daemon process which keeps the watchdog happy. If the program is terminated or freezes, the watchdog will reboot the computer.
+.TP
+.B "\-as switch state"
+Switches the switch with number
+.BI "switch"
+to the state given with
+.BI "state"
+0=off, 1=on. For a 'USB Ampel' the switch-number is 0 for red, 1 for yellow and 2 for green.
+.TP
+.B "\-al led state"
+Switches the led with number
+.BI "led"
+to the state given with
+.BI "state"
+State can be a value in the range 0...15.
+.TP
+.B "\-am state"
+Sets the states of the USB-IO16 lines.
+.BI "state"
+must be a hex value.
+.TP
+.B "\-ad state"
+Sets the direction of the lines of the USB-IO16 lines.
+.BI "state"
+must be a hex value. A bit set to 0 means input, a bit set to 1 means output.
+.TP
+.B "\-rp"
+Shows how many times the external switch (USB-Plug) was switched on manually. Also displays how long the switch is set to on.
+.TP
+.B "\-rr"
+Shows how many times the auto-reset kicked in.
+.TP
+.B "\-b"
+Brief output, better parseable for scripts.
+.TP
+.B "\-h"
+Shows a list of commandline switches.
+.TP
+.B "\-V"
+Show the version and exit.
+
+.SH BUGS
+None. This program is totally bug-free.
+
+.SH "SEE ALSO"
+.BR http://www.vanheusden.com/clewarecontrol/
+
+.SH NOTES
+This page describes
+.B clewarecontrol
+as found in the clewarecontrol-1.0 package; other versions may differ slightly.
+Mail corrections and additions to folkert@vanheusden.com.
+Report bugs in the program to folkert@vanheusden.com.

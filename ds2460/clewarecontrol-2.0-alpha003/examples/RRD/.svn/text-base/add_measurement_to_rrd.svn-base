@@ -1,0 +1,5 @@
+#!/bin/sh
+
+MEASURED_TEMPERATURE=`clewarecontrol -rt 2> /dev/null | grep 'Temperature' | awk '{ print $2; }'`
+
+rrdtool update cleware_data.rrd N:$MEASURED_TEMPERATURE

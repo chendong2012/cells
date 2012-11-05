@@ -1,0 +1,42 @@
+Monitoring temperature with Nagios
+----------------------------------
+
+Files:
+ - nagios.txt
+ - cleware_nagios_script
+
+1. copy cleware_nagios_script to the libexec directory of nagios
+
+2. add the following to the nagios configuration file
+   (checkcommands.cfg):
+
+   define command{
+          command_name    check_cleware_temperature
+          command_line    $USER1$/cleware_nagios_script $ARG1$ $ARG2$
+   }
+
+3. now define a check:
+
+   define service {
+        use                             generic-service
+        is_volatile                     0
+        check_period                    24x7
+        max_check_attempts              3
+        normal_check_interval           5
+        retry_check_interval            1
+        contact_groups                  CONTACTGROUP
+        notification_interval           240
+        notification_period             24x7
+        notification_options            c,r
+        host_name                       HOSTNAME
+        service_description             check temperature using Cleware sensor
+        check_command                   check_cleware_temperature!WARN!CRIT
+        }
+
+4. of course you need to replace 'CONTACTGROUP' and 'HOSTNAME' with
+   the appropriate settings. also 'WARN' and 'CRIT' must be
+   replaced with the warning and critical temperatures
+
+
+For any question related to Cleware devices under Linux, feel free to
+contact me at the following e-mail address: folkert@vanheusden.com
