@@ -13,3 +13,17 @@ svn co svn://svn.debian.org/libhid/trunk libhid
 
 网上一个据于libusb1.0的开源项目：
 http://www.vanheusden.com/clewarecontrol/#contents
+
+
+基于readhat的操作系统要按装，如下的包
+libusb-devel.i686 : Development files for libusb
+libusb-devel.x86_64 : Development files for libusb
+libusb-static.x86_64 : Static development files for libusb
+libusb1-devel.i686 : Development files for libusb
+libusb1-devel.x86_64 : Development files for libusb
+libusb1-static.x86_64 : Static development files for libusb
+libusb.i686 : A library which allows userspace access to USB devices
+libusb.x86_64 : A library which allows userspace access to USB devices
+libusb1.x86_64 : A library which allows userspace access to USB devices
+libusb1.i686 : A library which allows userspace access to USB devices
+
