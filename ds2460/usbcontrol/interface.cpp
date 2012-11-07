@@ -186,6 +186,11 @@ int uway_put_command_package(unsigned char *cmd, int cmd_len,
 			unsigned char *data, int data_len)
 {
 	int rc;
+
+	unsigned trans_buf[64];
+	memset(trans_buf, 0x00, 64);
+	memcpy(trans_buf, data, data_len);
+
 /*step 1*/
 	rc = uway_issue_control_command(cmd, cmd_len);
 	if (rc < 0) {
@@ -194,15 +199,16 @@ int uway_put_command_package(unsigned char *cmd, int cmd_len,
 	}
 
 /*step 2*/
-	rc = uway_send_data(data, data_len);
+	rc = uway_send_data(trans_buf, 64);
 	if (rc < 0) {
 		fprintf(stderr, "%d:%s failed: %s\n", __LINE__, __func__, usberror);
 	}
 
 /*step 3*/
-	rc = uway_recv_data(data, data_len);
+	rc = uway_recv_data(trans_buf, 64);
 	if (rc < 0) {
 		fprintf(stderr, "%d:%s failed: %s\n", __LINE__, __func__, usberror);
 	}
+	memcpy(data, trans_buf, data_len);
 	return rc;
 }
