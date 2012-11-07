@@ -25,21 +25,24 @@
 
 #ifndef __SECRECT_H__
 #define __SECRECT_H__
+
 class Secrect {
 public:
-	public:
-		int read_rom_id(unsigned char *romid, int romid_len);
-		int read_mac_code(unsigned char *mac, int mac_len);
-		int read_eeprom(int addr, unsigned char *data, int len);
+	Secrect();
+	~Secrect();
+	int read_rom_id(unsigned char *romid, int romid_len);
+	int read_mac_code(unsigned char *mac, int mac_len);
+	int read_eeprom(int addr, unsigned char *data, int data_len);
+	int read_input_data(unsigned char *data, int data_len);
 
-		int write_input_data(unsigned char *data, int data_len);
-		int write_s_secrect(unsigned char *secrect, int secrect_len);
-		int write_e_secrect(int index, unsigned char *secrect, int secrect_len)
-
-		int write_compute_cmd(unsigned char compute_cmd);
-		int write_trans_cmd(unsigned char trans_cmd);
-		int write_eeprom(int addr, unsigned char *data, int len);
-		
-		int check_mac_device();
+	int write_input_data(unsigned char *data, int data_len);
+	int write_s_secrect(unsigned char *secrect, int secrect_len);
+	int write_e_secrect1(unsigned char *secrect, int secrect_len);
+	int write_e_secrect2(unsigned char *secrect, int secrect_len);
+	int write_e_secrect3(unsigned char *secrect, int secrect_len);
+	int write_compute(unsigned char *compute_cmd, int compute_cmd_len);
+	int write_trans(unsigned char *trans_cmd, int trans_cmd_len);
+	int check_mac_device(unsigned char *data, int data_len);
+	int write_eeprom(int addr, unsigned char *data, int data_len);
 	};
 #endif

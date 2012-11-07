@@ -4,7 +4,8 @@ DEBUG=-g
 LDFLAGS=-lusb-1.0
 CXXFLAGS+=-O2 -Wall -DVERSION=\"$(VERSION)\" $(DEBUG)
 
-OBJS=USBaccessBasic.o USBaccess.o main.o
+OBJS=Secrect.o interface.o USBaccessBasic.o USBaccess.o main.o
+
 
 all: clewarecontrol
 
