@@ -34,27 +34,27 @@ int test_read_romid(void)
 {
 	int i = 0;
 	int rc;
-	printf("\n======>secrect rom id test:\n");
+	printf("\n======>secrect read rom id test:\n");
 	rc = mysecrect.read_rom_id(ctx.romid, sizeof(ctx.romid));
 	if (rc < 0) {
 		fprintf(stderr, "%d:%s error\n",__LINE__, __func__);
 	}
 	for (i = 0; i < 8; i++) {
-		printf("%d:0x%02x ", i, ctx.romid[i]);
+		printf("%02x ", ctx.romid[i]);
 	}
 	printf("\n");
 	return rc; 
 }
 
-/*
- *读设备计算出来的mac认证码
- * */
 int test_read_mac_code(void)
 {
 	int i = 0;
 	int rc;
-	printf("\n======>secrect read mac id test:\n");
+	printf("\n======>secrect read mac code test:\n");
 	rc = mysecrect.read_mac_code(ctx.mac_code, sizeof(ctx.mac_code));
+	if (rc < 0) {
+		fprintf(stderr, "%d:%s error\n",__LINE__, __func__);
+	}
 	for (i = 0; i < 20; i++) {
 		if (i%8 == 0)
 			printf("\n");
@@ -136,10 +136,6 @@ int test_write_input_data(void)
 	return rc; 
 }
 
-/*
- *读用于计算mac认证码的原始数据
- *
- * */
 int test_read_input_data(void)
 {
 	int i = 0;
@@ -164,34 +160,45 @@ int test_read_input_data(void)
 
 
 struct option options[] = {
-	{"type", required_argument, NULL, 't'},
+	{"write", required_argument, NULL, 'w'},
 	{"read", required_argument, NULL, 'r'},
 	{0, 0, 0, 0},
 };
 
+int analyse_read_eeprom(int begin, int end, char **av)
+{
+	int i;
+	for (i = begin; i < end; i++) {
+		printf("args is %d:%s\n", i, av[i]);
+	}
+	return 0;
+}
 int main(int argc, char *argv[])
 {
 
 	int c;
+	int i;
 	char *l_opt_arg;
 	memset(&ctx, 0x00, sizeof(ctx));
-	while((c = getopt_long(argc, argv, ":r:t:", options, NULL)) != -1){
+	while((c = getopt_long(argc, argv, ":w:t:", options, NULL)) != -1){
 		switch (c){
-			case 't':
-				l_opt_arg = optarg;
-				printf("arg is %s\n", optarg);
-				test_read_eeprom();
-				printf("\n");
-				break;
-			case 'r':
-				l_opt_arg = optarg;
-				printf("arg is %s\n", optarg);
-				test_read_eeprom();
-				printf("\n");
-				break;
-			default:
-				printf("input error\n");
-				break;
+		case 'w':
+			l_opt_arg = optarg;
+			printf("arg is %s\n", optarg);
+			analyse_read_eeprom(optind, argc, argv);
+			//test_read_eeprom();
+			//test_read_romid();
+			printf("\n");
+			break;
+		case 'r':
+			l_opt_arg = optarg;
+			printf("arg is %s\n", optarg);
+			test_read_eeprom();
+			printf("\n");
+			break;
+		default:
+			printf("input error\n");
+			break;
 		}
 	}
 
@@ -199,6 +206,7 @@ int main(int argc, char *argv[])
 //	test_read_romid();
 //	test_read_mac_code();
 	//
+//	test_write_eeprom();
 //	test_write_eeprom();
 //	test_write_input_data();
 //	test_read_input_data();
