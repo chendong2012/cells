@@ -1,9 +1,15 @@
-/*I2C设备的地址 寄存器的地址 读/写数据长度 数据*/
-/*读例子*/
-/*echo 0x39 0x92 2 [0 0 0 1] [如是读此项没有参数] > FILE */
+/*input format:
+	read:
+		<bus num> <dev addr> <reg addr> <r(2)> <count(4 bytes)>
+	example for lis3dh:
+		echo 0x00 0x19 0x20 2 0 0 0 1 > FILE
+==================================================================================
+	write:
+		<bus num> <dev addr> <reg addr> <w(1)> <count(4 bytes)> <datas>
+	example for lis3dh:
+		echo 0x00 0x19 0x20 1 0 0 0 1 0x77 > FILE
+*/
 
-/*写例子*/
-/*echo 0x39 0x92 1 [0 0 0 4] 5 6 7 8 > FILE */
 /*
  *实现的方法：写命令到接口，然后驱动会启动一个work去执行动作
  *，同时写接口会等待work完成。然后返回调用。
@@ -77,22 +83,26 @@ struct tool_data ops;
 static struct proc_dir_entry *dir = NULL;
 static struct proc_dir_entry *entry = NULL;
 
+unsigned char read_datas[1024];
+#if 0
 static int ops_i2c(void)
 {
 	int i;
 	int ret;
-	unsigned char temp_ptr;
+	unsigned char *temp_ptr;
 	struct i2c_msg msgs[2];
+
+	memset(read_datas, 0x00, 1024);
 	switch (ops.cmd.flag) {
 	case 1: //write
 		ops.cmd.data[0] = ops.cmd.reg;
 		msgs[0].addr = ops.cmd.addr,
-		msgs[0].flags = 0, 
+		msgs[0].flags = 0,
 		msgs[0].len = ops.cmd.count + 1,
 		msgs[0].buf = ops.cmd.data,
 		msgs[0].timing = 100,
 #ifdef DBG
-		FOO_PRINTK("dev bus:0x%02x,addr:0x%02x,reg:0x%02x\n", 
+		FOO_PRINTK("dev bus:0x%02x,addr:0x%02x,reg:0x%02x\n",
 			ops.cmd.bus, ops.cmd.addr, ops.cmd.reg);
 		for(i = 0; i < ops.cmd.count; i++) {
 			FOO_PRINTK("write data[%d]=0x%02x\n", i, ops.cmd.data[i+1]);
@@ -103,16 +113,16 @@ static int ops_i2c(void)
 		ret = i2c_transfer(adap, msgs, 1);
 		if (ret < 0) {
 			FOO_PRINTK("i2c_transfer return error: %d\n",ret);
-			sprintf(ops.cmd.data,"write data retrun error %d\n", ret);
+			sprintf(read_datas,"write data retrun error %d\n", ret);
 		} else {
-			sprintf(ops.cmd.data,"write datas successful\n");
+			sprintf(read_datas,"write datas successful\n");
 		}
 		break;
 
 	case 2:	//read
 		msgs[0].addr=ops.cmd.addr,
-		msgs[0].flags=0, 
-		msgs[0].len=1, 
+		msgs[0].flags=0,
+		msgs[0].len=1,
 		msgs[0].buf=&ops.cmd.reg,
 		msgs[0].timing=100,
 
@@ -130,15 +140,109 @@ static int ops_i2c(void)
 		FOO_PRINTK("adap name: %s\n",adap->name);
 
 		ret = i2c_transfer(adap, msgs, 2);
+
+		FOO_PRINTK("read msgs=0x%02x\n",ret);
 		if (ret < 0) {
 			FOO_PRINTK("i2c_transfer ret error: %d\n", ret);
-			sprintf(ops.cmd.data,"read data retrun error %d\n", ret);
+			sprintf(read_datas,"read data retrun error %d\n", ret);
 		}
-		temp_ptr = ops.cmd.dat;
-		for (i=0; i < ret; i++) {
-			ret = sprintf(temp_ptr, "0x%02x\n", *msgs[1].buf);
+		temp_ptr = read_datas;
+
+		for(i = 0; i < ops.cmd.count; i++) {
+			ret = sprintf(read_datas, "0x%02x\n", ops.cmd.data[i]);
 			temp_ptr += ret;
 		}
+		break;
+	default:
+		break;
+
+	}
+}
+#endif
+
+static int ops_i2c(void)
+{
+	int i;
+	int ret;
+	unsigned char *temp_ptr;
+	struct i2c_msg msgs[2];
+
+	memset(read_datas, 0x00, 1024);
+	switch (ops.cmd.flag) {
+	case 1: //write
+		ops.cmd.data[0] = ops.cmd.reg;
+		msgs[0].addr = ops.cmd.addr,
+		msgs[0].flags = 0,
+		msgs[0].ext_flag = 0,
+		msgs[0].len = ops.cmd.count + 1,
+		msgs[0].buf = ops.cmd.data,
+		msgs[0].timing = 100,
+#ifdef DBG
+		FOO_PRINTK("dev bus:0x%02x,addr:0x%02x,reg:0x%02x\n",
+			ops.cmd.bus, ops.cmd.addr, ops.cmd.reg);
+		for(i = 0; i < ops.cmd.count; i++) {
+			FOO_PRINTK("write data[%d]=0x%02x\n", i, ops.cmd.data[i+1]);
+		}
+#endif
+		adap = i2c_get_adapter(ops.cmd.bus);
+		FOO_PRINTK("adap name: %s\n",adap->name);
+		ret = i2c_transfer(adap, msgs, 1);
+		if (ret < 0) {
+			FOO_PRINTK("i2c_transfer return error: %d\n",ret);
+			sprintf(read_datas,"write data retrun error %d\n", ret);
+		} else {
+			sprintf(read_datas,"write datas successful\n");
+		}
+		break;
+
+	case 2:	/*read*/
+		/*step 1:write reg to device*/
+		msgs[0].addr=ops.cmd.addr,
+		msgs[0].flags=0,
+		msgs[0].ext_flag=0,
+		msgs[0].len=1,
+		msgs[0].buf=&ops.cmd.reg,
+		msgs[0].timing=100,
+
+		/*read datas from device*/
+		msgs[1].addr=ops.cmd.addr,
+		msgs[1].flags=I2C_M_RD,
+		msgs[1].len=ops.cmd.count,
+		msgs[1].buf=ops.cmd.data,
+		msgs[1].ext_flag=0,
+		msgs[1].timing=100,
+#ifdef DBG
+		FOO_PRINTK("device addr=0x%02x\n",ops.cmd.addr);
+		FOO_PRINTK("device reg=0x%02x\n",ops.cmd.reg);
+		FOO_PRINTK("read length=0x%02x\n",ops.cmd.count);
+#endif
+		adap = i2c_get_adapter(ops.cmd.bus);
+		FOO_PRINTK("adap name: %s\n",adap->name);
+//write begin
+		ret = i2c_transfer(adap, &msgs[0], 1);
+		FOO_PRINTK("read msgs 1=0x%02x\n",ret);
+		if (ret < 0) {
+			FOO_PRINTK("i2c_transfer send ret error: %d\n", ret);
+			sprintf(read_datas,"read data retrun error %d\n", ret);
+			break;
+		}
+//read begin
+		ret = i2c_transfer(adap, &msgs[1], 1);
+
+		if (ret < 0) {
+			FOO_PRINTK("i2c_transfer recv ret error: %d\n", ret);
+			sprintf(read_datas,"read data retrun error %d\n", ret);
+			break;
+		}
+
+		temp_ptr = read_datas;
+		for(i = 0; i < ops.cmd.count; i++) {
+			ret = sprintf(temp_ptr, "0x%02x\n", ops.cmd.data[i]);
+			temp_ptr += ret;
+		}
+#ifdef DBG
+		FOO_PRINTK("read datas from device %s\n",read_datas);
+#endif
 		break;
 	default:
 		break;
@@ -168,17 +272,21 @@ static int create_work(void)
 static int trans(int i, unsigned char dat)
 {
 	switch (i) {
-		case 0:
+		case 0:	/*i2c bus*/
 			ops.cmd.bus = dat;
+			FOO_PRINTK("ops.cmd.bus:0x%08x\n",ops.cmd.bus);
 			break;
-		case 1: //addr
+		case 1: /*device address*/
 			ops.cmd.addr = dat;
+			FOO_PRINTK("ops.cmd.addr:0x%08x\n",ops.cmd.addr);
 			break;
-		case 2: //reg addr
+		case 2: /*device register address*/
 			ops.cmd.reg = dat;
+			FOO_PRINTK("ops.cmd.reg:0x%08x\n",ops.cmd.reg);
 			break;
 		case 3: //flag (w/r)
 			ops.cmd.flag = dat;
+			FOO_PRINTK("ops.cmd.flag:0x%08x\n",ops.cmd.flag);
 			break;
 		case 4:	//count
 			ops.cmd.count = 0;
@@ -195,8 +303,10 @@ static int trans(int i, unsigned char dat)
 			FOO_PRINTK("ops.cmd.count:0x%08x\n",ops.cmd.count);
 			break;
 		default: //data
+			if (i >= 7) {
 			ops.cmd.data[i-7] = dat;
 			FOO_PRINTK("ops.cmd.data[%d]:0x%08x\n",i, ops.cmd.data[i]);
+			}
 			break;
 	}
 	return 0;
@@ -207,7 +317,7 @@ static int tool_proc_read(char *buf, char **start, off_t off,
 {
     int len = 0;
     char *p = buf;
-    p += sprintf(p, "%s", ops.cmd.data);
+    p += sprintf(p, "%s", read_datas);
 
     *start = buf + off;
     len = p - buf;
@@ -254,14 +364,16 @@ static ssize_t tool_proc_write(struct file *file, const char __user *buffer,
 		i++;
 		buf = skip_spaces(end);
 	}
-	if ( i < 7)
-		strcpy((char *)ops.cmd.data, "error\n");
-	else {
+	//return count;
+//	if ( i < 7)
+//		strcpy((char *)ops.cmd.data, "error\n");
+//	else {
 		run_work();
 		wait_event(ops.waitq, ops.waitq_finish != 0);
 		ops.waitq_finish = 0;
-	}
+//	}
 	mutex_unlock(&ops.mutex);
+	//ops_i2c();
 	return count;
 }
 
@@ -284,13 +396,16 @@ fail:
 
 static int init_data()
 {
+
+	memset(read_datas, 0, 1024);
+	memcpy(read_datas, "hello i2ctool\n", 14);
 	mutex_init(&ops.mutex);
 	init_waitqueue_head(&ops.waitq);
 	ops.cmd.data = kzalloc(PAGE_SIZE, GFP_KERNEL);
 	if (!ops.cmd.data)
 		return -ENOMEM;
 	return 0;
-    
+
 }
 
 static int uninit_data()
