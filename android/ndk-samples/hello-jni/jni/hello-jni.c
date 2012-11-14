@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 /*
  *1、上传字符串
  *2、下载字符串
@@ -28,9 +29,12 @@
 #include <errno.h>
 #include <dirent.h>
 #include <assert.h>
+#include <unistd.h>
 
 #define I2CNAME "/sys/bus/i2c/devices/0-0019/name"
 #define CPUINFO "/proc/cpuinfo"
+static unsigned char ops_path[255];
+static char buf[1000];
 
 /*========================*/
 #define LOG_TAG "chendong"
@@ -39,6 +43,32 @@
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 /*========================*/
 
+
+static int write_data_to_file(const char *path, const char *data)
+{
+	int nbytes;
+	int fd;
+
+	if (path == NULL)
+		return -1;
+
+	fd = open(path, O_WRONLY);
+	if (fd < 0) {
+		nbytes = -errno;
+		goto fail;
+	}
+	nbytes = write(fd, data, strlen((const char *)data));
+	if (-1 == nbytes) {
+		nbytes = -errno;
+		LOGE(strerror(errno));
+		close(fd);
+		goto fail;
+	}
+	close(fd);
+	LOGI("%s", data);
+fail:
+	return nbytes;
+}
 
 /*
  *读指定路径下的文件的内容
@@ -49,8 +79,8 @@
  *
  *返回值：
  *	读到的个数或是错误号
- * */
-static int read_path_string(char const * path, char *data, int data_len)
+ ********************************/
+static int read_data_from_file(char const *path, char *data, int data_len)
 {
 	int nbytes;
 	int fd;
@@ -76,48 +106,25 @@ fail:
 	return nbytes;
 }
 
-/*
- *读指定文件的内容，并把返回的字符串转化为整型
- *文件内容的形式:0,1...整式
- * */
-static int read_path_int(char const * path)
-{
-	int fd;
-	if (path == NULL)
-		return -1;
-
-	fd = open(path, O_RDWR);
-	if (fd >= 0) {
-		char buffer[20];
-		int ret = read(fd, buffer, sizeof(int));
-		close(fd);
-		return ret == -1 ? -errno : atoi(buffer);
-	}
-	return -errno;
-}
-
-static char buf[1000];
-
 //=========================JNI API===============================
 /*
- *上传字符串
+ *upload string upto java from jni
  *public native String stringFromJNI();
  * */
 jstring
-Java_com_example_hellojni_HelloJni_stringFromJNI( JNIEnv* env,
-                                                  jobject thiz )
+Java_com_example_hellojni_HelloJni_stringFromJNI( JNIEnv* env, jobject thiz)
 {
-	read_path_string(CPUINFO, buf, sizeof(buf));
+	//read_path_string(CPUINFO, buf, sizeof(buf));
+	strcpy(buf, "hello world");
 	return (*env)->NewStringUTF(env, buf);
 }
 
 /*
- *下载字符串
+ *translate string into jni
  *public static native boolean stringToJni(String str)
  * */
 jboolean
-Java_com_example_hellojni_HelloJni_stringToJni(JNIEnv* env,
-				jclass clazz, jstring str)
+Java_com_example_hellojni_HelloJni_stringToJni(JNIEnv* env, jclass clazz, jstring str)
 {
     // convert Java string to UTF-8
     const char *utf8 = (*env)->GetStringUTFChars(env, str, NULL);
@@ -128,7 +135,7 @@ Java_com_example_hellojni_HelloJni_stringToJni(JNIEnv* env,
 }
 
 /*
- *下载布尔
+ *translate bool var into jni
  *public static native void booleanToJni(boolean boolvalue);
  * */
 void
@@ -139,7 +146,7 @@ Java_com_example_hellojni_HelloJni_booleanToJni(JNIEnv* env,
 }
 
 /*
- *下载整型
+ *java translate int value into jni
  *public static native void intToJni(boolean boolvalue);
  * */
 void
@@ -148,3 +155,36 @@ Java_com_example_hellojni_HelloJni_intToJni( JNIEnv* env, jobject thiz, jint int
 	LOGI("intToJni is %d", intvalue);
 }
 //===========================END=================================
+
+/*
+ *write datas to file and return status
+ *java: static native int write_file(String filename, String command)
+ *return:how many write bytes
+ * */
+jint Java_com_example_hellojni_HelloJni_write_file(JNIEnv* env,
+				jclass clazz, jstring filename, jstring command)
+{
+	int ret;
+	const char *jni_filename = (*env)->GetStringUTFChars(env, filename, NULL);
+	assert(NULL != jni_filename);
+
+	const char *jni_command= (*env)->GetStringUTFChars(env, command, NULL);
+	assert(NULL != jni_command);
+
+	ret = write_data_to_file(jni_filename, jni_command);
+	return ret;
+}
+
+/*
+ *read datas from file and return datas upto java
+ *java: static native String read_file(String filename, int len)
+ * */
+jstring Java_com_example_hellojni_HelloJni_read_file(JNIEnv* env,
+				jclass clazz, jstring filename, jint len)
+{
+	const char *jni_filename = (*env)->GetStringUTFChars(env, filename, NULL);
+	assert(NULL != jni_filename);
+
+	read_data_from_file(jni_filename, buf, sizeof(buf));
+	return (*env)->NewStringUTF(env, buf);
+}
