@@ -14,52 +14,30 @@
  * limitations under the License.
  */
 package com.example.hellojni;
-
-import net.tsz.afinal.FinalHttp;
-import net.tsz.afinal.http.AjaxCallBack;
-import net.tsz.afinal.http.AjaxStatus;
 import android.app.Activity;
-import android.content.Context;
-import android.util.Log;
 import android.widget.TextView;
 import android.os.Bundle;
 
-
-public class HelloJni extends Activity
-{
-    private final String TAG = "phone";
-     Context a;
-    TextView  tv;
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-
-        /* Create a TextView and set its content.
-         * the text is retrieved by calling a native
-         * function.
-         */
-        tv = new TextView(this);
-       // tv.setText( stringFromJNI() );
-     //   setContentView(tv);
-        	a = this;
-        
-        
-        
-        
-        
-        
-        FinalHttp.ajax("http://www.kernel.org", new AjaxCallBack() {
-            @Override
-            public void callBack(AjaxStatus status) {
-            	
-            //  TextView textView = new TextView(a);;
-            	tv.setText(status.getContentAsString());
-            	//tv.setText("ddddd");
-            	((Activity) a).setContentView(tv);
-            }});
-
+public class HelloJni extends Activity {
+	/**
+	 *
+	 */
+	public HelloJni() {
+		super();
+	}
+	
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	//	TextView a =  (TextView) findViewById(R.id.textView1);
+		setContentView(R.layout.main);
+		/* Create a TextView and set its content.
+		 * the text is retrieved by calling a native
+		 * function.
+		 */
+	//	TextView tv = new TextView(this);
+        //tv.setText( stringFromJNI() ); setContentView(tv);
     }
 
     /* A native method that is implemented by the
@@ -85,7 +63,6 @@ public class HelloJni extends Activity
      * /data/data/com.example.hellojni/lib/libhello-jni.so at
      * installation time by the package manager.
      */
-    
     static {
         System.loadLibrary("hello-jni");
     }

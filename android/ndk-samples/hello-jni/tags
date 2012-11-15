@@ -1,0 +1,29 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+BuildConfig	gen/com/example/hellojni/BuildConfig.java	/^public final class BuildConfig {$/;"	c
+BuildConfig	tests/gen/com/example/hellojni/tests/BuildConfig.java	/^public final class BuildConfig {$/;"	c
+DEBUG	gen/com/example/hellojni/BuildConfig.java	/^    public final static boolean DEBUG = true;$/;"	f	class:BuildConfig
+DEBUG	tests/gen/com/example/hellojni/tests/BuildConfig.java	/^    public final static boolean DEBUG = true;$/;"	f	class:BuildConfig
+HelloJni	src/com/example/hellojni/HelloJni.java	/^public class HelloJni extends Activity$/;"	c
+HelloJniTest	tests/src/com/example/hellojni/HelloJniTest.java	/^    public HelloJniTest() {$/;"	m	class:HelloJniTest
+HelloJniTest	tests/src/com/example/hellojni/HelloJniTest.java	/^public class HelloJniTest extends ActivityInstrumentationTestCase<HelloJni> {$/;"	c
+Java_com_example_hellojni_HelloJni_stringFromJNI	jni/hello-jni.c	/^Java_com_example_hellojni_HelloJni_stringFromJNI( JNIEnv* env,$/;"	f
+LOCAL_MODULE	jni/Android.mk	/^LOCAL_MODULE    := hello-jni$/;"	m
+LOCAL_PATH	jni/Android.mk	/^LOCAL_PATH := $(call my-dir)$/;"	m
+LOCAL_SRC_FILES	jni/Android.mk	/^LOCAL_SRC_FILES := hello-jni.c$/;"	m
+R	gen/com/example/hellojni/R.java	/^public final class R {$/;"	c
+app_name	gen/com/example/hellojni/R.java	/^        public static final int app_name=0x7f020000;$/;"	f	class:R.string
+attr	gen/com/example/hellojni/R.java	/^    public static final class attr {$/;"	c	class:R
+com.example.hellojni	gen/com/example/hellojni/BuildConfig.java	/^package com.example.hellojni;$/;"	p
+com.example.hellojni	gen/com/example/hellojni/R.java	/^package com.example.hellojni;$/;"	p
+com.example.hellojni	src/com/example/hellojni/HelloJni.java	/^package com.example.hellojni;$/;"	p
+com.example.hellojni	tests/src/com/example/hellojni/HelloJniTest.java	/^package com.example.hellojni;$/;"	p
+com.example.hellojni.tests	tests/gen/com/example/hellojni/tests/BuildConfig.java	/^package com.example.hellojni.tests;$/;"	p
+onCreate	src/com/example/hellojni/HelloJni.java	/^    public void onCreate(Bundle savedInstanceState)$/;"	m	class:HelloJni
+string	gen/com/example/hellojni/R.java	/^    public static final class string {$/;"	c	class:R
+stringFromJNI	src/com/example/hellojni/HelloJni.java	/^    public native String  stringFromJNI();$/;"	m	class:HelloJni
+unimplementedStringFromJNI	src/com/example/hellojni/HelloJni.java	/^    public native String  unimplementedStringFromJNI();$/;"	m	class:HelloJni
