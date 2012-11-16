@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="access">
+        <item >write</item>
+        <item >read</item>
+    </string-array>
+    <string-array name="busnum">
+        <item >bus0</item>
+        <item >bus1</item>
+        <item >bus2</item>
+        <item >bus3</item>
+        <item >bus4</item>
+        <item >bus5</item>
+        <item >bus6</item>
+    </string-array>
+    
+</resources>
