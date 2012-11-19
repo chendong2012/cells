@@ -219,6 +219,17 @@ int Secrect::write_e_secrect3(unsigned char *secrect, int secrect_len)
 
 /*
  *成功返回 1,错误返回-1
+ *compute_cmd[0]:
+ *0:s-resect as input secrect for compute
+ *1:e-resect1 as input secrect for compute
+ *2:e-resect2 as input secrect for compute
+ *3:e-resect3 as input secrect for compute
+ *
+ *compute_cmd[1]:
+ *0: trans result into MAC Output Buffer
+ *1: trans first 8 bytes of result into s-secrect
+ *
+ *compute_cmd_len fix to 2 bytes len
  * */
 int Secrect::write_compute(unsigned char *compute_cmd, int compute_cmd_len)
 {
@@ -238,6 +249,13 @@ int Secrect::write_compute(unsigned char *compute_cmd, int compute_cmd_len)
 
 /*
  *成功返回 1,错误返回-1
+ *
+ * trans_cmd[0]:
+ *1:put s-secrect into e-secrect1
+ *2:put s-secrect into e-secrect2
+ *3:put s-secrect into e-secrect3
+ *
+ *trans_cmd_len fix to 1
  * */
 int Secrect::write_trans(unsigned char *trans_cmd, int trans_cmd_len)
 {

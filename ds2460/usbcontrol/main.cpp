@@ -27,6 +27,56 @@ struct secrect_device_context {
 Secrect mysecrect;
 struct secrect_device_context ctx;
 /*=========================================*/
+
+/*descript:
+ * shabuf:input raw data include 64 bytes
+ * secrectbuf: secrect datas[8 bytes]
+ * mac_a to mac_e is output mac code together is 20 bytes
+ * */
+void get_mac(unsigned char *shabuf, unsigned char *secrectbuf,
+			 unsigned long *mac_a,
+			 unsigned long *mac_b,
+			 unsigned long *mac_c,
+			 unsigned long *mac_d,
+			 unsigned long *mac_e)
+{
+	unsigned char MT[64];
+	long A, B, C, D, E;
+	 A = *mac_a;
+	 B = *mac_b;
+	 C = *mac_c;
+	 D = *mac_d;
+	 E = *mac_e;
+
+	for(int cnt=0; cnt<55; cnt++)  //assume system secrets is 47-byte 0x55, you should replace
+	{				  ////them with your own definition
+		MT[cnt] = shabuf[cnt];
+	}
+
+	for (cnt = 0; cnt < 4; cnt ++)
+		MT[cnt] = secrectbuf[cnt];
+
+	for (cnt = 0; cnt < 4; cnt ++)
+		MT[48+cnt] = secrectbuf[cnt + 4];
+
+	MT[55] = 0x80;
+	for(cnt=56; cnt<62;cnt++)
+	{
+		MT[cnt] = 0x0;
+	}
+
+	MT[62]=0x01;
+	MT[63]=0xB8;
+	ComputeSHAEE(MT, &A, &B, &C, &D, &E);
+
+	 *mac_a = A;
+	 *mac_b = B;
+	 *mac_c = C;
+	 *mac_d = D;
+	 *mac_e = E;
+}
+
+
 /*
  *read device romid
  *return -1 fail
@@ -238,24 +288,60 @@ int test_write_input_data(unsigned char *data, int len)
 }
 
 /*
+ *write compute command for trigger sha compute
+ *return -1 fail
+ *return 1 success
+ *
+ *compute_cmd[0]:
+ *0:s-resect as input secrect for compute
+ *1:e-resect1 as input secrect for compute
+ *2:e-resect2 as input secrect for compute
+ *3:e-resect3 as input secrect for compute
+ *
+ *compute_cmd[1]:
+ *0: trans result into MAC Output Buffer
+ *1: trans first 8 bytes of result into s-secrect
+ *
+ *compute_cmd_len fix to 2 bytes len
+ * */
+static int test_write_compute(unsigned char *compute_cmd, int compute_cmd_len)
+{
+	int rc;
+	rc = mysecrect.write_compute(compute_cmd, compute_cmd_len)
+	if (rc < 0) {
+		fprintf(stderr, "%d:%s error\n", __LINE__, __func__);
+		return -1;
+	}
+}
+
+static int test_write_trans(unsigned char *trans_cmd, int trans_cmd_len)
+{
+	int rc;
+	rc = mysecrect.write_trans(trans_cmd, trans_cmd_len);
+	if (rc < 0) {
+		fprintf(stderr, "%d:%s error\n", __LINE__, __func__);
+		return -1;
+	}
+}
+/*
  *read input raw data
  *return -1 fail
  *return 1 success
  * */
-int test_read_input_data(void)
+int test_read_input_data(int len)
 {
 	int i = 0;
 	int rc;
-	unsigned char input[47];
-	memset(input, 0x00, 47);
-	rc = mysecrect.read_input_data(input, 47);
+	unsigned char input[64];
+	memset(input, 0x00, 64);
+	rc = mysecrect.read_input_data(input, len);
 	if (rc < 0) {
 		fprintf(stderr, "%d:%s error\n", __LINE__, __func__);
 		return -1;
 	}
 
 	printf("read input data from device as below:\n");
-	for (i = 0; i < 47; i++) {
+	for (i = 0; i < len; i++) {
 		if (i%8 == 0 && i != 0)
 			printf("\n");
 		fprintf(stdout, "%02x ", input[i]);
@@ -305,7 +391,7 @@ int main(int argc, char *argv[])
 			"	esecrect2\n"
 			"	esecrect3\n");
 		printf("size:\n"
-			"	write how many datas into device\n");
+			"	how many datas write into device or read from device\n");
 		printf("page:\n"
 			"	eeprom page number\n");
 		printf("datas:\n"
@@ -333,6 +419,9 @@ int main(int argc, char *argv[])
 
 			} else if (strcmp(optarg, "esecrect3") == 0){
 				w_type = 6;
+
+			} else if (strcmp(optarg, "compute") == 0){
+				w_type = 7;
 
 			} else {
 				printf("error type\n");
@@ -435,6 +524,12 @@ int main(int argc, char *argv[])
 				}
 				test_write_e_secrect3(cmd_data, cmd_len);
 				break;
+			case 7:
+				for (i = optind, j=0; i < argc; i++, j++) {
+					cmd_data[j] = strtol(argv[i], NULL, 0); 
+				}
+				test_write_compute(cmd_data, cmd_len);
+				break;
 			default:
 				break;
 			}
@@ -455,7 +550,11 @@ int main(int argc, char *argv[])
 				test_read_eeprom(cmd_page, cmd_len);
 				break;
 			case 4:
-				test_read_input_data();
+				if (cmd_len > 64) {
+					fprintf(stderr, "input cmd_len exceeded range[0 < len <=64]\n");
+					return 1;
+				}
+				test_read_input_data(cmd_len);
 				break;
 			default:
 				break;
