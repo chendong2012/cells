@@ -9,6 +9,7 @@
 #include <getopt.h>
 #include <unistd.h>
 
+#include "sha.h"
 #define EEPROM_PAGE 14
 #define EEPROM_PAGE_SIZE 8
 
@@ -41,6 +42,7 @@ void get_mac(unsigned char *shabuf, unsigned char *secrectbuf,
 			 unsigned long *mac_e)
 {
 	unsigned char MT[64];
+	int cnt = 0;
 	long A, B, C, D, E;
 	 A = *mac_a;
 	 B = *mac_b;
@@ -48,12 +50,12 @@ void get_mac(unsigned char *shabuf, unsigned char *secrectbuf,
 	 D = *mac_d;
 	 E = *mac_e;
 
-	for(int cnt=0; cnt<55; cnt++)  //assume system secrets is 47-byte 0x55, you should replace
+	for(cnt=0; cnt<55; cnt++)  //assume system secrets is 47-byte 0x55, you should replace
 	{				  ////them with your own definition
 		MT[cnt] = shabuf[cnt];
 	}
 
-	for (cnt = 0; cnt < 4; cnt ++)
+	for (cnt = 0; cnt < 4; cnt++)
 		MT[cnt] = secrectbuf[cnt];
 
 	for (cnt = 0; cnt < 4; cnt ++)
@@ -102,19 +104,21 @@ int test_read_romid()
  *return -1 fail
  *return 1 success
  * */
-int test_read_mac_code(void)
+int test_read_mac_code(int cmd_len)
 {
 	int i = 0;
 	int rc;
-	printf("\n======>secrect read mac code test:\n");
-	rc = mysecrect.read_mac_code(ctx.mac_code, sizeof(ctx.mac_code));
+	unsigned char mac_code[20];
+	memset(mac_code, 0x00, 20);
+
+	rc = mysecrect.read_mac_code(mac_code, sizeof(mac_code));
 	if (rc < 0) {
 		fprintf(stderr, "%d:%s error\n", __LINE__, __func__);
 	}
 	for (i = 0; i < 20; i++) {
 		if (i%8 == 0)
 			printf("\n");
-		fprintf(stdout, "%02x ", ctx.mac_code[i]);
+		fprintf(stdout, "%02x ", mac_code[i]);
 	}
 	printf("\n");
 	return rc; 
@@ -293,25 +297,26 @@ int test_write_input_data(unsigned char *data, int len)
  *return 1 success
  *
  *compute_cmd[0]:
- *0:s-resect as input secrect for compute
- *1:e-resect1 as input secrect for compute
- *2:e-resect2 as input secrect for compute
- *3:e-resect3 as input secrect for compute
+ *0x00:s-resect as input secrect for compute
+ *0x01:e-resect1 as input secrect for compute
+ *0x02:e-resect2 as input secrect for compute
+ *0x03:e-resect3 as input secrect for compute
  *
  *compute_cmd[1]:
- *0: trans result into MAC Output Buffer
- *1: trans first 8 bytes of result into s-secrect
+ *0x00: trans result into MAC Output Buffer
+ *0x01: trans first 8 bytes of result into s-secrect
  *
  *compute_cmd_len fix to 2 bytes len
  * */
 static int test_write_compute(unsigned char *compute_cmd, int compute_cmd_len)
 {
 	int rc;
-	rc = mysecrect.write_compute(compute_cmd, compute_cmd_len)
+	rc = mysecrect.write_compute(compute_cmd, compute_cmd_len);
 	if (rc < 0) {
 		fprintf(stderr, "%d:%s error\n", __LINE__, __func__);
 		return -1;
 	}
+	return 1;
 }
 
 static int test_write_trans(unsigned char *trans_cmd, int trans_cmd_len)
@@ -322,6 +327,7 @@ static int test_write_trans(unsigned char *trans_cmd, int trans_cmd_len)
 		fprintf(stderr, "%d:%s error\n", __LINE__, __func__);
 		return -1;
 	}
+	return 1;
 }
 /*
  *read input raw data
@@ -389,7 +395,8 @@ int main(int argc, char *argv[])
 			"	ssecrect\n"
 			"	esecrect1\n"
 			"	esecrect2\n"
-			"	esecrect3\n");
+			"	esecrect3\n"
+			"	compute\n");
 		printf("size:\n"
 			"	how many datas write into device or read from device\n");
 		printf("page:\n"
@@ -458,7 +465,8 @@ int main(int argc, char *argv[])
 				"	ssecrect\n"
 				"	esecrect1\n"
 				"	esecrect2\n"
-				"	esecrect3\n");
+				"	esecrect3\n"
+				"	compute\n");
 			printf("size:\n"
 				"	write how many datas into device\n");
 			printf("page:\n"
@@ -540,7 +548,7 @@ int main(int argc, char *argv[])
 				test_read_romid();
 				break;
 			case 2:
-				test_read_mac_code();
+				test_read_mac_code(cmd_len);
 				break;
 			case 3:
 				if (cmd_page > 10 || cmd_page < 0) {
