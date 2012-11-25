@@ -34,7 +34,7 @@ struct secrect_device_context ctx;
  * secrectbuf: secrect datas[8 bytes]
  * mac_a to mac_e is output mac code together is 20 bytes
  * */
-void get_mac(unsigned char *shabuf, unsigned char *secrectbuf,
+void sw_compute_mac(unsigned char *shabuf, unsigned char *secrectbuf,
 			 unsigned long *mac_a,
 			 unsigned long *mac_b,
 			 unsigned long *mac_c,
@@ -78,6 +78,24 @@ void get_mac(unsigned char *shabuf, unsigned char *secrectbuf,
 	 *mac_e = E;
 }
 
+int test_sw_compute(unsigned char *inputdata,  unsigned char *secrectbuf)
+{
+	unsigned char mac[20];
+	int i;
+	memset(mac, 0x00, 20);
+
+	sw_compute_mac(inputdata,
+			secrectbuf,
+			(unsigned long *)&mac[0],
+			(unsigned long *)&mac[4],
+			(unsigned long *)&mac[7],
+			(unsigned long *)&mac[11],
+			(unsigned long *)&mac[15]);
+	for (i = 0; i < 20; i ++) {
+		printf("0x%02x ", mac[i]);
+	}
+	printf("\n");
+}
 
 /*
  *read device romid
@@ -303,8 +321,8 @@ int test_write_input_data(unsigned char *data, int len)
  *0x03:e-resect3 as input secrect for compute
  *
  *compute_cmd[1]:
- *0x00: trans result into MAC Output Buffer
- *0x01: trans first 8 bytes of result into s-secrect
+ *0x00: put result into MAC Output Buffer
+ *0x01: put first 8 bytes of result into s-secrect
  *
  *compute_cmd_len fix to 2 bytes len
  * */
@@ -319,6 +337,16 @@ static int test_write_compute(unsigned char *compute_cmd, int compute_cmd_len)
 	return 1;
 }
 
+/*
+ *成功返回 1,错误返回-1
+ *
+ * trans_cmd[0]:
+ *1:put s-secrect into e-secrect1
+ *2:put s-secrect into e-secrect2
+ *3:put s-secrect into e-secrect3
+ *
+ *trans_cmd_len fix to 1
+ * */
 static int test_write_trans(unsigned char *trans_cmd, int trans_cmd_len)
 {
 	int rc;
@@ -396,7 +424,8 @@ int main(int argc, char *argv[])
 			"	esecrect1\n"
 			"	esecrect2\n"
 			"	esecrect3\n"
-			"	compute\n");
+			"	compute\n"
+			"	sw_compute\n");
 		printf("size:\n"
 			"	how many datas write into device or read from device\n");
 		printf("page:\n"
@@ -429,6 +458,9 @@ int main(int argc, char *argv[])
 
 			} else if (strcmp(optarg, "compute") == 0){
 				w_type = 7;
+
+			} else if (strcmp(optarg, "sw_compute") == 0){
+				w_type = 8;
 
 			} else {
 				printf("error type\n");
@@ -466,7 +498,8 @@ int main(int argc, char *argv[])
 				"	esecrect1\n"
 				"	esecrect2\n"
 				"	esecrect3\n"
-				"	compute\n");
+				"	compute\n"
+				"	sw_compute\n");
 			printf("size:\n"
 				"	write how many datas into device\n");
 			printf("page:\n"
@@ -495,7 +528,7 @@ int main(int argc, char *argv[])
 					cmd_data[j] = strtol(argv[i], NULL, 0); 
 				}
 
-				if (cmd_page > 10 || cmd_page < 0) {
+				if (cmd_page > 13 || cmd_page < 0) {
 					fprintf(stderr, "please input page number:[-p 0 or -p 1 ... or -p 10]\n");
 					return 1;
 				}
@@ -538,6 +571,12 @@ int main(int argc, char *argv[])
 				}
 				test_write_compute(cmd_data, cmd_len);
 				break;
+			case 8:
+				for (i = optind, j=0; i < argc; i++, j++) {
+					cmd_data[j] = strtol(argv[i], NULL, 0); 
+				}
+				test_sw_compute(&cmd_data[0], &cmd_data[64]);
+				break;
 			default:
 				break;
 			}
@@ -551,7 +590,7 @@ int main(int argc, char *argv[])
 				test_read_mac_code(cmd_len);
 				break;
 			case 3:
-				if (cmd_page > 10 || cmd_page < 0) {
+				if (cmd_page > 13 || cmd_page < 0) {
 					fprintf(stderr, "please input page number:[-p 0 or -p 1 ... or -p 10]\n");
 					return 1;
 				}

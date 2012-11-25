@@ -226,8 +226,8 @@ int Secrect::write_e_secrect3(unsigned char *secrect, int secrect_len)
  *3:e-resect3 as input secrect for compute
  *
  *compute_cmd[1]:
- *0: trans result into MAC Output Buffer
- *1: trans first 8 bytes of result into s-secrect
+ *0: put result into MAC Output Buffer
+ *1: put first 8 bytes of result into s-secrect
  *
  *compute_cmd_len fix to 2 bytes len
  * */
