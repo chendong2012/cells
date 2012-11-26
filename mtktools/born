@@ -4,13 +4,21 @@ if [ $? -ne 0 ]; then
 	echo no device???
 	exit
 fi
+
 count=$(cat dumchar_info | wc -l)
 let count-=5
 part_name=(`sed -n "2,${count}p" dumchar_info | awk '{print $1}'`)
-if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]] || [[ "$1" = "" ]]; then
-	echo "usage:born part_name"
+if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]] || [[ ! -e "$2" ]]; then
+	echo "usage:born part_name file_name"
 	for i in "${part_name[@]}"; do
-		echo born $i	
+		echo born $i file_name
 	done
 	exit
 fi
+
+record=(`sed -n "/$1"/p ./dumchar_info`)
+echo "${record[@]}"
+
+let obs=${record[2]}/512
+adb push $2 /data
+adb shell dd if=/data/$2 of=${record[4]} seek=$obs
