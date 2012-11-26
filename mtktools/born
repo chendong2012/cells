@@ -1,0 +1,16 @@
+#!/bin/bash
+adb pull /proc/dumchar_info ./
+if [ $? -ne 0 ]; then
+	echo no device???
+	exit
+fi
+count=$(cat dumchar_info | wc -l)
+let count-=5
+part_name=(`sed -n "2,${count}p" dumchar_info | awk '{print $1}'`)
+if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]] || [[ "$1" = "" ]]; then
+	echo "usage:born part_name"
+	for i in "${part_name[@]}"; do
+		echo born $i	
+	done
+	exit
+fi
