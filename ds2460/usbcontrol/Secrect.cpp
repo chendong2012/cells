@@ -9,10 +9,12 @@ static unsigned char cmd_read_input_data[8] = {0x00,0x00,0x00,0x00,0x00,0x00,0x0
 static unsigned char cmd_read_eeprom[8] = {0x00,0x00,0x00,0x00,0x00,0x00,0x04,0xbb};
 
 static unsigned char cmd_write_input_data[8] = {0x00,0x00,0x00,0x00,0x00,0x00,0x01,0xbd};
+
 static unsigned char cmd_write_s_secrect[8] = {0x00,0x00,0x00,0x00,0x00,0x00,0x02,0xbd};
 static unsigned char cmd_write_e_secrect1[8] = {0x00,0x00,0x00,0x00,0x00,0x00,0x03,0xbd};
 static unsigned char cmd_write_e_secrect2[8] = {0x00,0x00,0x00,0x00,0x00,0x00,0x04,0xbd};
 static unsigned char cmd_write_e_secrect3[8] = {0x00,0x00,0x00,0x00,0x00,0x00,0x05,0xbd};
+
 static unsigned char cmd_write_compute[8] = {0x00,0x00,0x00,0x00,0x00,0x00,0x06,0xbd};
 static unsigned char cmd_write_trans[8] = {0x00,0x00,0x00,0x00,0x00,0x00,0x07,0xbd};
 static unsigned char cmd_write_check_mac[8] = {0x00,0x00,0x00,0x00,0x00,0x00,0x08,0xbd};
@@ -85,6 +87,11 @@ int Secrect::read_input_data(unsigned char *data, int data_len)
 	int rc;
 	unsigned char buf[64];
 	memset(buf, 0x00, 64);
+	if (data_len >= 64) {
+		data_len = 62;
+		data[62] = 0xff;
+		data[63] = 0xff;
+	}
 
 	rc = uway_get_command_package(cmd_read_input_data, sizeof(cmd_read_input_data),
 			buf, 64);
@@ -174,6 +181,7 @@ int Secrect::write_e_secrect1(unsigned char *secrect, int secrect_len)
 			buf, 64);
 
 	if (rc == 0 && buf[0] == FLAG_OK)  {
+		printf("-------->%d\n",buf[1]);
 		return FLAG_OK;
 	}
 	return -1;
@@ -193,6 +201,7 @@ int Secrect::write_e_secrect2(unsigned char *secrect, int secrect_len)
 			buf, 64);
 
 	if (rc == 0 && buf[0] == FLAG_OK)  {
+		printf("-------->%d\n",buf[1]);
 		return FLAG_OK;
 	}
 	return -1;
@@ -204,14 +213,20 @@ int Secrect::write_e_secrect2(unsigned char *secrect, int secrect_len)
 int Secrect::write_e_secrect3(unsigned char *secrect, int secrect_len)
 {
 	int rc;
+	int i;
 	unsigned char buf[64];
 	memset(buf, 0x00, 64);
 	memcpy(buf, secrect, secrect_len);
+	for (i=0; i< 8; i++)
+		printf("0x%02x ",secrect[i]);
+	printf("\n");
+	printf("secrect3 len is 0x%02x\n", secrect_len);
 
 	rc = uway_put_command_package(cmd_write_e_secrect3, sizeof(cmd_write_e_secrect3),
 			buf, 64);
 
 	if (rc == 0 && buf[0] == FLAG_OK)  {
+		printf("-------->%d\n",buf[1]);
 		return FLAG_OK;
 	}
 	return -1;
@@ -238,10 +253,13 @@ int Secrect::write_compute(unsigned char *compute_cmd, int compute_cmd_len)
 	memset(buf, 0x00, 64);
 	memcpy(buf, compute_cmd, compute_cmd_len);
 
+	printf("------------->compute buf0 = 0x%02x,0x%02x\n", buf[0], buf[1]);
+
 	rc = uway_put_command_package(cmd_write_compute, sizeof(cmd_write_compute),
 			buf, 64);
 
 	if (rc == 0 && buf[0] == FLAG_OK)  {
+		printf("-------->%d\n",buf[1]);
 		return FLAG_OK;
 	}
 	return -1;

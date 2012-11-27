@@ -4,29 +4,29 @@ DEBUG=-g
 LDFLAGS=-lusb-1.0
 CXXFLAGS+=-O2 -Wall -DVERSION=\"$(VERSION)\" $(DEBUG)
 
-OBJS=sha.o Secrect.o interface.o USBaccessBasic.o USBaccess.o main.o
+OBJS=sha.o Secrect.o interface.o  main.o
 
 
-all: clewarecontrol
+all: uwaycontrol
 
-clewarecontrol: $(OBJS)
-	$(CXX) $(DEBUG) $(OBJS) $(LDFLAGS) -o clewarecontrol
+uwaycontrol: $(OBJS)
+	$(CXX) $(DEBUG) $(OBJS) $(LDFLAGS) -o uwaycontrol 
 
-install: clewarecontrol
-	cp clewarecontrol $(DESTDIR)/usr/bin
-	cp clewarecontrol.1 $(DESTDIR)/usr/share/man/man1/clewarecontrol.1
+install: uwaycontrol
+	cp uwaycontrol $(DESTDIR)/usr/bin
+	cp uwaycontrol.1 $(DESTDIR)/usr/share/man/man1/uwaycontrol.1
 
 uninstall: clean
-	rm -f $(DESTDIR)/usr/bin/clewarecontrol
-	rm -f $(DESTDIR)/usr/share/man/man1/clewarecontrol.1.gz
+	rm -f $(DESTDIR)/usr/bin/uwaycontrol
+	rm -f $(DESTDIR)/usr/share/man/man1/uwaycontrol.1.gz
 
 clean:
-	rm -f $(OBJS) clewarecontrol core gmon.out *.da
+	rm -f $(OBJS) uwaycontrol core gmon.out *.da
 
 package: clean
 	# source package
-	rm -rf clewarecontrol-$(VERSION)*
-	mkdir clewarecontrol-$(VERSION)
-	cp -a *.c* *.h clewarecontrol.1 Makefile license.txt examples readme.txt clewarecontrol-$(VERSION)
-	tar czf clewarecontrol-$(VERSION).tgz clewarecontrol-$(VERSION)
-	rm -rf clewarecontrol-$(VERSION)
+	rm -rf uwaycontrol-$(VERSION)*
+	mkdir uwaycontrol-$(VERSION)
+	cp -a *.c* *.h uwaycontrol.1 Makefile license.txt examples readme.txt uwaycontrol-$(VERSION)
+	tar czf uwaycontrol-$(VERSION).tgz uwaycontrol-$(VERSION)
+	rm -rf uwaycontrol-$(VERSION)

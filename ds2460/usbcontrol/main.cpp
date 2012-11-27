@@ -35,14 +35,15 @@ struct secrect_device_context ctx;
  * mac_a to mac_e is output mac code together is 20 bytes
  * */
 void sw_compute_mac(unsigned char *shabuf, unsigned char *secrectbuf,
-			 unsigned long *mac_a,
-			 unsigned long *mac_b,
-			 unsigned long *mac_c,
-			 unsigned long *mac_d,
-			 unsigned long *mac_e)
+			 long *mac_a,
+			 long *mac_b,
+			 long *mac_c,
+			 long *mac_d,
+			 long *mac_e)
 {
 	unsigned char MT[64];
 	int cnt = 0;
+	int i;
 	long A, B, C, D, E;
 	 A = *mac_a;
 	 B = *mac_b;
@@ -69,6 +70,13 @@ void sw_compute_mac(unsigned char *shabuf, unsigned char *secrectbuf,
 
 	MT[62]=0x01;
 	MT[63]=0xB8;
+	printf("~~~~~~~~~~~~~~~\n");
+	for (i = 0; i < 64; i++) {
+		if (i%8 == 0 && i != 0)
+			printf("\n");
+		fprintf(stdout, "%02x ", MT[i]);
+	}
+	printf("\n");
 	ComputeSHAEE(MT, &A, &B, &C, &D, &E);
 
 	 *mac_a = A;
@@ -76,6 +84,11 @@ void sw_compute_mac(unsigned char *shabuf, unsigned char *secrectbuf,
 	 *mac_c = C;
 	 *mac_d = D;
 	 *mac_e = E;
+	 printf("0x%08x\n", A);
+	 printf("0x%08x\n", B);
+	 printf("0x%08x\n", C);
+	 printf("0x%08x\n", D);
+	 printf("0x%08x", E);
 }
 
 int test_sw_compute(unsigned char *inputdata,  unsigned char *secrectbuf)
@@ -84,17 +97,29 @@ int test_sw_compute(unsigned char *inputdata,  unsigned char *secrectbuf)
 	int i;
 	memset(mac, 0x00, 20);
 
-	sw_compute_mac(inputdata,
-			secrectbuf,
-			(unsigned long *)&mac[0],
-			(unsigned long *)&mac[4],
-			(unsigned long *)&mac[7],
-			(unsigned long *)&mac[11],
-			(unsigned long *)&mac[15]);
+	for (i=0; i<64; i ++) {
+		if (i%8 == 0)
+			printf("\n");
+		printf("0x%02x ", inputdata[i]);
+	}
+	printf("\n");
+
+	for (i=0; i<8; i ++) {
+		if (i%8 == 0)
+			printf("\n");
+		printf("0x%02x ", secrectbuf[i]);
+	}
+	printf("\n");
+
+	get_shamac(inputdata, secrectbuf, mac);
+
 	for (i = 0; i < 20; i ++) {
+		if (i%8 == 0)
+			printf("\n");
 		printf("0x%02x ", mac[i]);
 	}
 	printf("\n");
+	return 0;
 }
 
 /*
@@ -334,6 +359,7 @@ static int test_write_compute(unsigned char *compute_cmd, int compute_cmd_len)
 		fprintf(stderr, "%d:%s error\n", __LINE__, __func__);
 		return -1;
 	}
+	printf("ok\n");
 	return 1;
 }
 
@@ -362,7 +388,7 @@ static int test_write_trans(unsigned char *trans_cmd, int trans_cmd_len)
  *return -1 fail
  *return 1 success
  * */
-int test_read_input_data(int len)
+int test_read_inputdata(int len)
 {
 	int i = 0;
 	int rc;
@@ -425,7 +451,8 @@ int main(int argc, char *argv[])
 			"	esecrect2\n"
 			"	esecrect3\n"
 			"	compute\n"
-			"	sw_compute\n");
+			"	sw_compute\n"
+			"	inputdata\n");
 		printf("size:\n"
 			"	how many datas write into device or read from device\n");
 		printf("page:\n"
@@ -441,7 +468,7 @@ int main(int argc, char *argv[])
 			if (strcmp(optarg, "eeprom") == 0) {
 				w_type = 1;
 
-			} else if (strcmp(optarg, "mac") == 0){
+			} else if (strcmp(optarg, "inputdata") == 0){
 				w_type = 2;
 
 			} else if (strcmp(optarg, "ssecrect") == 0){
@@ -475,7 +502,7 @@ int main(int argc, char *argv[])
 				r_type = 2;
 			} else if (strcmp(optarg, "eeprom") == 0) {
 				r_type = 3;
-			} else if (strcmp(optarg, "input") == 0) {
+			} else if (strcmp(optarg, "inputdata") == 0) {
 				r_type = 4;
 			}
 			r_pos = optind;
@@ -499,7 +526,8 @@ int main(int argc, char *argv[])
 				"	esecrect2\n"
 				"	esecrect3\n"
 				"	compute\n"
-				"	sw_compute\n");
+				"	sw_compute\n"
+				"	inputdata\n");
 			printf("size:\n"
 				"	write how many datas into device\n");
 			printf("page:\n"
@@ -601,7 +629,7 @@ int main(int argc, char *argv[])
 					fprintf(stderr, "input cmd_len exceeded range[0 < len <=64]\n");
 					return 1;
 				}
-				test_read_input_data(cmd_len);
+				test_read_inputdata(cmd_len);
 				break;
 			default:
 				break;

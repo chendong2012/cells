@@ -18,6 +18,6 @@ array=(
 	)
 for mm in "${array[@]}"
 do
-	./clewarecontrol -w eeprom -p $i -l 8 $mm
+	./uwaycontrol -w eeprom -p $i -l 8 $mm
 	let i++
 done
