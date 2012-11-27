@@ -29,12 +29,12 @@ Secrect mysecrect;
 struct secrect_device_context ctx;
 /*=========================================*/
 
-/*descript:
+/*descript:[stanard sha1]
  * shabuf:input raw data include 64 bytes
  * secrectbuf: secrect datas[8 bytes]
  * mac_a to mac_e is output mac code together is 20 bytes
  * */
-void sw_compute_mac(unsigned char *shabuf, unsigned char *secrectbuf,
+void sha1_compute_mac(unsigned char *shabuf, unsigned char *secrectbuf,
 			 long *mac_a,
 			 long *mac_b,
 			 long *mac_c,
@@ -70,13 +70,6 @@ void sw_compute_mac(unsigned char *shabuf, unsigned char *secrectbuf,
 
 	MT[62]=0x01;
 	MT[63]=0xB8;
-	printf("~~~~~~~~~~~~~~~\n");
-	for (i = 0; i < 64; i++) {
-		if (i%8 == 0 && i != 0)
-			printf("\n");
-		fprintf(stdout, "%02x ", MT[i]);
-	}
-	printf("\n");
 	ComputeSHAEE(MT, &A, &B, &C, &D, &E);
 
 	 *mac_a = A;
@@ -84,59 +77,46 @@ void sw_compute_mac(unsigned char *shabuf, unsigned char *secrectbuf,
 	 *mac_c = C;
 	 *mac_d = D;
 	 *mac_e = E;
-	 printf("0x%08x\n", A);
-	 printf("0x%08x\n", B);
-	 printf("0x%08x\n", C);
-	 printf("0x%08x\n", D);
-	 printf("0x%08x", E);
 }
 
-int test_sw_compute(unsigned char *inputdata,  unsigned char *secrectbuf)
+/*
+ *inputdata[0~54-55~63]:64 bytes: input raw random datas join to compute and output mac code
+ *notes:inputdata[55~63]:instead of 0x80 0x00 0x00 0x00 0x00 0x00 0x00 0x01 0x8b
+ *secrectbuf[0~7]:8 bytes:  input secrect join to compute and output mac code
+ *output: mac[0~19].
+ *return:0 success
+ * */
+int test_sw_sha1_compute(unsigned char *inputdata, unsigned char *secrectbuf)
 {
 	unsigned char mac[20];
 	int i;
 	memset(mac, 0x00, 20);
-
-	for (i=0; i<64; i ++) {
-		if (i%8 == 0)
-			printf("\n");
-		printf("0x%02x ", inputdata[i]);
-	}
-	printf("\n");
-
-	for (i=0; i<8; i ++) {
-		if (i%8 == 0)
-			printf("\n");
-		printf("0x%02x ", secrectbuf[i]);
-	}
-	printf("\n");
-
 	get_shamac(inputdata, secrectbuf, mac);
-
-	for (i = 0; i < 20; i ++) {
-		if (i%8 == 0)
-			printf("\n");
-		printf("0x%02x ", mac[i]);
+	for (i = 0; i < 20; i++) {
+		fprintf(stdout, "0x%02x ", mac[i])
 	}
-	printf("\n");
+	fprintf(stdout, "\n");
 	return 0;
 }
 
 /*
  *read device romid
  *return -1 fail
- *return 1 success
+ *return 0 success
  * */
 int test_read_romid()
 {
 	int i = 0;
 	int rc;
-	rc = mysecrect.read_rom_id(ctx.romid, sizeof(ctx.romid));
+	unsigned char romid[8];
+	memset(romid, 0x00, 8);
+
+	rc = mysecrect.read_rom_id(romid, sizeof(romid));
 	if (rc < 0) {
 		fprintf(stderr, "%d:%s error\n", __LINE__, __func__);
 	}
 	for (i = 0; i < 8; i++) {
-		printf("%02x ", ctx.romid[i]);
+		printf("%02x ", romid[i]);
 	}
 	printf("\n");
 	return rc; 
@@ -145,7 +125,7 @@ int test_read_romid()
 /*
  *read device mac code [20 bytes]
  *return -1 fail
- *return 1 success
+ *On success, the number of bytes read is returned
  * */
 int test_read_mac_code(int cmd_len)
 {
@@ -158,9 +138,8 @@ int test_read_mac_code(int cmd_len)
 	if (rc < 0) {
 		fprintf(stderr, "%d:%s error\n", __LINE__, __func__);
 	}
+
 	for (i = 0; i < 20; i++) {
-		if (i%8 == 0)
-			printf("\n");
 		fprintf(stdout, "%02x ", mac_code[i]);
 	}
 	printf("\n");
@@ -169,9 +148,9 @@ int test_read_mac_code(int cmd_len)
 
 /*
  *read eeprom data
- *page range: [0,1,2,3...10]
+ *page range: [0,1,2,3...13]
  *return -1 fail
- *return 1 success
+ *On success, the number of bytes read is returned
  * */
 int test_read_eeprom(int page, int len)
 {
@@ -194,9 +173,9 @@ int test_read_eeprom(int page, int len)
 /*
  *write eeprom data
  *one page size is 8 bytes
- *page range: [0,1,2,3...10]
+ *page range: [0,1,2,3...13]
  *return -1 fail
- *return 1 success
+ *On success, the number of bytes read is returned
  * */
 int test_write_eeprom(int page, unsigned char *data, int data_len)
 {
@@ -209,8 +188,6 @@ int test_write_eeprom(int page, unsigned char *data, int data_len)
 	}
 
 	for (i = 0; i < data_len; i++) {
-		if (i%8 == 0 && i != 0)
-			printf("\n");
 		fprintf(stdout, "%02x ", data[i]);
 	}
 	printf("\n");
@@ -220,7 +197,7 @@ int test_write_eeprom(int page, unsigned char *data, int data_len)
 /*
  *write s secrect len is 8 bytes
  *return -1 fail
- *return 1 success
+ *On success, the number of bytes read is returned
  * */
 int test_write_s_secrect(unsigned char *secrect, int secrect_len)
 {
@@ -232,8 +209,6 @@ int test_write_s_secrect(unsigned char *secrect, int secrect_len)
 		return -1;
 	}
 	for (i = 0; i < secrect_len; i++) {
-		if (i%8 == 0 && i != 0)
-			printf("\n");
 		fprintf(stdout, "%02x ", secrect[i]);
 	}
 	printf("\n");
@@ -243,7 +218,7 @@ int test_write_s_secrect(unsigned char *secrect, int secrect_len)
 /*
  *write e esecrect1 len is 8 bytes
  *return -1 fail
- *return 1 success
+ *On success, the number of bytes read is returned
  * */
 int test_write_e_secrect1(unsigned char *secrect, int secrect_len)
 {
@@ -255,8 +230,6 @@ int test_write_e_secrect1(unsigned char *secrect, int secrect_len)
 		return -1;
 	}
 	for (i = 0; i < secrect_len; i++) {
-		if (i%8 == 0 && i != 0)
-			printf("\n");
 		fprintf(stdout, "%02x ", secrect[i]);
 	}
 	printf("\n");
@@ -266,7 +239,7 @@ int test_write_e_secrect1(unsigned char *secrect, int secrect_len)
 /*
  *write e esecrect2 len is 8 bytes
  *return -1 fail
- *return 1 success
+ *On success, the number of bytes read is returned
  * */
 int test_write_e_secrect2(unsigned char *secrect, int secrect_len)
 {
@@ -278,8 +251,6 @@ int test_write_e_secrect2(unsigned char *secrect, int secrect_len)
 		return -1;
 	}
 	for (i = 0; i < secrect_len; i++) {
-		if (i%8 == 0 && i != 0)
-			printf("\n");
 		fprintf(stdout, "%02x ", secrect[i]);
 	}
 	printf("\n");
@@ -289,7 +260,7 @@ int test_write_e_secrect2(unsigned char *secrect, int secrect_len)
 /*
  *write e esecrect3 len is 8 bytes
  *return -1 fail
- *return 1 success
+ *On success, the number of bytes read is returned
  * */
 int test_write_e_secrect3(unsigned char *secrect, int secrect_len)
 {
@@ -346,8 +317,8 @@ int test_write_input_data(unsigned char *data, int len)
  *0x03:e-resect3 as input secrect for compute
  *
  *compute_cmd[1]:
- *0x00: put result into MAC Output Buffer
- *0x01: put first 8 bytes of result into s-secrect
+ *0x00: put first 8 bytes of result into s-secrect
+ *0x01: put result into MAC Output Buffer
  *
  *compute_cmd_len fix to 2 bytes len
  * */
@@ -603,7 +574,7 @@ int main(int argc, char *argv[])
 				for (i = optind, j=0; i < argc; i++, j++) {
 					cmd_data[j] = strtol(argv[i], NULL, 0); 
 				}
-				test_sw_compute(&cmd_data[0], &cmd_data[64]);
+				test_sw_sha1_compute(&cmd_data[0], &cmd_data[64]);
 				break;
 			default:
 				break;

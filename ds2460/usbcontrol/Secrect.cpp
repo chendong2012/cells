@@ -217,16 +217,11 @@ int Secrect::write_e_secrect3(unsigned char *secrect, int secrect_len)
 	unsigned char buf[64];
 	memset(buf, 0x00, 64);
 	memcpy(buf, secrect, secrect_len);
-	for (i=0; i< 8; i++)
-		printf("0x%02x ",secrect[i]);
-	printf("\n");
-	printf("secrect3 len is 0x%02x\n", secrect_len);
 
 	rc = uway_put_command_package(cmd_write_e_secrect3, sizeof(cmd_write_e_secrect3),
 			buf, 64);
 
 	if (rc == 0 && buf[0] == FLAG_OK)  {
-		printf("-------->%d\n",buf[1]);
 		return FLAG_OK;
 	}
 	return -1;

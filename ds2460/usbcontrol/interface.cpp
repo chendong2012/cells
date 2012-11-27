@@ -117,6 +117,13 @@ int uway_issue_control_command(unsigned char *cmd, int cmd_len)
 {
 	int rc = 0;
 	/*发送内容：0x21 0x09 0x0200 0x0001 cmd_len [cmd]*/
+	/*
+	   on success, the number of bytes actually transferred 
+	   LIBUSB_ERROR_TIMEOUT if the transfer timed out 
+	   LIBUSB_ERROR_PIPE if the control request was not supported by the device 
+	   LIBUSB_ERROR_NO_DEVICE if the device has been disconnected 
+	   another LIBUSB_ERROR code on other failures 
+	 * */
 	if ((rc = libusb_control_transfer(usbhandle,
 					0x21,	/*请求类型:HID类描述符*/
 					0x09,	/*建立包的请求*/
@@ -133,13 +140,24 @@ int uway_issue_control_command(unsigned char *cmd, int cmd_len)
 /*
  *data:接收的命令缓冲
  *len:接收长度
- *返回0 为成功,或是错误码:负数
+ *返回实际传输数据的长度,或是错误码:负数
  * */
 int uway_recv_data(unsigned char *data, int data_len)
 {
 	int transferred = 0;
 	int ret;
+	/*
+	   0 on success (and populates transferred) 
+	   LIBUSB_ERROR_TIMEOUT if the transfer timed out (and populates transferred) 
+	   LIBUSB_ERROR_PIPE if the endpoint halted 
+	   LIBUSB_ERROR_OVERFLOW if the device offered more data, see Packets and overflows
+	   LIBUSB_ERROR_NO_DEVICE if the device has been disconnected 
+	   another LIBUSB_ERROR code on other failures 
+	   */
 	ret = libusb_interrupt_transfer(usbhandle, RECEIVE_PIPE, data, data_len, &transferred, 0);
+	if (ret == 0) {
+		return transferred;
+	}
 	return ret; 
 }
 
@@ -153,13 +171,16 @@ int uway_send_data(unsigned char *data,int len)
 	int transferred = 0;
 	int ret;
 	ret = libusb_interrupt_transfer(usbhandle, SEND_PIPE, data, len, &transferred, 1000);
+	if (ret == 0) {
+		return transferred;
+	}
 	return ret; 
 }
 
 /*
  *包括：1、发送命令
  *	2、读回命令对应的数据包
- *	3、小于0,表示出错, 0 OK
+ *	3、小于0,表示出错, 实际传输的数据 OK
  * */
 int uway_get_command_package(unsigned char *cmd, int cmd_len,
 			unsigned char *data, int data_len)
@@ -175,13 +196,13 @@ int uway_get_command_package(unsigned char *cmd, int cmd_len,
 		fprintf(stderr, "%d:%s failed: %s\n", __LINE__, __func__, usberror);
 	}
 	return rc;
-
 }
 
 /*
  *包括：1、发送命令
  *	2、发送命令对应的数据包
- *	3、返回刚才USB设备操作数据包的状态到data缓冲
+ *	3、USB设备操作数据包的状态到写到data缓冲
+ *	4、小于0,表示出错, 实际传输的数据 OK
  * */
 int uway_put_command_package(unsigned char *cmd, int cmd_len,
 			unsigned char *data, int data_len)
