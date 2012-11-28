@@ -414,6 +414,7 @@ int main(int argc, char *argv[])
 		printf("usage: \n"
 			"	uway [-w types] [-r types] [-l size] [-p page] [datas]\n");
 		printf("types:\n"
+			"	romid\n"
 			"	eeprom\n"
 			"	mac\n"
 			"	ssecrect\n"
@@ -489,6 +490,7 @@ int main(int argc, char *argv[])
 			printf("usage: \n"
 			"	uway [-w types] [-r types] [-l size] [-p page] [datas]\n");
 			printf("types:\n"
+				"	romid\n"
 				"	eeprom\n"
 				"	mac\n"
 				"	ssecrect\n"
