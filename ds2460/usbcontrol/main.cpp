@@ -43,7 +43,6 @@ void sha1_compute_mac(unsigned char *shabuf, unsigned char *secrectbuf,
 {
 	unsigned char MT[64];
 	int cnt = 0;
-	int i;
 	long A, B, C, D, E;
 	 A = *mac_a;
 	 B = *mac_b;
@@ -93,7 +92,7 @@ int test_sw_sha1_compute(unsigned char *inputdata, unsigned char *secrectbuf)
 	memset(mac, 0x00, 20);
 	get_shamac(inputdata, secrectbuf, mac);
 	for (i = 0; i < 20; i++) {
-		fprintf(stdout, "0x%02x ", mac[i])
+		fprintf(stdout, "0x%02x ", mac[i]);
 	}
 	fprintf(stdout, "\n");
 	return 0;
