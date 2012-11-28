@@ -432,6 +432,11 @@ int main(int argc, char *argv[])
 			"	datas for writing into device\n");
 		return 0;
 	}
+	if (mysecrect.is_device_online()== 0) {
+		fprintf(stderr, "\ndevice not found!!!\n\n");
+		return 1;
+	}
+
 	memset(&ctx, 0x00, sizeof(ctx));
 	while((c = getopt_long(argc, argv, ":r:w:p:l:-h", options, NULL)) != -1){
 		switch (c){
