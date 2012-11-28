@@ -23,16 +23,33 @@ static unsigned char cmd_write_eeprom[8] = {0x00,0x00,0x00,0x00,0x00,0x00,0x09,0
 #define FLAG_OK 1
 Secrect::Secrect()
 {
-
-	uway_init_device();
-	uway_open_device(0x6807);
+	int i;
+	device_ok = 0;
+	if(uway_init_device() == 0) {
+		i = uway_open_device(0x6807);
+		if (i > 0) {
+			device_ok = 1;
+		} else {
+			device_ok = 0;
+		}
+	} else {
+		device_ok = 0;
+	}
 }
 
 Secrect::~Secrect()
 {
-	uway_close_device();
+	if (device_ok == 1)
+		uway_close_device();
 }
 
+int Secrect::is_device_online(void)
+{
+	if (device_ok == 1) {
+		return 1;
+	}
+	return 0;
+}
 /*
  * 读设备的唯一romid码，8个字节
  *返回实际读回来的字节数,

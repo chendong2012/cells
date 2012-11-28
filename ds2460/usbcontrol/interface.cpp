@@ -49,18 +49,18 @@ void uway_close_device(void)
 int uway_open_device(int product)
 {
 	int n = 0, index;
+	int rc = 0;
 	struct libusb_device **devs = NULL;
 	uway_close_device();
 
 	if (libusb_get_device_list(context, &devs) < 0) {
 		fprintf(stderr, "%d:%s failed\n", __LINE__, __func__);
-		return 0;
+		return -1;
 	}
 
 	while(devs[n] != NULL) { n++; }
 
 	for(index=0; index<n; index++) {
-		int rc;
 		struct libusb_device_descriptor desc;
 		char serial[256];
 		libusb_get_device_descriptor(devs[index], &desc);
@@ -91,8 +91,9 @@ int uway_open_device(int product)
 			fprintf(stderr, "libusb_set_interface_alt_setting failed: %s\n", usberror);
 		if ((rc = libusb_get_string_descriptor_ascii(usbhandle, desc.iSerialNumber, (unsigned char *)serial, sizeof serial)) < 0)
 			fprintf(stderr, "libusb_get_string_descriptor_ascii(serial) failed: %s\n", usberror);
+		return rc;
 	}
-	return 0;
+	return rc;
 }
 
 int uway_reset(int devNo)
