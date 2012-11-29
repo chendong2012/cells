@@ -1,7 +1,11 @@
 #!/bin/bash
+echo -e "\e[1;32m===================================\e[m"
+echo -e "\e[1;32musage:born part_name img_name\e[m"
+echo -e "\e[1;32m===================================\e[m"
 adb pull /proc/dumchar_info ./
 if [ $? -ne 0 ]; then
-	echo no device???
+	echo "usage:born part_name img_name"
+	echo "no device???"
 	exit
 fi
 
@@ -9,9 +13,9 @@ count=$(cat dumchar_info | wc -l)
 let count-=5
 part_name=(`sed -n "2,${count}p" dumchar_info | awk '{print $1}'`)
 if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]] || [[ ! -e "$2" ]]; then
-	echo "usage:born part_name file_name"
+	echo "usage:born part_name img_name"
 	for i in "${part_name[@]}"; do
-		echo born $i file_name
+		echo "born $i img_name"
 	done
 	exit
 fi
@@ -26,23 +30,29 @@ for i in "${part_name[@]}";do
 done
 
 if [ $cnt -ne 1 ]; then
-	echo "usage:born part_name file_name"
-	echo please input correct file_name exit!!!
+	echo "usage:born part_name img_name"
+	echo "please input correct img_name exit!!!"
 	echo
 	exit;
 fi
 
 record=(`sed -n "/$1"/p ./dumchar_info`)
-echo "${record[@]}"
+echo -e "\e[1;35m ${record[@]} \e[m";
 
 let obs=${record[2]}/512
 adb push $2 /data
 adb shell dd if=/data/$2 of=${record[4]} seek=$obs
+
+if [ $? -eq 0 ]; then
+	echo -e "\e[1;31msuccessful!!!\e[m"
+else
+	echo -e "\e[1;31mfail!!!\e[m"
+
+fi
+
+#TODO:add checksum
 sleep 1
 adb shell sync
-#TODO:
-#加入校验回读功能
-#create by chendong
-#email:china.gd.sz.cd@gmail.com
-#date:2012
-#ver:1.3
+#description:"born mtk image files"
+#author:"chendong, <chend@gionee.com>"
+#version:v1.0
