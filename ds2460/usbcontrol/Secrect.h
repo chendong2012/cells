@@ -30,6 +30,7 @@ class Secrect {
 public:
 	Secrect();
 	~Secrect();
+	int is_device_online(void);
 	int read_rom_id(unsigned char *romid, int romid_len);
 	int read_mac_code(unsigned char *mac, int mac_len);
 	int read_eeprom(int addr, unsigned char *data, int data_len);
@@ -44,5 +45,7 @@ public:
 	int write_trans(unsigned char *trans_cmd, int trans_cmd_len);
 	int check_mac_device(unsigned char *data, int data_len);
 	int write_eeprom(int addr, unsigned char *data, int data_len);
+public:
+	int device_ok;
 	};
 #endif

@@ -49,18 +49,18 @@ void uway_close_device(void)
 int uway_open_device(int product)
 {
 	int n = 0, index;
+	int rc = 0;
 	struct libusb_device **devs = NULL;
 	uway_close_device();
 
 	if (libusb_get_device_list(context, &devs) < 0) {
 		fprintf(stderr, "%d:%s failed\n", __LINE__, __func__);
-		return 0;
+		return -1;
 	}
 
 	while(devs[n] != NULL) { n++; }
 
 	for(index=0; index<n; index++) {
-		int rc;
 		struct libusb_device_descriptor desc;
 		char serial[256];
 		libusb_get_device_descriptor(devs[index], &desc);
@@ -91,8 +91,9 @@ int uway_open_device(int product)
 			fprintf(stderr, "libusb_set_interface_alt_setting failed: %s\n", usberror);
 		if ((rc = libusb_get_string_descriptor_ascii(usbhandle, desc.iSerialNumber, (unsigned char *)serial, sizeof serial)) < 0)
 			fprintf(stderr, "libusb_get_string_descriptor_ascii(serial) failed: %s\n", usberror);
+		return rc;
 	}
-	return 0;
+	return rc;
 }
 
 int uway_reset(int devNo)
@@ -178,8 +179,8 @@ int uway_send_data(unsigned char *data,int len)
 }
 
 /*
- *包括：1、发送命令
- *	2、读回命令对应的数据包
+ *包括：1、发送命令:cmd; 命令长度：cmd_len
+ *	2、读回命令对应的数据包:data; 数据长度：data_len
  *	3、小于0,表示出错, 实际传输的数据 OK
  * */
 int uway_get_command_package(unsigned char *cmd, int cmd_len,
@@ -200,9 +201,9 @@ int uway_get_command_package(unsigned char *cmd, int cmd_len,
 
 /*
  *包括：1、发送命令
- *	2、发送命令对应的数据包
- *	3、USB设备操作数据包的状态到写到data缓冲
- *	4、小于0,表示出错, 实际传输的数据 OK
+ *	2、发送命令对应的数据包[固定为64字节]
+ *	3、接收的数据包[固定为64字节]
+ *	4、小于0,表示出错, 实际传输的数据:OK
  * */
 int uway_put_command_package(unsigned char *cmd, int cmd_len,
 			unsigned char *data, int data_len)
@@ -213,21 +214,21 @@ int uway_put_command_package(unsigned char *cmd, int cmd_len,
 	memset(trans_buf, 0x00, 64);
 	memcpy(trans_buf, data, data_len);
 
-/*step 1*/
+/*step 1: 发送控制命令*/
 	rc = uway_issue_control_command(cmd, cmd_len);
 	if (rc < 0) {
 		fprintf(stdout, "%d:%s failed: %s\n", __LINE__, __func__, usberror);
 		return rc;
 	}
 
-/*step 2*/
+/*step 2: 发送64字节的数据包*/
 	rc = uway_send_data(trans_buf, 64);
 	if (rc < 0) {
 		fprintf(stdout, "%d:%s failed: %s\n", __LINE__, __func__, usberror);
 		return rc;
 	}
 
-/*step 3*/
+/*step 3: 接收64字节的数据包*/
 	rc = uway_recv_data(trans_buf, 64);
 	if (rc < 0) {
 		fprintf(stdout, "%d:%s failed: %s\n", __LINE__, __func__, usberror);

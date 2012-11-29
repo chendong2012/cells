@@ -43,7 +43,6 @@ void sha1_compute_mac(unsigned char *shabuf, unsigned char *secrectbuf,
 {
 	unsigned char MT[64];
 	int cnt = 0;
-	int i;
 	long A, B, C, D, E;
 	 A = *mac_a;
 	 B = *mac_b;
@@ -93,7 +92,7 @@ int test_sw_sha1_compute(unsigned char *inputdata, unsigned char *secrectbuf)
 	memset(mac, 0x00, 20);
 	get_shamac(inputdata, secrectbuf, mac);
 	for (i = 0; i < 20; i++) {
-		fprintf(stdout, "0x%02x ", mac[i])
+		fprintf(stdout, "0x%02x ", mac[i]);
 	}
 	fprintf(stdout, "\n");
 	return 0;
@@ -415,6 +414,7 @@ int main(int argc, char *argv[])
 		printf("usage: \n"
 			"	uway [-w types] [-r types] [-l size] [-p page] [datas]\n");
 		printf("types:\n"
+			"	romid\n"
 			"	eeprom\n"
 			"	mac\n"
 			"	ssecrect\n"
@@ -432,6 +432,11 @@ int main(int argc, char *argv[])
 			"	datas for writing into device\n");
 		return 0;
 	}
+	if (mysecrect.is_device_online()== 0) {
+		fprintf(stderr, "\ndevice not found!!!\n\n");
+		return 1;
+	}
+
 	memset(&ctx, 0x00, sizeof(ctx));
 	while((c = getopt_long(argc, argv, ":r:w:p:l:-h", options, NULL)) != -1){
 		switch (c){
@@ -490,6 +495,7 @@ int main(int argc, char *argv[])
 			printf("usage: \n"
 			"	uway [-w types] [-r types] [-l size] [-p page] [datas]\n");
 			printf("types:\n"
+				"	romid\n"
 				"	eeprom\n"
 				"	mac\n"
 				"	ssecrect\n"
