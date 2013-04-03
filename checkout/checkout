@@ -1,0 +1,95 @@
+#!/bin/bash
+i=0
+j=0
+myname=`echo ~ | sed 's/\/home\///'`
+BASEPATH=/media/disk6/$myname
+##############################################
+MYPATH=$BASEPATH/mtkprojects
+MYPATH_CONFIG=~
+
+svn_android_addr_temp=null
+echo $PATH
+
+if [ ! -d $MYPATH ]; then
+	mkdir $MYPATH
+fi
+
+if [ ! -f ${MYPATH_CONFIG}/configs ]; then
+	echo "can not find configs exit!!!!!!!!"
+	exit
+fi
+
+sed -i '/^$/d' ${MYPATH_CONFIG}/configs
+data=(`sed '/^#/d' ${MYPATH_CONFIG}/configs`)
+cat ${MYPATH_CONFIG}/configs
+cd "$MYPATH"
+find -maxdepth 1 -type d -mtime +1 | xargs rm -rf
+echo "begin" > ~/checkout_log
+count=${#data[*]}
+let count=count/3
+
+for ((i=0;i<count;i++)); do
+	echo ======================================== >> ~/checkout_log
+	prjpath=$(echo "${data[$j]}" | sed 's/http:\/\/192.168.110.97\///g'| sed 's/\//_/g')
+	let jj=j+2
+#	prjname=${data[$jj]}-${prjpath}-`date | sed '/ \+/s//-/g' | sed 's/:/_/g'` 
+	prjname=${data[$jj]}-${prjpath}-`date +%Y%m%d_%H%M_%w`
+
+	rm -rf $prjname
+	mkdir $prjname
+	echo "创建工程目录:"$prjname >> ~/checkout_log
+
+	if [ ! -d $prjname ]; then
+		echo "没有$prjname 这个目录,退出" >> ~/checkout_log
+		exit
+	fi
+
+	cd $prjname
+	echo "进入到工程目录:""$PWD" >> ~/checkout_log
+	sys_name=$(echo "${data[$j]}" | sed 's/\(.*\/\)\(.*\)/\2/')
+	echo "checkout 的android名字:"svn co ${data[$j]}" "${sys_name}"" >> ~/checkout_log
+	svn co "${data[$j]}" "${sys_name}"
+	svn_android_addr_temp="${data[$j]}"
+	let j++
+ 
+	app_name=$(echo "${data[$j]}" | sed 's/\(.*svn\/\)\(.*\)\(\/.*\)/\2/' | sed 's/\(.*\)\(\/.*\)/\1/')
+	echo "checkout 的应用的名字:"svn co ${data[$j]}" "${app_name}"" >> ~/checkout_log
+	svn co "${data[$j]}" "${app_name}"
+	let j++
+	if [ ! -d $sys_name ]; then
+		echo "没有"$sys_name"这个目录,退出" >> ~/checkout_log
+		exit
+	fi
+	cd $sys_name
+	echo "进入到android的目录:$PWD" >> ~/checkout_log
+
+#################################################################################3
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/lib/jvm/java-6-sun/jre/bin:/usr/lib/jvm/java-6-sun/bin:~/bin:/opt/java/jdk1.6.0_26/jre/bin
+export PATH
+
+#debug
+	cscope -Rbq
+	ctags -R
+#end
+
+	echo "编译这个项目:""${data[$j]}" >> ~/checkout_log	
+	echo $PATH >> ~/checkout_log
+	echo "./makeMtk -t ${data[$j]} n" >> ~/checkout_log
+	./makeMtk -t "${data[$j]}" n >> ~/checkout_log
+	echo $PWD >> ~/checkout_log
+#################################################################################3
+
+#***************************************************************#
+#add plugin:add release version into ftp
+	to5882ftp.sh "$prjname" "$svn_android_addr_temp"
+#end
+
+#add plugin:check compile result and flag the project dir 
+	checkcompileresult.sh "$MYPATH" "$prjname"
+#end
+
+#***************************************************************#
+
+	let j++
+	cd "$MYPATH"
+done
