@@ -1,0 +1,93 @@
+#!/bin/bash
+
+#important!!!!!!!!
+#$1 config main dir
+#$2 config main dir - sub prj dir
+projectspath=`getitem.sh "$1/public" "projectspath"`
+username=`getitem.sh "$1/public" "username"`
+password=`getitem.sh "$1/public" "password"`
+prj_config_file="$1/$2/$2"
+
+##############################################
+
+if [ ! -d $projectspath ]; then
+	mkdir -p $projectspath
+fi
+
+if [ ! -f "$prj_config_file" ]; then
+	echo "can not find configs exit!!!!!!!!"
+	exit
+fi
+android=`getitem.sh "$prj_config_file" "android"`
+package=`getitem.sh "$prj_config_file" "package"`
+project=`getitem.sh "$prj_config_file" "project"`
+
+prjdirnametemp=$(echo $android | sed 's/http:\/\/192.168.110.97\///g'| sed 's/\//_/g')
+prjdirname=$project-$prjdirnametemp-`date +%Y%m%d_%H%M_%w`
+
+	if [ -d "$projectspath" ]; then
+		cd $projectspath
+	else
+		mkdir -p $projectspath
+		if [ ! -d "$projectspath" ]; then
+			echo "can not create th dir"
+			exit
+		fi
+		cd $projectspath
+	fi
+
+	rm -rf $prjdirname
+	mkdir $prjdirname
+	echo "mkdir:"$prjdirname
+	if [ ! -d $prjdirname ]; then
+		echo "mkdir $prjdirname error,exit"
+		exit
+	fi
+	cd $prjdirname
+	echo "breakpoint: cd $prjdirname, pwd:$PWD"
+
+	sys_name=$(echo $android | sed 's/\(.*\/\)\(.*\)/\2/')
+	svn co -q "$android" "${sys_name}" --username "$username" --password="$password"
+	app_name=$(echo $package | sed 's/\(.*svn\/\)\(.*\)\(\/.*\)/\2/' | sed 's/\(.*\)\(\/.*\)/\1/')
+	svn co -q $package "${app_name}" --username "$username" --password="$password"
+	if [ ! -d "$sys_name" ]; then
+		echo "not found "$sys_name" ,exit"
+		exit
+	fi
+	cd $sys_name
+	echo "cd $sys_name"
+	echo "breakpoint: cd $sys_name, pwd:$PWD"
+
+database=`getitem.sh "$prj_config_file" "database"`
+if [[ "$database" == "yes" ]] || [[ "$database" == "y" ]]; then
+	echo "breakpoint: ${database}=yes"
+	cscope -Rbq
+	ctags -R
+else
+	echo "breakpoint: ${database}=no"
+	cscope -Rbq
+	ctags -R
+fi
+
+echo "compile:$project"
+buildmode=`getitem.sh "$prj_config_file" "buildmode"`
+echo $buildmode
+if [[ "$buildmode" == "user" ]]; then
+	echo "breakpoint: user"
+	./makeMtk -o=TARGET_BUILD_VARIANT=user "$project" n
+else
+	echo "breakpoint: eng"
+	./makeMtk "$project" n
+fi
+#################################################################################3
+
+output=`getitem.sh "$prj_config_file" "output"`
+if [[ "$output" != "" ]]; then
+#add plugin:add release version into ftp
+#paras: [compile directory] [prjdirname] [http] [ftp path]
+	output.sh "$PWD" "$prjdirname" "$android" "$output"
+#end
+fi
+#add plugin:check compile result and flag the project dir 
+	checkcompileresult.sh "$projectspath" "$prjdirname"
+#end
