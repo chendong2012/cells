@@ -1,0 +1,50 @@
+#!/bin/bash
+swappath=${HOME}/.checkout
+configfile=${HOME}/configs-test
+
+if [ -d "$swappath" ]; then
+	rm -rf "$swappath"
+fi
+mkdir "$swappath"
+
+bb=(`cat $configfile | sed '/^$/d;/^#/d'`)
+items=(`cat $configfile | sed '/^$/d;/^#/d' | sed -n '/android=/='`)
+public_tail=$((${items[0]}-1))
+
+cat $configfile | sed '/^$/d;/^#/d' | sed -n "1,${public_tail}p" >>  "$swappath"/public
+
+filter.sh "$swappath" &
+sleep 1000 
+
+
+item_index=${#items[*]}
+current_context=(null null)
+prjnum=$item_index
+
+echo =========================================
+echo number of projects:$prjnum
+for ((i=0;i<$item_index;i+=1)) {
+	mkdir "$swappath"/"$i"
+	echo =========================================
+	((temp=$i+1))
+	if [ $temp -ge $item_index ]; then
+		next_http_line_index=${#bb[*]}
+	else
+		next_http_line_index=${items[$temp]}
+		((next_http_line_index--))
+	fi
+		current_http_line_index=${items[$i]}
+		((current_http_line_index--))
+	ctxidx=0
+	for ((j=$current_http_line_index;j<$next_http_line_index;j++)) {
+		current_context[$ctxidx]="${bb[$j]}"
+		((ctxidx++))
+	}
+	for ((m=0;m<${#current_context[*]};m++))	{
+		echo ${current_context[$m]}
+		echo ${current_context[$m]} >> "$swappath"/"$i"/"$i"
+
+	}
+	mycheckout "$swappath" "$i"
+}
+echo =========================================
