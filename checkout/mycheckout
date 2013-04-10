@@ -81,13 +81,24 @@ else
 fi
 #################################################################################3
 
+package.sh "$PWD" "$prjdirname" "$android"
+
 output=`getitem.sh "$prj_config_file" "output"`
 if [[ "$output" != "" ]]; then
 #add plugin:add release version into ftp
-#paras: [compile directory] [prjdirname] [http] [ftp path]
+#paras: [compile directory] [prjdirname] [http] [out path]
 	output.sh "$PWD" "$prjdirname" "$android" "$output"
 #end
 fi
+
+bakoutput=`getitem.sh "$prj_config_file" "bakoutput"`
+if [[ "$bakoutput" != "" ]]; then
+#add plugin:add release version into ftp
+#paras: [compile directory] [prjdirname] [http] [bakoutput path]
+	bakoutput.sh "$PWD" "$prjdirname" "$android" "$bakoutput"
+#end
+fi
+
 #add plugin:check compile result and flag the project dir 
 	checkcompileresult.sh "$projectspath" "$prjdirname"
 #end
