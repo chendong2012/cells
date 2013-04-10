@@ -16,7 +16,7 @@ output="$4"
 ftp_prj_ok_dir="$output"/"$prjdirname"-compile_ok
 ftp_prj_error_dir="$output"/"$prjdirname"-compile_error
 
-echo "=====================toftp begin==================="
+echo "=====================output begin==================="
 cd "$compiledir"
 
 find release -name system.img
@@ -24,22 +24,13 @@ keystr=`find release -name system.img | sed -n 's/\(.*\)\(system.img.*\)/\2/p'`
 
 if [[ "$keystr" == "system.img" ]]; then
 	cd release
-	echo "$*" > `ls`/$summit_detail
-	echo "$*" > `ls`/$summit_summarize
-
-	svn log -v -r "$svndate" "$svn_android" >> `ls`/"$summit_detail"
-	svn log -r "$svndate" "$svn_android" >> `ls`/"$summit_summarize"
-	svn diff -r "$svndate" "$svn_android" >> `ls`/"$diff"
-
 	mkdir -p "$ftp_prj_ok_dir"
 	echo "$*" >> "$ftp_prj_ok_dir"/"$summit_detail"
 	echo "$*" >> "$ftp_prj_ok_dir"/"$summit_summarize"
 	svn log -v -r "$svndate" "$svn_android" >> "$ftp_prj_ok_dir"/"$summit_detail"
 	svn log -r "$svndate" "$svn_android" >> "$ftp_prj_ok_dir"/"$summit_summarize"
 	svn diff -r "$svndate" "$svn_android" >> "$ftp_prj_ok_dir"/"$diff"
-	tar czvf "$prjdirname.tar.gz" `ls`
 	cp *.tar.gz "$ftp_prj_ok_dir"
-
 else
 	mkdir -p "$ftp_prj_error_dir"/errlog
 	cp out/target/product/*.log "$ftp_prj_error_dir"/errlog
@@ -50,4 +41,4 @@ else
 	svn log -r "$svndate" "$svn_android" >> "$ftp_prj_error_dir"/"$summit_summarize"
 	svn diff -r "$svndate" "$svn_android" >> "$ftp_prj_error_dir"/"$diff"
 fi
-echo "=====================toftp end==================="
+echo "=====================output end==================="

@@ -1,5 +1,5 @@
 #!/bin/bash
-configfile=${HOME}/configs-test
+configfile="$1"
 sed 's/buildmode=user\( *\)once/buildmode=eng/' "$configfile"
 sed 's/buildmode=eng\( *\)once/buildmode=user/' "$configfile"
 

@@ -47,4 +47,6 @@ for ((i=0;i<$item_index;i+=1)) {
 	}
 	mycheckout "$swappath" "$i"
 }
+
+handlecfg.sh "$configfile"
 echo =========================================

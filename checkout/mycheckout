@@ -23,7 +23,13 @@ package=`getitem.sh "$prj_config_file" "package"`
 project=`getitem.sh "$prj_config_file" "project"`
 
 prjdirnametemp=$(echo $android | sed 's/http:\/\/192.168.110.97\///g'| sed 's/\//_/g')
-prjdirname=$project-$prjdirnametemp-`date +%Y%m%d_%H%M_%w`
+
+buildmode=`getitem.sh "$prj_config_file" "buildmode"`
+if [[ "$buildmode" == "user" ]]; then
+	prjdirname=$project-$prjdirnametemp-`date +%Y%m%d_%H%M_%w-"user"`
+else
+	prjdirname=$project-$prjdirnametemp-`date +%Y%m%d_%H%M_%w-"eng"`
+fi
 
 	if [ -d "$projectspath" ]; then
 		cd $projectspath
