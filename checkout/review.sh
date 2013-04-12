@@ -6,9 +6,8 @@ allreview=(`find -maxdepth 1 -type d | sed -n '/review$/p' | sed 's/\.\///'`)
 for prjdirname in "$allreview[@]"; do
 	cd "$prjdirname"
 	prjpath=`getitem.sh "$prj_info" "prjpath"`
-	cd "$mypath"
 	project=`getitem.sh "$prj_info" "project"`
-	cd $p
+	cd "$prjpath"
 	./mk  $prj n
 	reviewoutput=`getitem.sh "$prj_info" "reviewoutput"`
 
