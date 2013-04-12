@@ -20,9 +20,9 @@ echo "$TAG:number of projects:$i"
 echo "$TAG:${a[*]}"
 echo "$TAG:================="
 for ((j=0;j<i;j++)) {
-	error_item=(`find -maxdepth 1 -type d | grep "${a[$j]}" | sed -n 's/\.\///p' | grep error`)
-	ok_item=(`find -maxdepth 1 -type d | grep "${a[$j]}" | sed -n 's/\.\///p' | grep ok  `)
-	ok_item_date=(`find -maxdepth 1 -type d | grep "${a[$j]}" | sed -n 's/\.\///p' | grep ok  | cut -d"-" -f3 | cut -d"_" -f1,2 | sed 's/_//'`)
+	error_item=(`find -maxdepth 1 -type d | grep "${a[$j]}" | sed -n 's/\.\///p' | sed -n '/error$/p'`)
+	ok_item=(`find -maxdepth 1 -type d | grep "${a[$j]}" | sed -n 's/\.\///p' | sed -n '/ok$/p'`)
+	ok_item_date=(`find -maxdepth 1 -type d | grep "${a[$j]}" | sed -n 's/\.\///p' | sed -n '/ok$/p' | cut -d"-" -f3 | cut -d"_" -f1,2 | sed 's/_//'`)
 	#delete error directory
 	if [ ${#error_item[*]} -gt 0 ]; then
 		echo "$TAG:delete error directory"
