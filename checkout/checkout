@@ -7,14 +7,14 @@ if [ -d "$swappath" ]; then
 fi
 mkdir "$swappath"
 
-bb=(`cat $configfile | sed '/^$/d;/^#/d'`)
-items=(`cat $configfile | sed '/^$/d;/^#/d' | sed -n '/android=/='`)
+bb=(`cat $configfile | sed '/^$/d;/^#/d' | cut -d# -f1`)
+items=(`cat $configfile | sed '/^$/d;/^#/d' | cut -d# -f1 | sed -n '/android=/='`)
 public_tail=$((${items[0]}-1))
 
-cat $configfile | sed '/^$/d;/^#/d' | sed -n "1,${public_tail}p" >>  "$swappath"/public
+cat $configfile | sed '/^$/d;/^#/d' | cut -d# -f1 | sed -n "1,${public_tail}p" >>  "$swappath"/public
 
 filter.sh "$swappath" &
-sleep 1000 
+sleep 480
 
 
 item_index=${#items[*]}
@@ -45,7 +45,14 @@ for ((i=0;i<$item_index;i+=1)) {
 		echo ${current_context[$m]} >> "$swappath"/"$i"/"$i"
 
 	}
-	mycheckout "$swappath" "$i"
+
+	daem=`getitem.sh ""$swappath"/"$i"/"$i"" "daemon"`
+	if [ "$daem" == "yes" ] || [ "$daem" == "y" ]; then
+		mycheckout "$swappath" "$i" &
+		sleep 300
+	else
+		mycheckout "$swappath" "$i"
+	fi
 }
 
 handlecfg.sh "$configfile"

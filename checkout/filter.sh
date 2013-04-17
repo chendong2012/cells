@@ -27,13 +27,13 @@ for ((j=0;j<i;j++)) {
 	if [ ${#error_item[*]} -gt 0 ]; then
 		echo "$TAG:delete error directory"
 		echo "$TAG:rm -rf ${error_item[*]}"
-		rm -rf "${error_item[*]}"
+		rm -rf "${error_item[*]}" &
 	fi
 
 	#进行分析，处理是否要del
 	if [ "${#ok_item_date[*]}" -lt 1 ]; then
 		echo "$TAG:no found the project"
-		exit
+		continue
 	fi 
 	    sorted=($(printf '%s\n' "${ok_item_date[@]}"|sort))
 		for ((s=0;s<"${#sorted[*]}"-"$save_prj_num";s++)) {
@@ -43,7 +43,7 @@ for ((j=0;j<i;j++)) {
 				myrm=`echo "${ok_item[$r]}" | grep "$tmp"`
 				if [ -d "$myrm" ]; then
 					echo "$TAG:rm -rf "$myrm""
-					rm -rf "$myrm"
+					rm -rf "$myrm" &
 				fi
 			}
 		}

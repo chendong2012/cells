@@ -70,8 +70,10 @@ fi
 
 	sys_name=$(echo $android | sed 's/\(.*\/\)\(.*\)/\2/')
 	svn co -q "$android" "${sys_name}" --username "$username" --password="$password"
+	gn_clean_code "${sys_name}"
 	app_name=$(echo $package | sed 's/\(.*svn\/\)\(.*\)\(\/.*\)/\2/' | sed 's/\(.*\)\(\/.*\)/\1/')
 	svn co -q $package "${app_name}" --username "$username" --password="$password"
+	gn_clean_code "${app_name}"
 	if [ ! -d "$sys_name" ]; then
 		echo "$TAG:not found "$sys_name" ,exit"
 		exit
@@ -87,10 +89,11 @@ fi
 
 #####for review #####
 	reviewoutput=`getitem.sh "$prj_config_file" "reviewoutput"`
+	echo "$TAG: review output: $reviewoutput"
 	if [[ -d "$reviewoutput" ]]; then
-		echo "reviewoutput="$reviewoutput"" >> prj_info
-		echo "prjpath="${sys_name}"" >> prj_info 
-		echo "project="$project"" >> prj_info 
+		echo "reviewoutput="$reviewoutput"" >> .prj_info
+		echo "prjpath="${sys_name}"" >> .prj_info
+		echo "project="$project"" >> .prj_info
 	fi
 #####    end   #####
 

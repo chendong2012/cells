@@ -1,0 +1,38 @@
+#!/bin/bash
+clean_code(){
+    path="$1"
+    url=$(svn info "$path"  2>/dev/null | awk '/URL:/ {print $2}')
+    if [ -z "$url" ];then
+        echo "This directory is not in the version control" >&2
+        exit 1
+    fi
+    pushd $path >/dev/null  
+
+    rm -rf out
+    rm -rf release
+    [ -h './packages' ] && unlink "./packages"
+    [ -h './gn_image' ] && unlink "./gn_image"
+
+    # remove out dir
+    svn_file_list=$(svn list $url 2>/dev/null)
+    find_file_list=$(ls -F)
+    merge_file_list=$(for i in $svn_file_list $find_file_list; do echo $i ; done | sort -u )
+
+    svn cleanup
+    #echo $merge_file_list
+    for top in $merge_file_list
+    do
+        echo $top ... 
+        svn revert -R $top
+        while read stat file
+        do
+            echo $stat $file 
+            if [ "$stat" == '?' ];then
+                rm -rf $file
+            fi
+        done < <(svn status $top 2>/dev/null)
+        svn update --depth=infinity --accept theirs-full $top
+    done
+    popd >/dev/null
+}
+clean_code "$@"
