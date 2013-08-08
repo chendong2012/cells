@@ -1,0 +1,70 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+AppTheme	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int AppTheme=0x7f050000;$/;"	f	class:R.style
+BuildConfig	gen/in/wptrafficanalyzer/achartenginedynamicchart/BuildConfig.java	/^public final class BuildConfig {$/;"	c
+DEBUG	gen/in/wptrafficanalyzer/achartenginedynamicchart/BuildConfig.java	/^    public final static boolean DEBUG = true;$/;"	f	class:BuildConfig
+LinearLayout1	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int LinearLayout1=0x7f070000;$/;"	f	class:R.id
+MainActivity	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^public class MainActivity extends Activity implements SensorEventListener {$/;"	c
+R	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^public final class R {$/;"	c
+activity_main	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int activity_main=0x7f030000;$/;"	f	class:R.layout
+activity_main	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int activity_main=0x7f060000;$/;"	f	class:R.menu
+app_name	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int app_name=0x7f040000;$/;"	f	class:R.string
+attr	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^    public static final class attr {$/;"	c	class:R
+chart_container	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int chart_container=0x7f070006;$/;"	f	class:R.id
+closefile	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^		public void closefile() {$/;"	m	class:MainActivity
+dataset	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	private XYMultipleSeriesDataset dataset;$/;"	f	class:MainActivity	file:
+disp_x	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	 TextView disp_x;$/;"	f	class:MainActivity
+disp_y	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	 TextView disp_y;$/;"	f	class:MainActivity
+disp_z	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	 TextView disp_z;$/;"	f	class:MainActivity
+drawable	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^    public static final class drawable {$/;"	c	class:R
+fout	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	FileOutputStream fout;	$/;"	f	class:MainActivity
+hello_world	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int hello_world=0x7f040001;$/;"	f	class:R.string
+ic_action_search	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int ic_action_search=0x7f020000;$/;"	f	class:R.drawable
+ic_launcher	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int ic_launcher=0x7f020001;$/;"	f	class:R.drawable
+id	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^    public static final class id {$/;"	c	class:R
+in.wptrafficanalyzer.achartenginedynamicchart	gen/in/wptrafficanalyzer/achartenginedynamicchart/BuildConfig.java	/^package in.wptrafficanalyzer.achartenginedynamicchart;$/;"	p
+in.wptrafficanalyzer.achartenginedynamicchart	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^package in.wptrafficanalyzer.achartenginedynamicchart;$/;"	p
+in.wptrafficanalyzer.achartenginedynamicchart	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^package in.wptrafficanalyzer.achartenginedynamicchart;$/;"	p
+layout	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^    public static final class layout {$/;"	c	class:R
+mChart	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	private GraphicalView mChart;$/;"	f	class:MainActivity	file:
+mSensor	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^    private Sensor mSensor;	$/;"	f	class:MainActivity	file:
+mSensorMgr	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^    private SensorManager mSensorMgr;$/;"	f	class:MainActivity	file:
+menu	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^    public static final class menu {$/;"	c	class:R
+menu_settings	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int menu_settings=0x7f040002;$/;"	f	class:R.string
+menu_settings	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int menu_settings=0x7f070007;$/;"	f	class:R.id
+multiRenderer	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	private XYMultipleSeriesRenderer multiRenderer;$/;"	f	class:MainActivity	file:
+onAccuracyChanged	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	public void onAccuracyChanged(Sensor sensor, int accuracy) {$/;"	m	class:MainActivity
+onCreate	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^    public void onCreate(Bundle savedInstanceState) {$/;"	m	class:MainActivity
+onCreateOptionsMenu	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^    public boolean onCreateOptionsMenu(Menu menu) {$/;"	m	class:MainActivity
+onSensorChanged	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	public void onSensorChanged(SensorEvent event) {$/;"	m	class:MainActivity
+openfile	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^		public void openfile(String filefullname) {$/;"	m	class:MainActivity
+setupChart	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^    private void setupChart(){$/;"	m	class:MainActivity	file:
+str_tv_title	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int str_tv_title=0x7f040004;$/;"	f	class:R.string
+string	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^    public static final class string {$/;"	c	class:R
+style	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^    public static final class style {$/;"	c	class:R
+tableRow	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int tableRow=0x7f070002;$/;"	f	class:R.id
+title_activity_main	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int title_activity_main=0x7f040003;$/;"	f	class:R.string
+tv_title	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int tv_title=0x7f070001;$/;"	f	class:R.id
+visitsRenderer	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	private XYSeriesRenderer visitsRenderer;$/;"	f	class:MainActivity	file:
+visitsSeries	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	private XYSeries visitsSeries ;$/;"	f	class:MainActivity	file:
+writefile	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	  public void writefile(String message){ $/;"	m	class:MainActivity
+x	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int x=0x7f040005;$/;"	f	class:R.string
+x	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int x=0x7f070003;$/;"	f	class:R.id
+xv	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	float [] xv = new float[100];$/;"	f	class:MainActivity
+y	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int y=0x7f040006;$/;"	f	class:R.string
+y	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int y=0x7f070004;$/;"	f	class:R.id
+yaxisRenderer	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	private XYSeriesRenderer yaxisRenderer;$/;"	f	class:MainActivity	file:
+yaxisSeries	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	private XYSeries yaxisSeries ;$/;"	f	class:MainActivity	file:
+yv	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	float [] yv = new float[100];$/;"	f	class:MainActivity
+yyxv	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	float [] yyxv = new float[100];$/;"	f	class:MainActivity
+yyyv	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	float [] yyyv = new float[100];$/;"	f	class:MainActivity
+z	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int z=0x7f040007;$/;"	f	class:R.string
+z	gen/in/wptrafficanalyzer/achartenginedynamicchart/R.java	/^        public static final int z=0x7f070005;$/;"	f	class:R.id
+zaxisRenderer	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	private XYSeriesRenderer zaxisRenderer;$/;"	f	class:MainActivity	file:
+zaxisSeries	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	private XYSeries zaxisSeries ;$/;"	f	class:MainActivity	file:
+zzxv	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	float [] zzxv = new float[100];$/;"	f	class:MainActivity
+zzyv	src/in/wptrafficanalyzer/achartenginedynamicchart/MainActivity.java	/^	float [] zzyv = new float[100];$/;"	f	class:MainActivity

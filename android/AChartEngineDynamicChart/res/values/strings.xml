@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">重力加速度分析</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">重力加速度分析</string>
+    <string name="str_tv_title">重力加速度分析图</string>
+    <string name="x">x</string>
+    <string name="y">y</string>
+    <string name="z">z</string>
+</resources>
