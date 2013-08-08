@@ -1,27 +1,19 @@
 /*
- * Copyright (C) 2009 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-
-/*
  *1、上传字符串
  *2、下载字符串
  *3、上传整型
  *4、下载整型
  *5、下载布尔
  ***************/
+
+
+
+/*
+ *
+ * 对于JAVA接口的命名方式：Java_包名_java文件名_自定义的名字
+ *
+ *
+ * */
 #include <string.h>
 #include <jni.h>
 #include <fcntl.h>
@@ -31,20 +23,14 @@
 #include <assert.h>
 #include <unistd.h>
 
-#define I2CNAME "/sys/bus/i2c/devices/0-0019/name"
-#define CPUINFO "/proc/cpuinfo"
-//#define LEDPATH "/sys/class/leds/lcd-backlight/brightness"
-//#define LEDPATH "/sys/class/leds/lcd-backlight/brightness"
 #define LEDPATH "/sys/devices/platform/als_ps/driver/als"
 static unsigned char ops_path[255];
 static char buf[1000];
 
-/*========================*/
-#define LOG_TAG "chendong"
+#define LOG_TAG "native-tools"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGW(...)  __android_log_print(ANDROID_LOG_WARN,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-/*========================*/
 
 
 static int write_data_to_file(const char *path, const char *data)
@@ -91,11 +77,13 @@ static int read_data_from_file(char const *path, char *data, int data_len)
 	if (path == NULL)
 		return -1;
 
+	memset((void *)data, 0x00, data_len);
 	fd = open(path, O_RDONLY);
 	if (fd < 0) {
 		nbytes = -errno;
 		goto fail;
 	}
+
 	nbytes = read(fd, data, data_len - 1);
 	if (-1 == nbytes) {
 		nbytes = -errno;
@@ -103,9 +91,9 @@ static int read_data_from_file(char const *path, char *data, int data_len)
 		goto fail;
 	}
 	close(fd);
-	data[nbytes-1] = '\0';
 	LOGI("%s", data);
 fail:
+	LOGI("fail read_data_from_file", data);
 	return nbytes;
 }
 
@@ -115,10 +103,10 @@ fail:
  *public native String stringFromJNI();
  * */
 jstring
-Java_com_example_hellojni_HelloJni_stringFromJNI( JNIEnv* env, jobject thiz)
+Java_com_chendong_DebugTools_stringFromNative(JNIEnv* env, jobject thiz)
 {
-	read_data_from_file(LEDPATH, buf, sizeof(buf));
-//	svwtrcpy(buf, "hello world");
+//	read_data_from_file(LEDPATH, buf, sizeof(buf));
+	strcpy(buf, "hello world");
 	return (*env)->NewStringUTF(env, buf);
 }
 
@@ -127,13 +115,12 @@ Java_com_example_hellojni_HelloJni_stringFromJNI( JNIEnv* env, jobject thiz)
  *public static native boolean stringToJni(String str)
  * */
 jboolean
-Java_com_example_hellojni_HelloJni_stringToJni(JNIEnv* env, jclass clazz, jstring str)
+Java_com_chendong_DebugTools_stringToJni(JNIEnv* env, jclass clazz, jstring str)
 {
     // convert Java string to UTF-8
     const char *utf8 = (*env)->GetStringUTFChars(env, str, NULL);
     assert(NULL != utf8);
     LOGI("%s", utf8);
-
     return JNI_TRUE;
 }
 
@@ -142,7 +129,7 @@ Java_com_example_hellojni_HelloJni_stringToJni(JNIEnv* env, jclass clazz, jstrin
  *public static native void booleanToJni(boolean boolvalue);
  * */
 void
-Java_com_example_hellojni_HelloJni_booleanToJni(JNIEnv* env,
+Java_com_chendong_DebugTools_booleanToJni(JNIEnv* env,
         jclass clazz, jboolean boolvalue)
 {
 	LOGI("booleanToJni is %d", boolvalue);
@@ -153,7 +140,7 @@ Java_com_example_hellojni_HelloJni_booleanToJni(JNIEnv* env,
  *public static native void intToJni(boolean boolvalue);
  * */
 void
-Java_com_example_hellojni_HelloJni_intToJni( JNIEnv* env, jobject thiz, jint intvalue)
+Java_com_chendong_DebugTools_intToJni( JNIEnv* env, jobject thiz, jint intvalue)
 {
 	LOGI("intToJni is %d", intvalue);
 }
@@ -164,7 +151,7 @@ Java_com_example_hellojni_HelloJni_intToJni( JNIEnv* env, jobject thiz, jint int
  *java: static native int write_file(String filename, String command)
  *return:how many write bytes
  * */
-jint Java_com_example_hellojni_HelloJni_write_file(JNIEnv* env,
+jint Java_com_chendong_DebugTools_write_file(JNIEnv* env,
 				jclass clazz, jstring filename, jstring command)
 {
 	int ret;
@@ -182,7 +169,7 @@ jint Java_com_example_hellojni_HelloJni_write_file(JNIEnv* env,
  *read datas from file and return datas upto java
  *java: static native String read_file(String filename, int len)
  * */
-jstring Java_com_example_hellojni_HelloJni_read_file(JNIEnv* env,
+jstring Java_com_chendong_DebugTools_read_file(JNIEnv* env,
 				jclass clazz, jstring filename, jint len)
 {
 	const char *jni_filename = (*env)->GetStringUTFChars(env, filename, NULL);
