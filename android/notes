@@ -1,0 +1,38 @@
+java 读指定文件的方法：
+
+FileInputStream fis = new FileInputStream(PS_FILE_PATH);//建立操作文件的对像
+int len = fis.available(); //找出文件的长度
+byte[] bytes = new byte[len];//分配空间
+fis.read(bytes);//把文件的内容读出来
+fis.close();    //关闭文件
+
+String res = new String(bytes);//把读到的内容，转为字符串
+String psstr="感应值:";
+psNum.setText(psstr+res);
+int ps_rawdata = Integer.parseInt(res.trim());//字符串转为整数
+
+
+String getFileContext(String path) throws IOException, InterruptedException
+{
+	String res;
+	FileInputStream fis = new FileInputStream(path);
+	int len = fis.available();
+	byte[] bytes = new byte[len];
+	fis.read(bytes);
+	fis.close();
+	res = new String(bytes);
+	return res;
+}
+
+javac Cat.java
+java Cat 运行
+类和文件名是相关的
+
+//最为简单的例子
+import java.io.* ;
+public class Cat
+{
+	public static void main(String args[]) {
+		System.out.println("My name is ");
+					        }
+}
