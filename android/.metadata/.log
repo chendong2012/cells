@@ -1,0 +1,673 @@
+!SESSION 2013-06-07 09:45:18.038 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.7.0_19
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=zh_CN
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os linux -ws gtk -arch x86_64 -product org.eclipse.epp.package.jee.product
+
+!ENTRY org.eclipse.equinox.p2.core 4 0 2013-06-07 09:49:01.611
+!MESSAGE Provisioning exception
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/home/chend/下载/adt-bundle-linux-x86_64-20130522.zip!/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:393)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:636)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.doLoad(LoadMetadataRepositoryJob.java:117)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.runModal(LoadMetadataRepositoryJob.java:102)
+	at org.eclipse.equinox.internal.p2.ui.sdk.PreloadingRepositoryHandler$2.runModal(PreloadingRepositoryHandler.java:82)
+	at org.eclipse.equinox.p2.operations.ProvisioningJob.run(ProvisioningJob.java:177)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2013-06-07 09:49:01.613
+!MESSAGE No repository found at jar:file:/home/chend/下载/adt-bundle-linux-x86_64-20130522.zip!/.
+
+!ENTRY org.eclipse.equinox.p2.transport.ecf 2 0 2013-06-07 09:49:36.177
+!MESSAGE Connection to jar:file:/home/chend/下载/p2.index failed on no !/ in spec. Retry attempt 0 started
+!STACK 0
+java.net.MalformedURLException: no !/ in spec
+	at java.net.URL.<init>(URL.java:619)
+	at java.net.URL.<init>(URL.java:482)
+	at java.net.URL.<init>(URL.java:431)
+	at java.net.URI.toURL(URI.java:1096)
+	at org.eclipse.ecf.provider.filetransfer.identity.FileTransferID.getURL(FileTransferID.java:76)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.sendRetrieveRequest(AbstractRetrieveFileTransfer.java:881)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.sendRetrieveRequest(AbstractRetrieveFileTransfer.java:576)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.MultiProtocolRetrieveAdapter.sendRetrieveRequest(MultiProtocolRetrieveAdapter.java:106)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.sendRetrieveRequest(FileReader.java:349)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.readInto(FileReader.java:295)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.download(RepositoryTransport.java:87)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.download(RepositoryTransport.java:137)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadIndexFile(AbstractRepositoryManager.java:721)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:640)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.ProvisioningUI.loadMetadataRepository(ProvisioningUI.java:402)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.getMetadataRepository(MetadataRepositoryElement.java:120)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.fetchChildren(MetadataRepositoryElement.java:70)
+	at org.eclipse.equinox.internal.p2.ui.model.RemoteQueriedElement.fetchDeferredChildren(RemoteQueriedElement.java:34)
+	at org.eclipse.ui.progress.DeferredTreeContentManager$1.run(DeferredTreeContentManager.java:235)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: java.lang.NullPointerException: no !/ in spec
+	at sun.net.www.protocol.jar.Handler.parseAbsoluteSpec(Handler.java:170)
+	at sun.net.www.protocol.jar.Handler.parseURL(Handler.java:150)
+	at java.net.URL.<init>(URL.java:614)
+	... 21 more
+
+!ENTRY org.eclipse.equinox.p2.ui 4 0 2013-06-07 09:49:36.384
+!MESSAGE Unable to read repository at jar:file:/home/chend/下载/content.xml.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: Unable to read repository at jar:file:/home/chend/下载/content.xml.
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:189)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.getLocalFile(SimpleMetadataRepositoryFactory.java:66)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.load(SimpleMetadataRepositoryFactory.java:88)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.factoryLoad(MetadataRepositoryManager.java:57)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:749)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:651)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.ProvisioningUI.loadMetadataRepository(ProvisioningUI.java:402)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.getMetadataRepository(MetadataRepositoryElement.java:120)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.fetchChildren(MetadataRepositoryElement.java:70)
+	at org.eclipse.equinox.internal.p2.ui.model.RemoteQueriedElement.fetchDeferredChildren(RemoteQueriedElement.java:34)
+	at org.eclipse.ui.progress.DeferredTreeContentManager$1.run(DeferredTreeContentManager.java:235)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: org.eclipse.ecf.filetransfer.RemoteFileSystemException: Exception creating URL for {0}
+	at org.eclipse.ecf.provider.filetransfer.browse.MultiProtocolFileSystemBrowserAdapter.sendBrowseRequest(MultiProtocolFileSystemBrowserAdapter.java:75)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.sendBrowseRequest(FileInfoReader.java:186)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFiles(FileInfoReader.java:112)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFile(FileInfoReader.java:128)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getLastModified(FileInfoReader.java:133)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.getLastModified(RepositoryTransport.java:210)
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:171)
+	... 13 more
+!SUBENTRY 1 org.eclipse.equinox.p2.transport.ecf 4 1002 2013-06-07 09:49:36.385
+!MESSAGE Unable to read repository at jar:file:/home/chend/下载/content.xml.
+!STACK 1
+org.eclipse.ecf.filetransfer.RemoteFileSystemException: Exception creating URL for {0}
+	at org.eclipse.ecf.provider.filetransfer.browse.MultiProtocolFileSystemBrowserAdapter.sendBrowseRequest(MultiProtocolFileSystemBrowserAdapter.java:75)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.sendBrowseRequest(FileInfoReader.java:186)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFiles(FileInfoReader.java:112)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFile(FileInfoReader.java:128)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getLastModified(FileInfoReader.java:133)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.getLastModified(RepositoryTransport.java:210)
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:171)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.getLocalFile(SimpleMetadataRepositoryFactory.java:66)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.load(SimpleMetadataRepositoryFactory.java:88)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.factoryLoad(MetadataRepositoryManager.java:57)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:749)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:651)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.ProvisioningUI.loadMetadataRepository(ProvisioningUI.java:402)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.getMetadataRepository(MetadataRepositoryElement.java:120)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.fetchChildren(MetadataRepositoryElement.java:70)
+	at org.eclipse.equinox.internal.p2.ui.model.RemoteQueriedElement.fetchDeferredChildren(RemoteQueriedElement.java:34)
+	at org.eclipse.ui.progress.DeferredTreeContentManager$1.run(DeferredTreeContentManager.java:235)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SUBENTRY 2 org.eclipse.ecf.identity 4 0 2013-06-07 09:49:36.385
+!MESSAGE Exception creating URL for {0}
+
+!ENTRY org.eclipse.equinox.p2.transport.ecf 2 0 2013-06-07 09:49:36.386
+!MESSAGE Connection to jar:file:/home/chend/下载/p2.index failed on no !/ in spec. Retry attempt 0 started
+!STACK 0
+java.net.MalformedURLException: no !/ in spec
+	at java.net.URL.<init>(URL.java:619)
+	at java.net.URL.<init>(URL.java:482)
+	at java.net.URL.<init>(URL.java:431)
+	at java.net.URI.toURL(URI.java:1096)
+	at org.eclipse.ecf.provider.filetransfer.identity.FileTransferID.getURL(FileTransferID.java:76)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.sendRetrieveRequest(AbstractRetrieveFileTransfer.java:881)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.sendRetrieveRequest(AbstractRetrieveFileTransfer.java:576)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.MultiProtocolRetrieveAdapter.sendRetrieveRequest(MultiProtocolRetrieveAdapter.java:106)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.sendRetrieveRequest(FileReader.java:349)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.readInto(FileReader.java:295)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.download(RepositoryTransport.java:87)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.download(RepositoryTransport.java:137)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadIndexFile(AbstractRepositoryManager.java:721)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:640)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.ProvisioningUI.loadMetadataRepository(ProvisioningUI.java:402)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.getMetadataRepository(MetadataRepositoryElement.java:120)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.getRepository(MetadataRepositoryElement.java:109)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.getQueryable(MetadataRepositoryElement.java:103)
+	at org.eclipse.equinox.internal.p2.ui.QueryProvider.getQueryDescriptor(QueryProvider.java:88)
+	at org.eclipse.equinox.internal.p2.ui.model.QueriedElement.fetchChildren(QueriedElement.java:101)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.fetchChildren(MetadataRepositoryElement.java:72)
+	at org.eclipse.equinox.internal.p2.ui.model.RemoteQueriedElement.fetchDeferredChildren(RemoteQueriedElement.java:34)
+	at org.eclipse.ui.progress.DeferredTreeContentManager$1.run(DeferredTreeContentManager.java:235)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: java.lang.NullPointerException: no !/ in spec
+	at sun.net.www.protocol.jar.Handler.parseAbsoluteSpec(Handler.java:170)
+	at sun.net.www.protocol.jar.Handler.parseURL(Handler.java:150)
+	at java.net.URL.<init>(URL.java:614)
+	... 25 more
+
+!ENTRY org.eclipse.equinox.p2.ui 4 0 2013-06-07 09:49:36.587
+!MESSAGE Unable to read repository at jar:file:/home/chend/下载/content.xml.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: Unable to read repository at jar:file:/home/chend/下载/content.xml.
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:189)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.getLocalFile(SimpleMetadataRepositoryFactory.java:66)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.load(SimpleMetadataRepositoryFactory.java:88)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.factoryLoad(MetadataRepositoryManager.java:57)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:749)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:651)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.ProvisioningUI.loadMetadataRepository(ProvisioningUI.java:402)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.getMetadataRepository(MetadataRepositoryElement.java:120)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.getRepository(MetadataRepositoryElement.java:109)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.getQueryable(MetadataRepositoryElement.java:103)
+	at org.eclipse.equinox.internal.p2.ui.QueryProvider.getQueryDescriptor(QueryProvider.java:88)
+	at org.eclipse.equinox.internal.p2.ui.model.QueriedElement.fetchChildren(QueriedElement.java:101)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.fetchChildren(MetadataRepositoryElement.java:72)
+	at org.eclipse.equinox.internal.p2.ui.model.RemoteQueriedElement.fetchDeferredChildren(RemoteQueriedElement.java:34)
+	at org.eclipse.ui.progress.DeferredTreeContentManager$1.run(DeferredTreeContentManager.java:235)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: org.eclipse.ecf.filetransfer.RemoteFileSystemException: Exception creating URL for {0}
+	at org.eclipse.ecf.provider.filetransfer.browse.MultiProtocolFileSystemBrowserAdapter.sendBrowseRequest(MultiProtocolFileSystemBrowserAdapter.java:75)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.sendBrowseRequest(FileInfoReader.java:186)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFiles(FileInfoReader.java:112)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFile(FileInfoReader.java:128)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getLastModified(FileInfoReader.java:133)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.getLastModified(RepositoryTransport.java:210)
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:171)
+	... 17 more
+!SUBENTRY 1 org.eclipse.equinox.p2.transport.ecf 4 1002 2013-06-07 09:49:36.588
+!MESSAGE Unable to read repository at jar:file:/home/chend/下载/content.xml.
+!STACK 1
+org.eclipse.ecf.filetransfer.RemoteFileSystemException: Exception creating URL for {0}
+	at org.eclipse.ecf.provider.filetransfer.browse.MultiProtocolFileSystemBrowserAdapter.sendBrowseRequest(MultiProtocolFileSystemBrowserAdapter.java:75)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.sendBrowseRequest(FileInfoReader.java:186)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFiles(FileInfoReader.java:112)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFile(FileInfoReader.java:128)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getLastModified(FileInfoReader.java:133)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.getLastModified(RepositoryTransport.java:210)
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:171)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.getLocalFile(SimpleMetadataRepositoryFactory.java:66)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.load(SimpleMetadataRepositoryFactory.java:88)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.factoryLoad(MetadataRepositoryManager.java:57)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:749)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:651)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.ProvisioningUI.loadMetadataRepository(ProvisioningUI.java:402)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.getMetadataRepository(MetadataRepositoryElement.java:120)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.getRepository(MetadataRepositoryElement.java:109)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.getQueryable(MetadataRepositoryElement.java:103)
+	at org.eclipse.equinox.internal.p2.ui.QueryProvider.getQueryDescriptor(QueryProvider.java:88)
+	at org.eclipse.equinox.internal.p2.ui.model.QueriedElement.fetchChildren(QueriedElement.java:101)
+	at org.eclipse.equinox.internal.p2.ui.model.MetadataRepositoryElement.fetchChildren(MetadataRepositoryElement.java:72)
+	at org.eclipse.equinox.internal.p2.ui.model.RemoteQueriedElement.fetchDeferredChildren(RemoteQueriedElement.java:34)
+	at org.eclipse.ui.progress.DeferredTreeContentManager$1.run(DeferredTreeContentManager.java:235)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SUBENTRY 2 org.eclipse.ecf.identity 4 0 2013-06-07 09:49:36.588
+!MESSAGE Exception creating URL for {0}
+
+!ENTRY org.eclipse.equinox.p2.metadata.repository 4 1000 2013-06-07 09:50:06.785
+!MESSAGE No repository found at jar:file:/home/chend/下载/adt-bundle-linux-x86_64-20130522.zip!/.
+
+!ENTRY org.eclipse.equinox.p2.core 4 0 2013-06-07 09:50:39.478
+!MESSAGE Provisioning exception
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/home/chend/下载/adt-bundle-linux-x86_64-20130522.zip!/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:393)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:636)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.doLoad(LoadMetadataRepositoryJob.java:117)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.runModal(LoadMetadataRepositoryJob.java:102)
+	at org.eclipse.equinox.internal.p2.ui.sdk.PreloadingRepositoryHandler$2.runModal(PreloadingRepositoryHandler.java:82)
+	at org.eclipse.equinox.p2.operations.ProvisioningJob.run(ProvisioningJob.java:177)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2013-06-07 09:50:39.478
+!MESSAGE No repository found at jar:file:/home/chend/下载/adt-bundle-linux-x86_64-20130522.zip!/.
+
+!ENTRY org.eclipse.equinox.p2.transport.ecf 2 0 2013-06-07 09:50:39.480
+!MESSAGE Connection to jar:file:/home/chend/下载/p2.index failed on no !/ in spec. Retry attempt 0 started
+!STACK 0
+java.net.MalformedURLException: no !/ in spec
+	at java.net.URL.<init>(URL.java:619)
+	at java.net.URL.<init>(URL.java:482)
+	at java.net.URL.<init>(URL.java:431)
+	at java.net.URI.toURL(URI.java:1096)
+	at org.eclipse.ecf.provider.filetransfer.identity.FileTransferID.getURL(FileTransferID.java:76)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.sendRetrieveRequest(AbstractRetrieveFileTransfer.java:881)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.sendRetrieveRequest(AbstractRetrieveFileTransfer.java:576)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.MultiProtocolRetrieveAdapter.sendRetrieveRequest(MultiProtocolRetrieveAdapter.java:106)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.sendRetrieveRequest(FileReader.java:349)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.readInto(FileReader.java:295)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.download(RepositoryTransport.java:87)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.download(RepositoryTransport.java:137)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadIndexFile(AbstractRepositoryManager.java:721)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:640)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.doLoad(LoadMetadataRepositoryJob.java:117)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.runModal(LoadMetadataRepositoryJob.java:102)
+	at org.eclipse.equinox.internal.p2.ui.sdk.PreloadingRepositoryHandler$2.runModal(PreloadingRepositoryHandler.java:82)
+	at org.eclipse.equinox.p2.operations.ProvisioningJob.run(ProvisioningJob.java:177)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: java.lang.NullPointerException: no !/ in spec
+	at sun.net.www.protocol.jar.Handler.parseAbsoluteSpec(Handler.java:170)
+	at sun.net.www.protocol.jar.Handler.parseURL(Handler.java:150)
+	at java.net.URL.<init>(URL.java:614)
+	... 20 more
+
+!ENTRY org.eclipse.equinox.p2.core 4 0 2013-06-07 09:50:39.683
+!MESSAGE Provisioning exception
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: Unable to read repository at jar:file:/home/chend/下载/content.xml.
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:189)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.getLocalFile(SimpleMetadataRepositoryFactory.java:66)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.load(SimpleMetadataRepositoryFactory.java:88)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.factoryLoad(MetadataRepositoryManager.java:57)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:749)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:651)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.doLoad(LoadMetadataRepositoryJob.java:117)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.runModal(LoadMetadataRepositoryJob.java:102)
+	at org.eclipse.equinox.internal.p2.ui.sdk.PreloadingRepositoryHandler$2.runModal(PreloadingRepositoryHandler.java:82)
+	at org.eclipse.equinox.p2.operations.ProvisioningJob.run(ProvisioningJob.java:177)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: org.eclipse.ecf.filetransfer.RemoteFileSystemException: Exception creating URL for {0}
+	at org.eclipse.ecf.provider.filetransfer.browse.MultiProtocolFileSystemBrowserAdapter.sendBrowseRequest(MultiProtocolFileSystemBrowserAdapter.java:75)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.sendBrowseRequest(FileInfoReader.java:186)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFiles(FileInfoReader.java:112)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFile(FileInfoReader.java:128)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getLastModified(FileInfoReader.java:133)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.getLastModified(RepositoryTransport.java:210)
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:171)
+	... 12 more
+!SUBENTRY 1 org.eclipse.equinox.p2.transport.ecf 4 1002 2013-06-07 09:50:39.684
+!MESSAGE Unable to read repository at jar:file:/home/chend/下载/content.xml.
+!STACK 1
+org.eclipse.ecf.filetransfer.RemoteFileSystemException: Exception creating URL for {0}
+	at org.eclipse.ecf.provider.filetransfer.browse.MultiProtocolFileSystemBrowserAdapter.sendBrowseRequest(MultiProtocolFileSystemBrowserAdapter.java:75)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.sendBrowseRequest(FileInfoReader.java:186)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFiles(FileInfoReader.java:112)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFile(FileInfoReader.java:128)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getLastModified(FileInfoReader.java:133)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.getLastModified(RepositoryTransport.java:210)
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:171)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.getLocalFile(SimpleMetadataRepositoryFactory.java:66)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.load(SimpleMetadataRepositoryFactory.java:88)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.factoryLoad(MetadataRepositoryManager.java:57)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:749)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:651)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.doLoad(LoadMetadataRepositoryJob.java:117)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.runModal(LoadMetadataRepositoryJob.java:102)
+	at org.eclipse.equinox.internal.p2.ui.sdk.PreloadingRepositoryHandler$2.runModal(PreloadingRepositoryHandler.java:82)
+	at org.eclipse.equinox.p2.operations.ProvisioningJob.run(ProvisioningJob.java:177)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SUBENTRY 2 org.eclipse.ecf.identity 4 0 2013-06-07 09:50:39.684
+!MESSAGE Exception creating URL for {0}
+
+!ENTRY org.eclipse.equinox.p2.ui 4 1000 2013-06-07 09:50:39.684
+!MESSAGE Some sites could not be found.  See the error log for more detail.
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2013-06-07 09:50:39.685
+!MESSAGE No repository found at jar:file:/home/chend/下载/adt-bundle-linux-x86_64-20130522.zip!/.
+!SUBENTRY 1 org.eclipse.equinox.p2.transport.ecf 4 1002 2013-06-07 09:50:39.685
+!MESSAGE Unable to read repository at jar:file:/home/chend/下载/content.xml.
+!STACK 1
+org.eclipse.ecf.filetransfer.RemoteFileSystemException: Exception creating URL for {0}
+	at org.eclipse.ecf.provider.filetransfer.browse.MultiProtocolFileSystemBrowserAdapter.sendBrowseRequest(MultiProtocolFileSystemBrowserAdapter.java:75)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.sendBrowseRequest(FileInfoReader.java:186)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFiles(FileInfoReader.java:112)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFile(FileInfoReader.java:128)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getLastModified(FileInfoReader.java:133)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.getLastModified(RepositoryTransport.java:210)
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:171)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.getLocalFile(SimpleMetadataRepositoryFactory.java:66)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.load(SimpleMetadataRepositoryFactory.java:88)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.factoryLoad(MetadataRepositoryManager.java:57)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:749)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:651)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.doLoad(LoadMetadataRepositoryJob.java:117)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.runModal(LoadMetadataRepositoryJob.java:102)
+	at org.eclipse.equinox.internal.p2.ui.sdk.PreloadingRepositoryHandler$2.runModal(PreloadingRepositoryHandler.java:82)
+	at org.eclipse.equinox.p2.operations.ProvisioningJob.run(ProvisioningJob.java:177)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SUBENTRY 2 org.eclipse.ecf.identity 4 0 2013-06-07 09:50:39.685
+!MESSAGE Exception creating URL for {0}
+
+!ENTRY org.eclipse.equinox.p2.core 4 0 2013-06-07 09:52:42.949
+!MESSAGE Provisioning exception
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/home/chend/下载/adt-bundle-linux-x86_64-20130522.zip!/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:393)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:636)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.doLoad(LoadMetadataRepositoryJob.java:117)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.runModal(LoadMetadataRepositoryJob.java:102)
+	at org.eclipse.equinox.internal.p2.ui.sdk.PreloadingRepositoryHandler$2.runModal(PreloadingRepositoryHandler.java:82)
+	at org.eclipse.equinox.p2.operations.ProvisioningJob.run(ProvisioningJob.java:177)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2013-06-07 09:52:42.949
+!MESSAGE No repository found at jar:file:/home/chend/下载/adt-bundle-linux-x86_64-20130522.zip!/.
+
+!ENTRY org.eclipse.equinox.p2.transport.ecf 2 0 2013-06-07 09:52:42.950
+!MESSAGE Connection to jar:file:/home/chend/下载/p2.index failed on no !/ in spec. Retry attempt 0 started
+!STACK 0
+java.net.MalformedURLException: no !/ in spec
+	at java.net.URL.<init>(URL.java:619)
+	at java.net.URL.<init>(URL.java:482)
+	at java.net.URL.<init>(URL.java:431)
+	at java.net.URI.toURL(URI.java:1096)
+	at org.eclipse.ecf.provider.filetransfer.identity.FileTransferID.getURL(FileTransferID.java:76)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.sendRetrieveRequest(AbstractRetrieveFileTransfer.java:881)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.sendRetrieveRequest(AbstractRetrieveFileTransfer.java:576)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.MultiProtocolRetrieveAdapter.sendRetrieveRequest(MultiProtocolRetrieveAdapter.java:106)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.sendRetrieveRequest(FileReader.java:349)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.readInto(FileReader.java:295)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.download(RepositoryTransport.java:87)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.download(RepositoryTransport.java:137)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadIndexFile(AbstractRepositoryManager.java:721)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:640)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.doLoad(LoadMetadataRepositoryJob.java:117)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.runModal(LoadMetadataRepositoryJob.java:102)
+	at org.eclipse.equinox.internal.p2.ui.sdk.PreloadingRepositoryHandler$2.runModal(PreloadingRepositoryHandler.java:82)
+	at org.eclipse.equinox.p2.operations.ProvisioningJob.run(ProvisioningJob.java:177)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: java.lang.NullPointerException: no !/ in spec
+	at sun.net.www.protocol.jar.Handler.parseAbsoluteSpec(Handler.java:170)
+	at sun.net.www.protocol.jar.Handler.parseURL(Handler.java:150)
+	at java.net.URL.<init>(URL.java:614)
+	... 20 more
+
+!ENTRY org.eclipse.equinox.p2.core 4 0 2013-06-07 09:52:43.152
+!MESSAGE Provisioning exception
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: Unable to read repository at jar:file:/home/chend/下载/content.xml.
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:189)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.getLocalFile(SimpleMetadataRepositoryFactory.java:66)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.load(SimpleMetadataRepositoryFactory.java:88)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.factoryLoad(MetadataRepositoryManager.java:57)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:749)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:651)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.doLoad(LoadMetadataRepositoryJob.java:117)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.runModal(LoadMetadataRepositoryJob.java:102)
+	at org.eclipse.equinox.internal.p2.ui.sdk.PreloadingRepositoryHandler$2.runModal(PreloadingRepositoryHandler.java:82)
+	at org.eclipse.equinox.p2.operations.ProvisioningJob.run(ProvisioningJob.java:177)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: org.eclipse.ecf.filetransfer.RemoteFileSystemException: Exception creating URL for {0}
+	at org.eclipse.ecf.provider.filetransfer.browse.MultiProtocolFileSystemBrowserAdapter.sendBrowseRequest(MultiProtocolFileSystemBrowserAdapter.java:75)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.sendBrowseRequest(FileInfoReader.java:186)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFiles(FileInfoReader.java:112)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFile(FileInfoReader.java:128)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getLastModified(FileInfoReader.java:133)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.getLastModified(RepositoryTransport.java:210)
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:171)
+	... 12 more
+!SUBENTRY 1 org.eclipse.equinox.p2.transport.ecf 4 1002 2013-06-07 09:52:43.153
+!MESSAGE Unable to read repository at jar:file:/home/chend/下载/content.xml.
+!STACK 1
+org.eclipse.ecf.filetransfer.RemoteFileSystemException: Exception creating URL for {0}
+	at org.eclipse.ecf.provider.filetransfer.browse.MultiProtocolFileSystemBrowserAdapter.sendBrowseRequest(MultiProtocolFileSystemBrowserAdapter.java:75)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.sendBrowseRequest(FileInfoReader.java:186)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFiles(FileInfoReader.java:112)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFile(FileInfoReader.java:128)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getLastModified(FileInfoReader.java:133)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.getLastModified(RepositoryTransport.java:210)
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:171)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.getLocalFile(SimpleMetadataRepositoryFactory.java:66)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.load(SimpleMetadataRepositoryFactory.java:88)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.factoryLoad(MetadataRepositoryManager.java:57)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:749)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:651)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.doLoad(LoadMetadataRepositoryJob.java:117)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.runModal(LoadMetadataRepositoryJob.java:102)
+	at org.eclipse.equinox.internal.p2.ui.sdk.PreloadingRepositoryHandler$2.runModal(PreloadingRepositoryHandler.java:82)
+	at org.eclipse.equinox.p2.operations.ProvisioningJob.run(ProvisioningJob.java:177)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SUBENTRY 2 org.eclipse.ecf.identity 4 0 2013-06-07 09:52:43.153
+!MESSAGE Exception creating URL for {0}
+
+!ENTRY org.eclipse.equinox.p2.ui 4 1000 2013-06-07 09:52:43.154
+!MESSAGE Some sites could not be found.  See the error log for more detail.
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2013-06-07 09:52:43.154
+!MESSAGE No repository found at jar:file:/home/chend/下载/adt-bundle-linux-x86_64-20130522.zip!/.
+!SUBENTRY 1 org.eclipse.equinox.p2.transport.ecf 4 1002 2013-06-07 09:52:43.154
+!MESSAGE Unable to read repository at jar:file:/home/chend/下载/content.xml.
+!STACK 1
+org.eclipse.ecf.filetransfer.RemoteFileSystemException: Exception creating URL for {0}
+	at org.eclipse.ecf.provider.filetransfer.browse.MultiProtocolFileSystemBrowserAdapter.sendBrowseRequest(MultiProtocolFileSystemBrowserAdapter.java:75)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.sendBrowseRequest(FileInfoReader.java:186)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFiles(FileInfoReader.java:112)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getRemoteFile(FileInfoReader.java:128)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileInfoReader.getLastModified(FileInfoReader.java:133)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.getLastModified(RepositoryTransport.java:210)
+	at org.eclipse.equinox.internal.p2.repository.CacheManager.createCache(CacheManager.java:171)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.getLocalFile(SimpleMetadataRepositoryFactory.java:66)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.load(SimpleMetadataRepositoryFactory.java:88)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.factoryLoad(MetadataRepositoryManager.java:57)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:749)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:651)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.doLoad(LoadMetadataRepositoryJob.java:117)
+	at org.eclipse.equinox.p2.ui.LoadMetadataRepositoryJob.runModal(LoadMetadataRepositoryJob.java:102)
+	at org.eclipse.equinox.internal.p2.ui.sdk.PreloadingRepositoryHandler$2.runModal(PreloadingRepositoryHandler.java:82)
+	at org.eclipse.equinox.p2.operations.ProvisioningJob.run(ProvisioningJob.java:177)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+!SUBENTRY 2 org.eclipse.ecf.identity 4 0 2013-06-07 09:52:43.155
+!MESSAGE Exception creating URL for {0}
+
+!ENTRY org.eclipse.equinox.p2.transport.ecf 2 0 2013-06-07 09:53:14.095
+!MESSAGE Connection to jar:file:/home/chend/下载/p2.index failed on no !/ in spec. Retry attempt 0 started
+!STACK 0
+java.net.MalformedURLException: no !/ in spec
+	at java.net.URL.<init>(URL.java:619)
+	at java.net.URL.<init>(URL.java:482)
+	at java.net.URL.<init>(URL.java:431)
+	at java.net.URI.toURL(URI.java:1096)
+	at org.eclipse.ecf.provider.filetransfer.identity.FileTransferID.getURL(FileTransferID.java:76)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.sendRetrieveRequest(AbstractRetrieveFileTransfer.java:881)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.sendRetrieveRequest(AbstractRetrieveFileTransfer.java:576)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.MultiProtocolRetrieveAdapter.sendRetrieveRequest(MultiProtocolRetrieveAdapter.java:106)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.sendRetrieveRequest(FileReader.java:349)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.readInto(FileReader.java:295)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.download(RepositoryTransport.java:87)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.download(RepositoryTransport.java:137)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadIndexFile(AbstractRepositoryManager.java:721)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:640)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:96)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:92)
+	at org.eclipse.equinox.p2.engine.ProvisioningContext.loadMetadataRepository(ProvisioningContext.java:211)
+	at org.eclipse.equinox.p2.engine.ProvisioningContext.getLoadedMetadataRepositories(ProvisioningContext.java:194)
+	at org.eclipse.equinox.p2.engine.ProvisioningContext.getMetadata(ProvisioningContext.java:275)
+	at org.eclipse.equinox.internal.p2.director.SimplePlanner.gatherAvailableInstallableUnits(SimplePlanner.java:261)
+	at org.eclipse.equinox.internal.p2.director.SimplePlanner.getSolutionFor(SimplePlanner.java:321)
+	at org.eclipse.equinox.internal.p2.director.SimplePlanner.getProvisioningPlan(SimplePlanner.java:379)
+	at org.eclipse.equinox.internal.p2.operations.PlannerResolutionJob.runModal(PlannerResolutionJob.java:76)
+	at org.eclipse.equinox.p2.operations.ProfileChangeOperation.resolveModal(ProfileChangeOperation.java:115)
+	at org.eclipse.equinox.internal.p2.ui.dialogs.ProvisioningOperationWizard$1.run(ProvisioningOperationWizard.java:213)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+Caused by: java.lang.NullPointerException: no !/ in spec
+	at sun.net.www.protocol.jar.Handler.parseAbsoluteSpec(Handler.java:170)
+	at sun.net.www.protocol.jar.Handler.parseURL(Handler.java:150)
+	at java.net.URL.<init>(URL.java:614)
+	... 25 more
+
+!ENTRY org.eclipse.ecf.provider.filetransfer 4 0 2013-06-07 09:53:28.551
+!MESSAGE org.eclipse.core.runtime.Status[plugin=org.eclipse.ecf.provider.filetransfer;code=4;message=hardClose;severity4;exception=java.io.IOException: Stream closed;children=[]]
+!STACK 0
+java.io.IOException: Stream closed
+	at java.io.BufferedInputStream.getBufIfOpen(BufferedInputStream.java:162)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:325)
+	at org.apache.commons.httpclient.ContentLengthInputStream.read(ContentLengthInputStream.java:170)
+	at org.apache.commons.httpclient.ContentLengthInputStream.read(ContentLengthInputStream.java:184)
+	at org.apache.commons.httpclient.ChunkedInputStream.exhaustInputStream(ChunkedInputStream.java:369)
+	at org.apache.commons.httpclient.ContentLengthInputStream.close(ContentLengthInputStream.java:118)
+	at java.io.FilterInputStream.close(FilterInputStream.java:181)
+	at org.apache.commons.httpclient.AutoCloseInputStream.notifyWatcher(AutoCloseInputStream.java:194)
+	at org.apache.commons.httpclient.AutoCloseInputStream.close(AutoCloseInputStream.java:158)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.hardClose(AbstractRetrieveFileTransfer.java:331)
+	at org.eclipse.ecf.provider.filetransfer.httpclient.HttpClientRetrieveFileTransfer.hardClose(HttpClientRetrieveFileTransfer.java:396)
+	at org.eclipse.ecf.provider.filetransfer.httpclient.HttpClientRetrieveFileTransfer.cancel(HttpClientRetrieveFileTransfer.java:382)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.handleTransferEvent(FileReader.java:173)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.fireTransferReceiveDataEvent(AbstractRetrieveFileTransfer.java:388)
+	at org.eclipse.ecf.provider.filetransfer.httpclient.HttpClientRetrieveFileTransfer.fireTransferReceiveDataEvent(HttpClientRetrieveFileTransfer.java:1163)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.handleReceivedData(AbstractRetrieveFileTransfer.java:288)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer$1.performFileTransfer(AbstractRetrieveFileTransfer.java:173)
+	at org.eclipse.ecf.filetransfer.FileTransferJob.run(FileTransferJob.java:73)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.equinox.p2.transport.ecf 2 0 2013-06-07 09:54:45.864
+!MESSAGE Connection to jar:file:/home/chend/下载/p2.index failed on no !/ in spec. Retry attempt 0 started
+!STACK 0
+java.net.MalformedURLException: no !/ in spec
+	at java.net.URL.<init>(URL.java:619)
+	at java.net.URL.<init>(URL.java:482)
+	at java.net.URL.<init>(URL.java:431)
+	at java.net.URI.toURL(URI.java:1096)
+	at org.eclipse.ecf.provider.filetransfer.identity.FileTransferID.getURL(FileTransferID.java:76)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.sendRetrieveRequest(AbstractRetrieveFileTransfer.java:881)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.sendRetrieveRequest(AbstractRetrieveFileTransfer.java:576)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.MultiProtocolRetrieveAdapter.sendRetrieveRequest(MultiProtocolRetrieveAdapter.java:106)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.sendRetrieveRequest(FileReader.java:349)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.readInto(FileReader.java:295)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.download(RepositoryTransport.java:87)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.download(RepositoryTransport.java:137)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadIndexFile(AbstractRepositoryManager.java:721)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:640)
+	at org.eclipse.equinox.internal.p2.artifact.repository.ArtifactRepositoryManager.loadRepository(ArtifactRepositoryManager.java:100)
+	at org.eclipse.equinox.internal.p2.artifact.repository.ArtifactRepositoryManager.loadRepository(ArtifactRepositoryManager.java:96)
+	at org.eclipse.equinox.p2.engine.ProvisioningContext.getLoadedArtifactRepositories(ProvisioningContext.java:160)
+	at org.eclipse.equinox.p2.engine.ProvisioningContext.getArtifactRepositories(ProvisioningContext.java:143)
+	at org.eclipse.equinox.internal.p2.engine.phases.Sizing.completePhase(Sizing.java:91)
+	at org.eclipse.equinox.internal.p2.engine.Phase.postPerform(Phase.java:216)
+	at org.eclipse.equinox.internal.p2.engine.EngineSession.rollBackPhase(EngineSession.java:239)
+	at org.eclipse.equinox.internal.p2.engine.EngineSession.rollback(EngineSession.java:178)
+	at org.eclipse.equinox.internal.p2.engine.Engine.perform(Engine.java:84)
+	at org.eclipse.equinox.internal.p2.engine.Engine.perform(Engine.java:44)
+	at org.eclipse.equinox.internal.p2.ui.ProvUI.getSize(ProvUI.java:230)
+	at org.eclipse.equinox.internal.p2.ui.dialogs.SizeComputingWizardPage$1.run(SizeComputingWizardPage.java:63)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: java.lang.NullPointerException: no !/ in spec
+	at sun.net.www.protocol.jar.Handler.parseAbsoluteSpec(Handler.java:170)
+	at sun.net.www.protocol.jar.Handler.parseURL(Handler.java:150)
+	at java.net.URL.<init>(URL.java:614)
+	... 26 more
+
+!ENTRY org.eclipse.equinox.p2.transport.ecf 2 0 2013-06-07 09:54:55.989
+!MESSAGE Connection to jar:file:/home/chend/下载/p2.index failed on no !/ in spec. Retry attempt 0 started
+!STACK 0
+java.net.MalformedURLException: no !/ in spec
+	at java.net.URL.<init>(URL.java:619)
+	at java.net.URL.<init>(URL.java:482)
+	at java.net.URL.<init>(URL.java:431)
+	at java.net.URI.toURL(URI.java:1096)
+	at org.eclipse.ecf.provider.filetransfer.identity.FileTransferID.getURL(FileTransferID.java:76)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.sendRetrieveRequest(AbstractRetrieveFileTransfer.java:881)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.AbstractRetrieveFileTransfer.sendRetrieveRequest(AbstractRetrieveFileTransfer.java:576)
+	at org.eclipse.ecf.provider.filetransfer.retrieve.MultiProtocolRetrieveAdapter.sendRetrieveRequest(MultiProtocolRetrieveAdapter.java:106)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.sendRetrieveRequest(FileReader.java:349)
+	at org.eclipse.equinox.internal.p2.transport.ecf.FileReader.readInto(FileReader.java:295)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.download(RepositoryTransport.java:87)
+	at org.eclipse.equinox.internal.p2.transport.ecf.RepositoryTransport.download(RepositoryTransport.java:137)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadIndexFile(AbstractRepositoryManager.java:721)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:640)
+	at org.eclipse.equinox.internal.p2.artifact.repository.ArtifactRepositoryManager.loadRepository(ArtifactRepositoryManager.java:100)
+	at org.eclipse.equinox.internal.p2.artifact.repository.ArtifactRepositoryManager.loadRepository(ArtifactRepositoryManager.java:96)
+	at org.eclipse.equinox.p2.engine.ProvisioningContext.getLoadedArtifactRepositories(ProvisioningContext.java:160)
+	at org.eclipse.equinox.p2.engine.ProvisioningContext.getArtifactRepositories(ProvisioningContext.java:143)
+	at org.eclipse.equinox.internal.p2.engine.DownloadManager.start(DownloadManager.java:90)
+	at org.eclipse.equinox.internal.p2.engine.phases.Collect.completePhase(Collect.java:76)
+	at org.eclipse.equinox.internal.p2.engine.Phase.postPerform(Phase.java:216)
+	at org.eclipse.equinox.internal.p2.engine.Phase.perform(Phase.java:84)
+	at org.eclipse.equinox.internal.p2.engine.PhaseSet.perform(PhaseSet.java:44)
+	at org.eclipse.equinox.internal.p2.engine.Engine.perform(Engine.java:75)
+	at org.eclipse.equinox.internal.p2.engine.Engine.perform(Engine.java:44)
+	at org.eclipse.equinox.p2.operations.ProvisioningSession.performProvisioningPlan(ProvisioningSession.java:174)
+	at org.eclipse.equinox.p2.operations.ProfileModificationJob.runModal(ProfileModificationJob.java:79)
+	at org.eclipse.equinox.p2.operations.ProvisioningJob.run(ProvisioningJob.java:177)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: java.lang.NullPointerException: no !/ in spec
+	at sun.net.www.protocol.jar.Handler.parseAbsoluteSpec(Handler.java:170)
+	at sun.net.www.protocol.jar.Handler.parseURL(Handler.java:150)
+	at java.net.URL.<init>(URL.java:614)
+	... 28 more
+!SESSION 2013-06-07 10:10:03.822 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.7.0_19
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=zh_CN
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os linux -ws gtk -arch x86_64 -product org.eclipse.epp.package.jee.product
+
+!ENTRY com.android.ide.eclipse.ddms 4 0 2013-06-07 10:24:41.420
+!MESSAGE DDMS files not found: /opt/tools/android-sdk-linux/platform-tools/adb 
+
+!ENTRY com.android.ide.eclipse.ddms 4 0 2013-06-07 10:24:41.422
+!MESSAGE DDMS files not found: /opt/tools/android-sdk-linux/platform-tools/adb 
+!SESSION 2013-08-07 09:08:44.605 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.6.0_25
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=zh_CN
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os linux -ws gtk -arch x86_64 -product org.eclipse.epp.package.jee.product
+
+!ENTRY org.eclipse.epp.usagedata.recording 1 0 2013-08-07 09:09:19.995
+!MESSAGE Usage data uploaded to http://udc.eclipse.org/upload.php in 2681 milliseconds.
+!SESSION 2013-08-08 09:24:32.691 -----------------------------------------------
+eclipse.buildId=M20120208-0800
+java.version=1.6.0_25
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=zh_CN
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os linux -ws gtk -arch x86_64 -product org.eclipse.epp.package.jee.product
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-08-08 09:35:32.790
+!MESSAGE Failed to load properties file for project 'DebugTools'
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-08-08 09:41:22.441
+!MESSAGE New Project Wizard failed
+!STACK 0
+java.lang.reflect.InvocationTargetException
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createProjectAsync(NewProjectCreator.java:677)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.access$0(NewProjectCreator.java:590)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator$3.execute(NewProjectCreator.java:400)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation$1.run(WorkspaceModifyOperation.java:106)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation.run(WorkspaceModifyOperation.java:118)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+Caused by: org.eclipse.core.internal.resources.ResourceException: Invalid project description.
+	at org.eclipse.core.internal.resources.Project.checkDescription(Project.java:175)
+	at org.eclipse.core.internal.resources.Project.assertCreateRequirements(Project.java:53)
+	at org.eclipse.core.internal.resources.Project.create(Project.java:287)
+	at org.eclipse.core.internal.resources.Project.create(Project.java:269)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createEclipseProject(NewProjectCreator.java:727)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createProjectAsync(NewProjectCreator.java:660)
+	... 6 more
+Root exception:
+org.eclipse.core.internal.resources.ResourceException: Invalid project description.
+	at org.eclipse.core.internal.resources.Project.checkDescription(Project.java:175)
+	at org.eclipse.core.internal.resources.Project.assertCreateRequirements(Project.java:53)
+	at org.eclipse.core.internal.resources.Project.create(Project.java:287)
+	at org.eclipse.core.internal.resources.Project.create(Project.java:269)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createEclipseProject(NewProjectCreator.java:727)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.createProjectAsync(NewProjectCreator.java:660)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator.access$0(NewProjectCreator.java:590)
+	at com.android.ide.eclipse.adt.internal.wizards.newproject.NewProjectCreator$3.execute(NewProjectCreator.java:400)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation$1.run(WorkspaceModifyOperation.java:106)
+	at org.eclipse.core.internal.resources.Workspace.run(Workspace.java:2344)
+	at org.eclipse.ui.actions.WorkspaceModifyOperation.run(WorkspaceModifyOperation.java:118)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+Contains: OK
+Contains: /opt/tools/workspace/MainActivity overlaps the location of another project: 'MainActivity'
