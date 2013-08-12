@@ -40,6 +40,7 @@ public class DebugTools extends Activity {
 	private XYSeries psSeries;
 	private XYSeries lowSeries;
 	private XYSeries highSeries;
+	private XYSeries calinoiseSeries;
 	private String fileDatas;
 	private XYMultipleSeriesDataset dataset;
 	
@@ -48,13 +49,18 @@ public class DebugTools extends Activity {
 	String LOW_FILE_PATH = "/sys/devices/platform/als_ps/driver/proximity_low";
 	String HIGH_FILE_PATH = "/sys/devices/platform/als_ps/driver/proximity_high";
 
-	 private SensorManager mSensorMgr;//距离传感器管理器
+	String CALINOISE_FILE_PATH = "/sys/devices/platform/als_ps/driver/cali_noise";
+	String CALITABLEINDEX_FILE_PATH = "/sys/devices/platform/als_ps/driver/calitableindex";
+	private SensorManager mSensorMgr;//距离传感器管理器
    private Sensor mPSensor;//距离传感器
    private boolean mIsProximityRight;
 
    TextView psNum;
 	TextView low;
 	TextView high;
+	TextView calinoise;
+	TextView caliindex;
+	
 	Button runButton;
 	
    Handler handler=new Handler();
@@ -62,12 +68,15 @@ public class DebugTools extends Activity {
 	private XYSeriesRenderer visitsRenderer;
 	private XYSeriesRenderer lowRenderer;
 	private XYSeriesRenderer highRenderer;
+	private XYSeriesRenderer calinoiseRenderer;
+
+	
 	
 	private XYMultipleSeriesRenderer multiRenderer;
-	GraphDatas psPoints = new GraphDatas(100);
-	GraphDatas lowPoints = new GraphDatas(100);
-	GraphDatas highPoints = new GraphDatas(100);
-		
+	GraphDatas psPoints = new GraphDatas(200);
+	GraphDatas lowPoints = new GraphDatas(200);
+	GraphDatas highPoints = new GraphDatas(200);
+	GraphDatas calinoisePoints = new GraphDatas(200);		
 	boolean runFlag= true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +86,8 @@ public class DebugTools extends Activity {
         psNum = (TextView)findViewById(R.id.textView1);
         low = (TextView)findViewById(R.id.textView2);
         high = (TextView)findViewById(R.id.textView3);
+        calinoise = (TextView)findViewById(R.id.textView4);
+        caliindex = (TextView)findViewById(R.id.textView5);
         runButton = (Button)findViewById(R.id.button1);
         runButton.setOnClickListener(new OnClickListener() {
 					@Override
@@ -105,15 +116,19 @@ public class DebugTools extends Activity {
 	    Runnable runnable=new Runnable() {
 	        @Override
 	        public void run() {
-	        	try {	     
+	        	try {
+	        		fileDatas = ToolsFileOps.getFileCxt(CALITABLEINDEX_FILE_PATH);
+			     	String caliindexstr="校准索引:";
+			     	caliindex.setText(caliindexstr + fileDatas);
+//ps
 	        		fileDatas = ToolsFileOps.getFileCxt(PS_FILE_PATH);
-			     		String psstr="感应值:";
+			     		String psstr="PS值:";
 			     		psNum.setText(psstr + fileDatas);
 			     		int ps_rawdata = Integer.parseInt(fileDatas.trim());	     		
 			     		
 		        	int length = psSeries.getItemCount();  
-		        	if (length > 100)
-		        			length = 100;  
+		        	if (length > 200)
+		        			length = 200;  
         	
         		for (int i = 0; i < length; i++)
         			psPoints.setpoint(i, (int) psSeries.getX(i) + 1, (int)psSeries.getY(i));
@@ -125,13 +140,13 @@ public class DebugTools extends Activity {
         			psSeries.add(psPoints.getX(i), psPoints.getY(i));
  //low       		
         		fileDatas = ToolsFileOps.getFileCxt(LOW_FILE_PATH);
-		     		String lowstr="远离阀值：";
+		     		String lowstr="远离：";
 		     		low.setText(lowstr+fileDatas);
 		     		int data_low = Integer.parseInt(fileDatas.trim());	     		
 		     		
 	        		int length_low = lowSeries.getItemCount();  
-	        		if (length_low > 100)
-	        			length_low = 100;  
+	        		if (length_low > 200)
+	        			length_low = 200;  
 
        		for (int i = 0; i < length_low; i++)    
 						lowPoints.setpoint(i, (int) lowSeries.getX(i) + 1, (int) lowSeries.getY(i));
@@ -144,14 +159,14 @@ public class DebugTools extends Activity {
        		
 //high       		
        		fileDatas = ToolsFileOps.getFileCxt(HIGH_FILE_PATH);
-	     		String highstr="接近阀值：";
+	     		String highstr="接近：";
 	     		high.setText(highstr+fileDatas);
 	     		
 	     		int data_high = Integer.parseInt(fileDatas.trim());	     		
 	     		
        		int length_high = highSeries.getItemCount();  
-       		if (length_high > 100)
-       			length_high = 100;  
+       		if (length_high > 200)
+       			length_high = 200;  
 
   		for (int i = 0; i < length_high; i++)
 				highPoints.setpoint(i, (int) highSeries.getX(i) + 1, (int) highSeries.getY(i));
@@ -161,6 +176,26 @@ public class DebugTools extends Activity {
 
   		for (int i = 0; i < length_high; i++)
   			highSeries.add(highPoints.getX(i), highPoints.getY(i));
+  		
+//calinoise       		
+   		fileDatas = ToolsFileOps.getFileCxt(CALINOISE_FILE_PATH);
+	 		String calinoisestr="校准PS值：";
+	 		calinoise.setText(calinoisestr+fileDatas);
+     		int data_calinoise = Integer.parseInt(fileDatas.trim());	     		
+
+   		int length_calinoise = calinoiseSeries.getItemCount();  
+   		if (length_calinoise > 200)
+   			length_calinoise = 200;  
+
+		for (int i = 0; i < length_calinoise; i++)
+			calinoisePoints.setpoint(i, (int) calinoiseSeries.getX(i) + 1, (int) calinoiseSeries.getY(i));
+
+		calinoiseSeries.clear();
+		calinoiseSeries.add(0, data_calinoise);//(0,y)坐标
+
+		for (int i = 0; i < length_calinoise; i++)
+			calinoiseSeries.add(calinoisePoints.getX(i), calinoisePoints.getY(i));
+
 	    }//try end
 	     		
 	 catch (Exception e) {
@@ -184,17 +219,18 @@ public class DebugTools extends Activity {
     
     private void setupChart(){
     	/*Creating an  XYSeries for Visits*/
-    	psSeries = new XYSeries("PS原始值");
-    	lowSeries = new XYSeries("远离阀值");
-    	highSeries = new XYSeries("接近阀值");
+    	psSeries = new XYSeries("PS值");
+    	lowSeries = new XYSeries("远离");
+    	highSeries = new XYSeries("接近");
+    	calinoiseSeries = new XYSeries("校准PS值");
     	
     	/*Creating a dataset to hold each seri*/
     	dataset = new XYMultipleSeriesDataset();
     	/*Adding Visits Series to the dataset*/
     	dataset.addSeries(psSeries);    	
-
     	dataset.addSeries(lowSeries);    
     	dataset.addSeries(highSeries);
+    	dataset.addSeries(calinoiseSeries);
     	
     	// Creating XYSeriesRenderer to customize psSeries
     	visitsRenderer = new XYSeriesRenderer();
@@ -209,14 +245,26 @@ public class DebugTools extends Activity {
     	lowRenderer.setPointStyle(PointStyle.POINT);
     	lowRenderer.setFillPoints(true);
     	lowRenderer.setLineWidth(2);
-
+    	lowRenderer.setDisplayChartValues(true);
+    	lowRenderer.setChartValuesTextSize(16);
+    	
     	// Creating XYSeriesRenderer to customize psSeries
     	highRenderer = new XYSeriesRenderer();
     	highRenderer.setColor(Color.YELLOW);
     	highRenderer.setPointStyle(PointStyle.POINT);
     	highRenderer.setFillPoints(true);
     	highRenderer.setLineWidth(2);
-    	
+    	highRenderer.setDisplayChartValues(true);
+    	highRenderer.setChartValuesTextSize(16);
+
+    	// Creating XYSeriesRenderer to customize psSeries
+    	calinoiseRenderer = new XYSeriesRenderer();
+    	calinoiseRenderer.setColor(Color.BLUE);
+    	calinoiseRenderer.setPointStyle(PointStyle.POINT);
+    	calinoiseRenderer.setFillPoints(true);
+    	calinoiseRenderer.setLineWidth(3);
+    	calinoiseRenderer.setDisplayChartValues(true);
+    	calinoiseRenderer.setChartValuesTextSize(16);
     	// Creating a XYMultipleSeriesRenderer to customize the whole chart
     	multiRenderer = new XYMultipleSeriesRenderer();
     	
@@ -227,7 +275,7 @@ public class DebugTools extends Activity {
     	multiRenderer.setZoomButtonsVisible(true);
     	
     	multiRenderer.setXAxisMin(0);
-    	multiRenderer.setXAxisMax(100);
+    	multiRenderer.setXAxisMax(200);
     	
     	multiRenderer.setYAxisMin(-20);
     	multiRenderer.setYAxisMax(1000);
@@ -250,7 +298,7 @@ public class DebugTools extends Activity {
     	multiRenderer.addSeriesRenderer(visitsRenderer);
     	multiRenderer.addSeriesRenderer(lowRenderer);
     	multiRenderer.addSeriesRenderer(highRenderer);
-
+    	multiRenderer.addSeriesRenderer(calinoiseRenderer);
     	// Getting a reference to LinearLayout of the MainActivity Layout
     	LinearLayout chartContainer = (LinearLayout) findViewById(R.id.LinearLayout2);
     	
