@@ -48,7 +48,7 @@ public class DebugTools extends Activity {
 	String LOW_FILE_PATH = "/sys/devices/platform/als_ps/driver/proximity_low";
 	String HIGH_FILE_PATH = "/sys/devices/platform/als_ps/driver/proximity_high";
 
-	private SensorManager mSensorMgr;//距离传感器管理器
+	 private SensorManager mSensorMgr;//距离传感器管理器
    private Sensor mPSensor;//距离传感器
    private boolean mIsProximityRight;
 
