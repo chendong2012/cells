@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="slidingmenu_shadowwidth">15dp</dimen>
-	<dimen name="slidingmenu_offset">100dp</dimen>
-    <dimen name="landscapemode_shadowregular">12dp</dimen>
-    <dimen name="landscapemode_shadowhalf">8dp</dimen>
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-</resources>

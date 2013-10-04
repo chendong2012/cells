@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-	<item
-    android:id="@+id/settings_option_item"
-    android:title="@string/webiopi_settings" android:titleCondensed="Settings"/>
-	<item android:id="@+id/list_controls" android:title="List of commands" android:titleCondensed="Commands"></item>
-	<item android:id="@+id/useVoice" android:titleCondensed="Voice" android:title="Use Voice"></item>
-	<item android:id="@+id/muteVoice" android:titleCondensed="Mute" android:title="Mute Voice"></item>
-</menu>
