@@ -1,0 +1,234 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".SensorDebugActivity" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical" >
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <TableRow
+                android:id="@+id/tableRow1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/row1_bottom"
+                android:layout_marginLeft="@dimen/row1_left"
+                android:layout_marginRight="@dimen/row1_right"
+                android:layout_marginTop="@dimen/row1_top" >
+
+                <TextView
+                    android:id="@+id/TextView03"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:text="ALS:"
+                    android:textColor="@color/textcolor"
+                    android:textSize="@dimen/textsize" 
+                    />
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="value"
+                    android:textColor="@color/textcolor"
+                    android:textSize="@dimen/textsize" />
+
+            </TableRow>
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@color/imgview1_color" />
+
+            <TableRow
+                android:id="@+id/tableRow2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/row1_bottom"
+                android:layout_marginLeft="@dimen/row1_left"
+                android:layout_marginRight="@dimen/row1_right"
+                android:layout_marginTop="@dimen/row1_top" >
+
+                <TextView
+                    android:id="@+id/TextView04"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:textColor="@color/textcolor"
+                    android:textSize="@dimen/textsize" 
+                    android:text="PS:" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/textcolor"
+                    android:textSize="@dimen/textsize" 
+                    android:text="value" />
+            </TableRow>
+
+            <ImageView
+                android:id="@+id/ImageView01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@color/imgview1_color" />
+
+            <TableRow
+                android:id="@+id/tableRow3"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/row1_bottom"
+                android:layout_marginLeft="@dimen/row1_left"
+                android:layout_marginRight="@dimen/row1_right"
+                android:layout_marginTop="@dimen/row1_top" >
+
+                <TextView
+                    android:id="@+id/TextView06"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="HIGH:"
+                    android:textColor="@color/textcolor"
+                    android:textSize="@dimen/textsize" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1"
+                    android:textColor="@color/textcolor"
+                    android:textSize="@dimen/textsize" 
+                    android:text="value" />
+
+                <TextView
+                    android:id="@+id/TextView05"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:text="LOW:"
+                    android:textColor="@color/textcolor"
+                    android:textSize="@dimen/textsize" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_weight="1"
+                    android:textColor="@color/textcolor"
+                    android:textSize="@dimen/textsize" 
+                    android:text="value" />
+
+            </TableRow>
+
+            <ImageView
+                android:id="@+id/ImageView02"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@color/imgview1_color" />
+
+            <TableRow
+                android:id="@+id/TableRow01"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/row1_bottom"
+                android:layout_marginLeft="@dimen/row1_left"
+                android:layout_marginRight="@dimen/row1_right"
+                android:layout_marginTop="@dimen/row1_top" >
+
+                <TextView
+                    android:id="@+id/TextView02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/textcolor"
+                    android:textSize="@dimen/textsize" 
+                    android:text="Register:" />
+
+                <EditText
+                    android:id="@+id/mPSHigh_Value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/textcolor"
+                    android:textSize="@dimen/textsize" 
+                    android:ems="10" />
+
+                <TextView
+                    android:id="@+id/TextView01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/textcolor"
+                    android:textSize="@dimen/textsize" 
+                    android:text="Value:" />
+
+                <EditText
+                    android:id="@+id/mPSLow_Value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/textcolor"
+                    android:textSize="@dimen/textsize" 
+                    android:ems="10" />
+            </TableRow>
+
+            <ImageView
+                android:id="@+id/ImageView03"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@color/imgview1_color" />
+
+            <TableRow
+                android:id="@+id/tableRow4"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginBottom="@dimen/row1_bottom"
+                android:layout_marginLeft="@dimen/row1_left"
+                android:layout_marginRight="@dimen/row1_right"
+                android:layout_marginTop="@dimen/row1_top" >
+
+                <Button
+                    android:id="@+id/mRegisterSaveButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="Save" />
+
+                <Button
+                    android:id="@+id/mALSSetButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="als set" />
+
+                <Button
+                    android:id="@+id/mPSSetButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="ps set" />
+            </TableRow>
+
+        </TableLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
