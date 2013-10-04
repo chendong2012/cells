@@ -3,18 +3,17 @@
     package="com.debug.sensordebug"
     android:versionCode="1"
     android:versionName="1.0" >
-
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="17" />
-
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.debug.sensordebug.SensorDebugActivity"
+            android:name="com.debug.sensordebug.ActivityMainScreen"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,18 +22,7 @@
             </intent-filter>
         </activity>
         
-        
-        <activity
-        android:name="com.debug.sensordebug.ALSActivity"
-        android:label="ALSActivity"
-        android:parentActivityName="com.debug.sensordebug.SensorDebugActivity" >
-        </activity>
-        
-        <activity
-        android:name="com.debug.sensordebug.PSActivity"
-        android:label="PSActivity"
-        android:parentActivityName="com.debug.sensordebug.SensorDebugActivity" >
-        </activity>
+       
     </application>
 
 </manifest>

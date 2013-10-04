@@ -56,7 +56,7 @@ public class PSActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.psconfig);
+        setContentView(R.layout.flagment_psconfig);
 
         mPS_Freq = (Spinner) findViewById(R.id.mPS_Freq);
         mPS_Persist = (Spinner) findViewById(R.id.mALS_Rate);

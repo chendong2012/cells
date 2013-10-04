@@ -1,11 +1,21 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+<LinearLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/row1_bottom"
+                android:layout_marginLeft="@dimen/row1_left"
+                android:layout_marginRight="@dimen/row1_right"
+                android:layout_marginTop="@dimen/row1_top" >
 
         <TableRow
             android:id="@+id/tableRow1"
@@ -17,9 +27,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
+                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
                 android:text="PS Configurations:" />
         </TableRow>
-
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/row1_bottom"
+                android:layout_marginLeft="@dimen/row1_left"
+                android:layout_marginRight="@dimen/row1_right"
+                android:layout_marginTop="@dimen/row1_top"
+            android:src="@color/imgview1_color" />
         <TableRow
             android:id="@+id/tableRow2"
             android:layout_width="0dp"
@@ -30,6 +50,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:text="Led Pulse Freq" />
 
             <TextView
@@ -37,6 +60,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:text="PS Gain" />
         </TableRow>
 
@@ -49,6 +75,9 @@
                 android:id="@+id/mPS_Freq"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:layout_weight="1" />
 
             <EditText
@@ -56,6 +85,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:ems="10" />
 
         </TableRow>
@@ -70,6 +102,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:text="PS Measurement Time" />
 
             <TextView
@@ -77,6 +112,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:text="PS Persist(0-15)" />
         </TableRow>
 
@@ -89,12 +127,18 @@
                 android:id="@+id/mALS_Time"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:layout_weight="1" />
 
             <Spinner
                 android:id="@+id/mALS_Rate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:layout_weight="1" />
         </TableRow>
 
@@ -108,6 +152,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:text="LED Pulse Count" />
 
             <TextView
@@ -115,6 +162,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:text="LED Driving Peak Current" />
         </TableRow>
 
@@ -127,12 +177,18 @@
                 android:id="@+id/mALS_Persist"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:layout_weight="1" />
 
             <Spinner
                 android:id="@+id/mPS_Current"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:layout_weight="1" />
 
         </TableRow>
@@ -147,6 +203,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:text="LED Duty Cycle" />
         </TableRow>
 
@@ -159,6 +218,9 @@
                 android:id="@+id/mPS_Cycle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:layout_weight="1" />
 
         </TableRow>
@@ -173,6 +235,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:text="PS Threshold (0 to 2047):" />
         </TableRow>
 
@@ -186,6 +251,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:text="Low:" />
 
             <EditText
@@ -193,6 +261,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:ems="10" >
 
                 <requestFocus />
@@ -203,6 +274,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:text="High:" />
 
             <EditText
@@ -224,6 +298,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
+                                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" 
+                
                 android:text="Save" />
 
         </TableRow>
@@ -231,3 +308,4 @@
     </TableLayout>
 
 </LinearLayout>
+</ScrollView>

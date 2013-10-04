@@ -1,23 +1,21 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".SensorDebugActivity" >
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical" >
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+                            android:layout_marginBottom="@dimen/row1_bottom"
+                android:layout_marginLeft="@dimen/row1_left"
+                android:layout_marginRight="@dimen/row1_right"
+                android:layout_marginTop="@dimen/row1_top"
             android:layout_weight="1" >
 
             <TableRow
@@ -208,27 +206,16 @@
                     android:id="@+id/mRegisterSaveButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/row1_bottom"
                     android:layout_weight="1"
-                    android:text="Save" />
+                    android:text="Save"
+                    android:textColor="@color/textcolor"
+                    android:textSize="@dimen/textsize" />
 
-                <Button
-                    android:id="@+id/mALSSetButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="als set" />
-
-                <Button
-                    android:id="@+id/mPSSetButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="ps set" />
             </TableRow>
 
         </TableLayout>
 
     </LinearLayout>
 
-</RelativeLayout>
+</ScrollView>

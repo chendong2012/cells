@@ -47,7 +47,7 @@ public class ALSActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.alsconfig);
+        setContentView(R.layout.flagment_alsconfig);
 
         mALS_Gain = (Spinner) findViewById(R.id.mALS_Gain);
         mALS_Persist = (Spinner) findViewById(R.id.mALS_Persist);
