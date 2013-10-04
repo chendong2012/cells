@@ -1,0 +1,36 @@
+<PreferenceScreen 
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Raspdroid preferences" >
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="preferenceHapticFeedbackEnabledBoolean"
+            android:summary="Select to enable haptic feedback"
+            android:title="Enable haptic feedback" />
+        
+        <ListPreference
+            android:defaultValue="2"
+            android:entries="@array/preferencedecimalformat"
+            android:entryValues="@array/preferencedecimalformat"
+            android:key="preferenceFormatDecimalPlaceString"
+            android:summary="Select a decimal place to round to for your calculations"
+            android:title="Rounding decimal place" />
+                
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="preferenceWakeLockBoolean"
+            android:summary="Select to keep the screen awake"
+            android:title="Enable wake-lock" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="preferenceWakeLockToastBoolean"
+            android:summary="Select to display a message when wake-lock is enabled"
+            android:title="Enable wake-lock message" />
+
+
+    </PreferenceCategory>
+        
+
+</PreferenceScreen>

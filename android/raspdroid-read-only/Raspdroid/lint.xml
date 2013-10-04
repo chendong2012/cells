@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="ContentDescription" severity="ignore">
+        <ignore path="res/layout-large-land/activity_main_screen.xml" />
+    </issue>
+</lint>

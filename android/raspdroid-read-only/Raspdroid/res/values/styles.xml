@@ -1,0 +1,6 @@
+<resources>
+    <style
+        name="ApplicationTheme" 
+        parent="Theme.Sherlock.Light">
+    </style>
+</resources>

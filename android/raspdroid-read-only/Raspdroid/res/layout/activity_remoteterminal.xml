@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/usersessionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <AutoCompleteTextView
+        android:id="@+id/commandlineEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/usersessionTextView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/usersessionTextView"
+        android:ems="10"
+        android:inputType="text" />
+
+    <requestFocus />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/commandButton"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:src="@color/standard_black" />
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView1"
+        android:fillViewport="true" >
+
+        <TextView
+            android:id="@+id/outputTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:textSize="16sp" />
+    </ScrollView>
+
+    <Button
+        android:id="@+id/commandButton"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/usersessionTextView"
+        android:layout_margin="10dp"
+        android:background="@drawable/selector_grey"
+        android:text="@string/general_sendcommand"
+        android:textColor="@color/standard_white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

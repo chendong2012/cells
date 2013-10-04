@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.raspdroid"
+    android:versionCode="1"
+    android:versionName="1.0" >
+    
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="17" />
+    
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+   
+    <uses-permission 
+        android:name="android.permission.VIBRATE" />
+
+    <application
+        android:allowBackup="true"
+        android:name="com.raspdroid.helper.RaspdroidApplication" 
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/application_name"
+        android:theme="@style/ApplicationTheme">
+        <activity
+            android:name="com.raspdroid.ActivityMainScreen"
+            android:label="@string/application_name" 
+            android:theme="@style/Theme.Sherlock.Light">
+            
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="ActivityPreferences"></activity>
+        <activity android:name="ActivityRemoteTerminal"
+            android:theme="@style/Theme.Sherlock.Light"></activity>
+        
+        <activity 
+            android:name="com.raspdroid.ActivityRemoteFileTransfer"
+            android:theme="@style/Theme.Sherlock.Light">
+        </activity>
+        
+        <activity
+            android:name="com.raspdroid.VoiceActivity"
+            android:theme="@style/Theme.Sherlock.Light">
+        </activity>
+        
+        <activity
+            android:name="com.raspdroid.GpioButtons"
+            android:theme="@style/Theme.Sherlock.Light">
+        </activity>
+        
+        <activity
+            android:name="com.raspdroid.TutorialOne"
+            android:theme="@style/Theme.Sherlock.Light">
+        </activity>
+        
+        <activity
+            android:name="com.raspdroid.TutorialTwo"
+            android:theme="@style/Theme.Sherlock.Light">
+        </activity>
+        
+        <activity
+            android:name="com.raspdroid.TutorialThree"
+            android:theme="@style/Theme.Sherlock.Light">
+        </activity>
+        
+    </application>
+
+</manifest>
