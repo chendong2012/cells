@@ -49,6 +49,7 @@ public class DebugTools extends Activity {
 	String PS_FILE_PATH = "/sys/devices/platform/als_ps/driver/ps";
 	String LOW_FILE_PATH = "/sys/devices/platform/als_ps/driver/proximity_low";
 	String HIGH_FILE_PATH = "/sys/devices/platform/als_ps/driver/proximity_high";
+
 	String CALINOISE_FILE_PATH = "/sys/devices/platform/als_ps/driver/cali_noise";
 	String CALITABLEINDEX_FILE_PATH = "/sys/devices/platform/als_ps/driver/calitableindex";
 	private SensorManager mSensorMgr;//距离传感器管理器
