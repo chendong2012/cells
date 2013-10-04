@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.R.integer;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -91,11 +92,20 @@ public class DebugTools extends Activity {
         runButton.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
+						
+				//	    Intent intent = new Intent("com.chendong.debugtools.Command");
+					//    startActivity(intent);
+					    Intent intent=new Intent();	
+					    intent.setClass(DebugTools.this, Command.class);
+					    startActivity(intent);
+						
+						/*
 						if (runFlag)
 							runFlag = false;
 						else 
 							runFlag = true;
 						handler.postDelayed(runnable, 300);
+						*/
 					}
 				});
         
