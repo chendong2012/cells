@@ -10,6 +10,64 @@ import java.io.InputStreamReader;
 
 public class ToolsFileOps {
 
+	public static final String data128to158_table[] =
+	{
+		"128","129",
+        "130", "131", "132","133", "134", "135","136", "137", "138","139",
+        "140", "141", "142","143", "144", "145","146", "147", "148","149",
+        "150", "151", "152","153", "154", "155","156", "157", "158",
+	};
+	public static final String data128to158_table1[] =
+	{
+		"128(0x80)","129(0x81)", "130(0x82)", "131(0x83)", 
+		"132(0x84)","133(0x85)", "134(0x86)", "135(0x87)",
+		"136(0x88)", "137(0x89)", "138(0x8A)","139(0x8B)",
+		"140(0x8C)", "141(0x8D)", "142(0x8E)","143(0x8F)", "144(0x90)",
+		"145(0x91)","146(0x92)", "147(0x93)", "148(0x94)","149(0x95)",
+      "150(0x96)", "151(0x97)", "152(0x98)","153(0x99)", "154(0x9A)", 
+      "155(0x9B)","156(0x9C)", "157(0x9D)", "158(0x9E)",
+	};
+/*als setting*/	
+	public  static final String als_gain_table[]= {
+		 "1", "2", "4", "8", "48", "96",
+	};
+	
+    public static final String als_persist_table[] = {
+        "0", "1", "2","3", "4", "5","6", "7", "8","9", 
+        "10", "11", "12","13", "14", "15",
+        };	
+    
+    public static final String als_integration_time_table[] = {
+    	"100", "50", "200", "400", "150", "250", "300", "350",
+    };
+
+    public static final String als_meas_repeat_rate_table[] = {
+    	"50", "100", "200", "500", "1000", "2000"
+    };
+
+    public static final String led_pulse_freq_table[] = {
+        "30", "40", "50", "60", "70", "80", "90", "100"
+};
+/*als setting end*/
+	
+/*ps setting*/
+	public static final String ps_gain_table[] = { "16", "32", "64" };
+
+	public static final String ps_measurement_time_table[] = { "50", "70",
+			"100", "200", "500", "1000", "2000", };
+
+	public static final String ps_persist_table[] = { "0", "1", "2", "3", "4", "5",
+			"6", "7", "8", "9", "10", "11", "12", "13", "14", "15", };
+
+	// 10、PS Pulse Count: 0~255
+
+	public static final String led_driving_peak_count_table[] = { "5", "10", "20",
+			"50", "100", };
+
+	public static final String led_duty_cycle_table[] = { "25", "50", "75", "100" };
+
+/*ps setting end*/
+	
     public static final String data0to255_table[] = {
         "0", "1", "2","3", "4", "5","6", "7", "8","9", 
         "10", "11", "12","13", "14", "15","16", "17", "18","19",

@@ -22,6 +22,8 @@ public class PSActivity extends Activity {
 	private ArrayAdapter<String> adapter;  
 	/*spinner*/
 	Spinner mPS_Freq;
+	Spinner mPS_Gain;
+	
 	Spinner mPS_Persist;
 	Spinner mPS_Time;
 	Spinner mPS_Cycle;
@@ -59,13 +61,14 @@ public class PSActivity extends Activity {
         setContentView(R.layout.flagment_psconfig);
 
         mPS_Freq = (Spinner) findViewById(R.id.mPS_Freq);
+        mPS_Gain = (Spinner) findViewById(R.id.mPS_Gain);
         mPS_Persist = (Spinner) findViewById(R.id.mALS_Rate);
         mPS_Time = (Spinner) findViewById(R.id.mALS_Time);
         mPS_Cycle = (Spinner) findViewById(R.id.mPS_Cycle);
         mPS_Current = (Spinner) findViewById(R.id.mPS_Current);
         mPS_PulseCount = (Spinner) findViewById(R.id.mALS_Persist);
 
- 
+        
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, ToolsFileOps.data0to255_table);         
         

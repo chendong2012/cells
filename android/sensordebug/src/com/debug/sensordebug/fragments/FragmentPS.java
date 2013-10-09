@@ -27,6 +27,7 @@ public class FragmentPS extends SherlockFragment
 	private ArrayAdapter<String> adapter;  
 	/*spinner*/
 	Spinner mPS_Freq;
+	Spinner mPS_Gain;	
 	Spinner mPS_Persist;
 	Spinner mPS_Time;
 	Spinner mPS_Cycle;
@@ -68,6 +69,27 @@ public class FragmentPS extends SherlockFragment
 		final View view = inflater.inflate(R.layout.flagment_psconfig,container, false);		
 
 
+    	
+		View.OnClickListener clickListener = new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+			//	showToast(String.format("click:%d",v.getId()));
+				switch (v.getId()) {
+				}
+			}
+		};		
+
+        mPS_Freq = (Spinner) view.findViewById(R.id.mPS_Freq);
+        mPS_Gain = (Spinner) view.findViewById(R.id.mPS_Gain);
+        
+        mPS_Persist = (Spinner) view.findViewById(R.id.mALS_Rate);
+        mPS_Time = (Spinner) view.findViewById(R.id.mALS_Time);
+        mPS_Cycle = (Spinner) view.findViewById(R.id.mPS_Cycle);
+        mPS_Current = (Spinner) view.findViewById(R.id.mPS_Current);
+        mPS_PulseCount = (Spinner) view.findViewById(R.id.mALS_Persist);
+
+ 
     	class SpinnerSelectedListener_mPS_Freq implements Spinner.OnItemSelectedListener {  
     	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
     	            long arg3) {
@@ -77,11 +99,20 @@ public class FragmentPS extends SherlockFragment
     	    }  
     	    public void onNothingSelected(AdapterView<?> arg0) {  
     	    }  
+    	}
+    	class SpinnerSelectedListener_mPS_Gain implements Spinner.OnItemSelectedListener {  
+    	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
+    	            long arg3) {
+    	    	//showToast(String.format("mPS_Freq:%d,%d,%d", arg1.getId(), arg2,arg3));
+    	    	Log.e(tags,"SpinnerSelectedListener_mPS_Freq");
+    	    }  
+    	    public void onNothingSelected(AdapterView<?> arg0) {  
+    	    }  
     	}		
     	class SpinnerSelectedListener_mPS_Persist implements Spinner.OnItemSelectedListener {  
     	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
     	            long arg3) {
-    	    	Log.e(tags,String.format("%d", arg2));
+//    	    	Log.e(tags,String.format("%d", arg2));
     	    }  
     	    public void onNothingSelected(AdapterView<?> arg0) {  
     	    }  
@@ -89,7 +120,7 @@ public class FragmentPS extends SherlockFragment
     	class SpinnerSelectedListener_mPS_Time implements Spinner.OnItemSelectedListener {  
     	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
     	            long arg3) {
-    	    	Log.e(tags,"SpinnerSelectedListener_mPS_Time");
+    	//    	Log.e(tags,"SpinnerSelectedListener_mPS_Time");
     	    }  
     	    public void onNothingSelected(AdapterView<?> arg0) {  
     	    }  
@@ -97,7 +128,7 @@ public class FragmentPS extends SherlockFragment
     	class SpinnerSelectedListener_mPS_Cycle implements Spinner.OnItemSelectedListener {  
     	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
     	            long arg3) {
-    	    	Log.e(tags,"SpinnerSelectedListener_mPS_Cycle");
+    	   // 	Log.e(tags,"SpinnerSelectedListener_mPS_Cycle");
     	    }  
     	    public void onNothingSelected(AdapterView<?> arg0) {  
     	    }  
@@ -105,7 +136,7 @@ public class FragmentPS extends SherlockFragment
     	class SpinnerSelectedListener_mPS_Current implements Spinner.OnItemSelectedListener {  
     	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
     	            long arg3) {
-    	    	Log.e(tags,"SpinnerSelectedListener_mPS_Current");
+    	  //  	Log.e(tags,"SpinnerSelectedListener_mPS_Current");
     	    }  
     	    public void onNothingSelected(AdapterView<?> arg0) {  
     	    }  
@@ -113,43 +144,54 @@ public class FragmentPS extends SherlockFragment
     	class SpinnerSelectedListener_mPS_PulseCount implements Spinner.OnItemSelectedListener {  
     	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
     	            long arg3) {
-    	    	Log.e(tags,"SpinnerSelectedListener_mPS_PulseCount");
+    	 //   	Log.e(tags,"SpinnerSelectedListener_mPS_PulseCount");
     	    }  
     	    public void onNothingSelected(AdapterView<?> arg0) {  
     	    }  
     	}		
-    	
-		View.OnClickListener clickListener = new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				showToast(String.format("click:%d",v.getId()));
-				switch (v.getId()) {
-				}
-			}
-		};		
 
-        mPS_Freq = (Spinner) view.findViewById(R.id.mPS_Freq);
-        mPS_Persist = (Spinner) view.findViewById(R.id.mALS_Rate);
-        mPS_Time = (Spinner) view.findViewById(R.id.mALS_Time);
-        mPS_Cycle = (Spinner) view.findViewById(R.id.mPS_Cycle);
-        mPS_Current = (Spinner) view.findViewById(R.id.mPS_Current);
-        mPS_PulseCount = (Spinner) view.findViewById(R.id.mALS_Persist);
-
- 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, ToolsFileOps.data0to255_table);         
+        ArrayAdapter<String> mPS_FreqAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, ToolsFileOps.led_pulse_freq_table);   
         
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mPS_Freq.setAdapter(adapter);
-        mPS_Persist.setAdapter(adapter);
-        mPS_Time.setAdapter(adapter);
-        mPS_Cycle.setAdapter(adapter);        
-        mPS_Current.setAdapter(adapter);
-        mPS_PulseCount.setAdapter(adapter);               
+        ArrayAdapter<String> mPS_GainAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, ToolsFileOps.ps_gain_table); 
+        
+        ArrayAdapter<String> mPS_PersistAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, ToolsFileOps.ps_persist_table);         
+
+        ArrayAdapter<String> mPS_TimeAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, ToolsFileOps.ps_measurement_time_table);         
+
+        ArrayAdapter<String> mPS_CycleAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, ToolsFileOps.led_duty_cycle_table);         
+
+        ArrayAdapter<String> mPS_CurrentAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, ToolsFileOps.led_driving_peak_count_table);         
+
+        ArrayAdapter<String> mPS_PulseCountAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, ToolsFileOps.data0to255_table);         
+
+        mPS_FreqAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mPS_GainAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        mPS_PersistAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mPS_TimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mPS_CycleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mPS_CurrentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mPS_PulseCountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        
+
+        mPS_Freq.setAdapter(mPS_FreqAdapter);
+        mPS_Gain.setAdapter(mPS_GainAdapter);
+        mPS_Persist.setAdapter(mPS_PersistAdapter);
+        mPS_Time.setAdapter(mPS_TimeAdapter);
+        mPS_Cycle.setAdapter(mPS_CycleAdapter);        
+        mPS_Current.setAdapter(mPS_CurrentAdapter);
+        mPS_PulseCount.setAdapter(mPS_PulseCountAdapter);               
         
         //添加事件Spinner事件监听    
         mPS_Freq.setOnItemSelectedListener(new SpinnerSelectedListener_mPS_Freq());
+        mPS_Gain.setOnItemSelectedListener(new SpinnerSelectedListener_mPS_Gain());
         mPS_Persist.setOnItemSelectedListener(new SpinnerSelectedListener_mPS_Persist());
         mPS_Time.setOnItemSelectedListener(new SpinnerSelectedListener_mPS_Time());
         mPS_Cycle.setOnItemSelectedListener(new SpinnerSelectedListener_mPS_Cycle());       
@@ -158,6 +200,7 @@ public class FragmentPS extends SherlockFragment
         
         //设置默认值  
         mPS_Freq.setVisibility(View.VISIBLE);  
+        mPS_Gain.setVisibility(View.VISIBLE);         
         mPS_Persist.setVisibility(View.VISIBLE);
         mPS_Time.setVisibility(View.VISIBLE);  
         mPS_Cycle.setVisibility(View.VISIBLE);        
@@ -166,7 +209,6 @@ public class FragmentPS extends SherlockFragment
 
         mPSSaveButton = (Button) view.findViewById(R.id.mPSSaveButton);  		
         mPSSaveButton.setOnClickListener(clickListener);
-        
 		return view;
 	}
 
@@ -179,14 +221,14 @@ public class FragmentPS extends SherlockFragment
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
-		showToast("onPause");
+		//showToast("onPause");
 		super.onPause();
 	}
 
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
-		showToast("ps:resume");
+	//	showToast("ps:resume");
 		super.onResume();
 	}
 

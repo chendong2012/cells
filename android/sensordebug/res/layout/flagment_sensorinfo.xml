@@ -160,31 +160,30 @@
                     android:textSize="@dimen/textsize" 
                     android:text="Register:" />
 
-                <EditText
-                    android:id="@+id/mPSHigh_Value"
-                    android:layout_width="wrap_content"
+                <Spinner
+                    android:id="@+id/mSensorRegister"
+                    android:focusable="false" 
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@color/textcolor"
-                    android:textSize="@dimen/textsize" 
-                    android:ems="10" />
+                    android:layout_weight="1" />
 
                 <TextView
                     android:id="@+id/TextView01"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/textcolor"
-                    android:textSize="@dimen/textsize" 
-                    android:text="Value:" />
-
-                <EditText
-                    android:id="@+id/mPSLow_Value"
-                    android:layout_width="wrap_content"
+                    android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:text="Value:"
                     android:textColor="@color/textcolor"
-                    android:textSize="@dimen/textsize" 
-                    android:ems="10" />
+                    android:textSize="@dimen/textsize" />
+
+                <TextView
+                    android:id="@+id/TextView07"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:text="value"
+                    android:textColor="@color/textcolor"
+                    android:textSize="@dimen/textsize" />
+
             </TableRow>
 
             <ImageView
@@ -208,7 +207,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/row1_bottom"
                     android:layout_weight="1"
-                    android:text="Save"
+                    android:text="Read"
                     android:textColor="@color/textcolor"
                     android:textSize="@dimen/textsize" />
 

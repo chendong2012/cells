@@ -80,15 +80,13 @@
                 
                 android:layout_weight="1" />
 
-            <EditText
-                android:id="@+id/editText3"
+            <Spinner
+                android:id="@+id/mPS_Gain"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                                android:textColor="@color/textcolor"
-                android:textSize="@dimen/textsize" 
-                
-                android:ems="10" />
+                android:textColor="@color/textcolor"
+                android:textSize="@dimen/textsize" />
 
         </TableRow>
 
