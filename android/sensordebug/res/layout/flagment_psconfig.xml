@@ -122,7 +122,7 @@
             android:layout_height="wrap_content" >
 
             <Spinner
-                android:id="@+id/mALS_Time"
+                android:id="@+id/mPS_Time"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                                 android:textColor="@color/textcolor"
@@ -131,7 +131,7 @@
                 android:layout_weight="1" />
 
             <Spinner
-                android:id="@+id/mALS_Rate"
+                android:id="@+id/mPS_Rate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                                 android:textColor="@color/textcolor"
@@ -172,7 +172,7 @@
             android:layout_height="wrap_content" >
 
             <Spinner
-                android:id="@+id/mALS_Persist"
+                android:id="@+id/mPS_Persist"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                                 android:textColor="@color/textcolor"

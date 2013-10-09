@@ -83,11 +83,11 @@ public class FragmentPS extends SherlockFragment
         mPS_Freq = (Spinner) view.findViewById(R.id.mPS_Freq);
         mPS_Gain = (Spinner) view.findViewById(R.id.mPS_Gain);
         
-        mPS_Persist = (Spinner) view.findViewById(R.id.mALS_Rate);
-        mPS_Time = (Spinner) view.findViewById(R.id.mALS_Time);
+        mPS_Persist = (Spinner) view.findViewById(R.id.mPS_Rate);
+        mPS_Time = (Spinner) view.findViewById(R.id.mPS_Time);
         mPS_Cycle = (Spinner) view.findViewById(R.id.mPS_Cycle);
         mPS_Current = (Spinner) view.findViewById(R.id.mPS_Current);
-        mPS_PulseCount = (Spinner) view.findViewById(R.id.mALS_Persist);
+        mPS_PulseCount = (Spinner) view.findViewById(R.id.mPS_Persist);
 
  
     	class SpinnerSelectedListener_mPS_Freq implements Spinner.OnItemSelectedListener {  

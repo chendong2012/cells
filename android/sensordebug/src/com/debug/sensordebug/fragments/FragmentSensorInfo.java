@@ -20,6 +20,7 @@ import com.debug.sensordebug.R;
 import com.debug.sensordebug.ToolsFileOps;
 import com.debug.sensordebug.sensor.SensorOps;
 
+
 public class FragmentSensorInfo extends SherlockFragment {
 	final String ALS_FILE_PATH = "/sys/devices/platform/als_ps/driver/als";
 	final String PS_FILE_PATH = "/sys/devices/platform/als_ps/driver/ps";
