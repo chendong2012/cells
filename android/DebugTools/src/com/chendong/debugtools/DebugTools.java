@@ -22,10 +22,14 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.R.integer;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
@@ -65,7 +69,9 @@ public class DebugTools extends Activity {
 	Button runButton;
 	
    Handler handler=new Handler();
-   
+   private Object mToneGeneratorLock = new Object();
+   private Vibrator vibrator;
+   private ToneGenerator mToneGenerator;
 	private XYSeriesRenderer visitsRenderer;
 	private XYSeriesRenderer lowRenderer;
 	private XYSeriesRenderer highRenderer;
@@ -119,7 +125,8 @@ public class DebugTools extends Activity {
 					// TODO Auto-generated catch block
 			//		e.printStackTrace();
 		//		}
-				
+		vibrator = (Vibrator) 
+				this.getSystemService(Context.VIBRATOR_SERVICE);
         handler.postDelayed(runnable, 200);
     }//onCreate end
 
@@ -221,7 +228,17 @@ public class DebugTools extends Activity {
     SensorEventListener mProximityListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
+        	
+        	if (event.values[0] > 0) {
+        		vibrator.cancel();
+        		mToneGenerator.stopTone();
+        	} else {
+        		//vibrator.vibrate(new long[]{10000,100}, -1);
+        		vibrator.vibrate(new long[] {0, 2000}, 0);
+        		playTone(ToneGenerator.TONE_DTMF_1);
+        		
         	}
+        }
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
         	}
@@ -319,6 +336,61 @@ public class DebugTools extends Activity {
     	chartContainer.addView(mChart);
     }
 
+    public void newToneGenerator() {
+        // if the mToneGenerator creation fails, just continue without it.  It is
+        // a local audio signal, and is not as important as the dtmf tone itself.
+        synchronized(mToneGeneratorLock) {
+            if (mToneGenerator == null) {
+                try {
+                    // we want the user to be able to control the volume of the dial tones
+                    // outside of a call, so we use the stream type that is also mapped to the
+                    // volume control keys for this activity
+                        // Gionee zhangxiaowei 2013.6.14 modified for CR00825845 start
+                    mToneGenerator = new ToneGenerator(AudioManager.STREAM_DTMF, 240);
+                    setVolumeControlStream(AudioManager.STREAM_DTMF);
+                    // Gionee zhangxiaowei 2013.6.14 modified for CR00825845 end
+                } catch (RuntimeException e) {
+                    
+                    mToneGenerator = null;
+                }
+            }
+        }
+    }
+    
+    
+    void playTone(int tone) {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        int ringerMode = audioManager.getRingerMode();
+        if ((ringerMode == AudioManager.RINGER_MODE_SILENT)
+            || (ringerMode == AudioManager.RINGER_MODE_VIBRATE)) {
+            return;
+        }
+
+        synchronized(mToneGeneratorLock) {
+            if (mToneGenerator == null) {
+                
+                return;
+            }
+            mToneGenerator.startTone(tone, 1000000);
+        }
+    }
+
+    
+    
+    
+
+    private void releaseToneGenerator() {
+        synchronized(mToneGeneratorLock) {
+            if (mToneGenerator != null) {
+                mToneGenerator.release();
+                mToneGenerator = null;
+            }
+        }
+        
+    }
+    
+    
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -329,6 +401,7 @@ public class DebugTools extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        newToneGenerator();
         mPSensor = mSensorMgr.getSensorList(Sensor.TYPE_PROXIMITY).get(0);
         mIsProximityRight = mSensorMgr.registerListener(mProximityListener, mPSensor, SensorManager.SENSOR_DELAY_UI);
         if (false == mIsProximityRight) {
@@ -346,8 +419,11 @@ public class DebugTools extends Activity {
   @Override
   public void onPause() {
         super.onPause();
+        releaseToneGenerator();
         if (true == mIsProximityRight) {
             mSensorMgr.unregisterListener(mProximityListener);
         }
     }
+  
+
 }

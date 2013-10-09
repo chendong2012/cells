@@ -38,12 +38,12 @@
                     />
 
                 <TextView
-                    android:id="@+id/textView1"
+                    android:id="@+id/mALS_Value_TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="value"
-                    android:textColor="@color/textcolor"
+                    android:textColor="@color/red"
                     android:textSize="@dimen/textsize" />
 
             </TableRow>
@@ -73,11 +73,11 @@
                     android:text="PS:" />
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/mPS_Value_TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/textcolor"
+                    android:textColor="@color/red"
                     android:textSize="@dimen/textsize" 
                     android:text="value" />
             </TableRow>

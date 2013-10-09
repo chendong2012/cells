@@ -89,9 +89,13 @@ public class ALSActivity extends Activity {
         		);
     }
 
-	class SpinnerSelectedListener implements OnItemSelectedListener {  
+	public class SpinnerSelectedListener implements OnItemSelectedListener {  
 	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
 	            long arg3) {
+	    	
+	    	
+	    	
+	    	
 	    }  
 	    public void onNothingSelected(AdapterView<?> arg0) {  
 	    }  
