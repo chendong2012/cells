@@ -1,10 +1,17 @@
 package com.debug.sensordebug.fragments;
+import java.io.IOException;
+
 import com.debug.sensordebug.*;
+
 
 
 import com.actionbarsherlock.app.SherlockFragment;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +29,21 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 public class FragmentPS extends SherlockFragment
-{
+{	
+    final String path_ps_puslefrequency="/sys/devices/platform/als_ps/driver/ps_puslefrequency";
+    final String path_ps_gain="/sys/devices/platform/als_ps/driver/ps_gain";    
+    
+    final String path_ps_measurementtime="/sys/devices/platform/als_ps/driver/ps_measurementtime";
+    final String path_ps_leddrivingcurrent="/sys/devices/platform/als_ps/driver/ps_leddrivingcurrent";	
+    
+    final String path_ps_leddutycycle="/sys/devices/platform/als_ps/driver/ps_leddutycycle";    
+    final String path_ps_persist="/sys/devices/platform/als_ps/driver/ps_persist";
+   
+
+
+    final String path_ps_low="/sys/devices/platform/als_ps/driver/proximity_low";
+    final String path_ps_high="/sys/devices/platform/als_ps/driver/proximity_high";
+    
 	String tags="mytest123";
 	private ArrayAdapter<String> adapter;  
 	/*spinner*/
@@ -35,6 +56,7 @@ public class FragmentPS extends SherlockFragment
 	Spinner mPS_PulseCount;
 	
 	int mPS_Freq_Idx;
+	int mPS_Gain_Idx;
 	int mPS_Persist_Idx;
 	int mPS_Time_Idx;
 	int mPS_Cycle_Idx;
@@ -74,9 +96,8 @@ public class FragmentPS extends SherlockFragment
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-			//	showToast(String.format("click:%d",v.getId()));
-				switch (v.getId()) {
-				}
+				MyAsyncTask MyAsyncTask = new MyAsyncTask();
+				MyAsyncTask.execute();
 			}
 		};		
 
@@ -89,12 +110,13 @@ public class FragmentPS extends SherlockFragment
         mPS_Current = (Spinner) view.findViewById(R.id.mPS_Current);
         mPS_PulseCount = (Spinner) view.findViewById(R.id.mPS_Persist);
 
+        
+        
  
     	class SpinnerSelectedListener_mPS_Freq implements Spinner.OnItemSelectedListener {  
     	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
     	            long arg3) {
-    	    	//showToast(String.format("mPS_Freq:%d,%d,%d", arg1.getId(), arg2,arg3));
-    	    	Log.e(tags,"SpinnerSelectedListener_mPS_Freq");
+    	    	mPS_Freq_Idx = arg2;
     
     	    }  
     	    public void onNothingSelected(AdapterView<?> arg0) {  
@@ -102,9 +124,8 @@ public class FragmentPS extends SherlockFragment
     	}
     	class SpinnerSelectedListener_mPS_Gain implements Spinner.OnItemSelectedListener {  
     	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
-    	            long arg3) {
-    	    	//showToast(String.format("mPS_Freq:%d,%d,%d", arg1.getId(), arg2,arg3));
-    	    	Log.e(tags,"SpinnerSelectedListener_mPS_Freq");
+    	            long arg3) {	
+    	    	mPS_Gain_Idx = arg2;
     	    }  
     	    public void onNothingSelected(AdapterView<?> arg0) {  
     	    }  
@@ -113,6 +134,9 @@ public class FragmentPS extends SherlockFragment
     	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
     	            long arg3) {
 //    	    	Log.e(tags,String.format("%d", arg2));
+    	    	mPS_Persist_Idx = arg2;	
+    	    	
+
     	    }  
     	    public void onNothingSelected(AdapterView<?> arg0) {  
     	    }  
@@ -120,7 +144,9 @@ public class FragmentPS extends SherlockFragment
     	class SpinnerSelectedListener_mPS_Time implements Spinner.OnItemSelectedListener {  
     	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
     	            long arg3) {
-    	//    	Log.e(tags,"SpinnerSelectedListener_mPS_Time");
+    	    	mPS_Time_Idx = arg2;  	
+    	    	
+
     	    }  
     	    public void onNothingSelected(AdapterView<?> arg0) {  
     	    }  
@@ -128,7 +154,8 @@ public class FragmentPS extends SherlockFragment
     	class SpinnerSelectedListener_mPS_Cycle implements Spinner.OnItemSelectedListener {  
     	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
     	            long arg3) {
-    	   // 	Log.e(tags,"SpinnerSelectedListener_mPS_Cycle");
+    	    	mPS_Cycle_Idx = arg2;
+
     	    }  
     	    public void onNothingSelected(AdapterView<?> arg0) {  
     	    }  
@@ -136,7 +163,7 @@ public class FragmentPS extends SherlockFragment
     	class SpinnerSelectedListener_mPS_Current implements Spinner.OnItemSelectedListener {  
     	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
     	            long arg3) {
-    	  //  	Log.e(tags,"SpinnerSelectedListener_mPS_Current");
+    	    	mPS_Current_Idx = arg2;
     	    }  
     	    public void onNothingSelected(AdapterView<?> arg0) {  
     	    }  
@@ -144,7 +171,7 @@ public class FragmentPS extends SherlockFragment
     	class SpinnerSelectedListener_mPS_PulseCount implements Spinner.OnItemSelectedListener {  
     	    public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
     	            long arg3) {
-    	 //   	Log.e(tags,"SpinnerSelectedListener_mPS_PulseCount");
+    	    	mPS_PulseCount_Idx = arg2;
     	    }  
     	    public void onNothingSelected(AdapterView<?> arg0) {  
     	    }  
@@ -209,6 +236,12 @@ public class FragmentPS extends SherlockFragment
 
         mPSSaveButton = (Button) view.findViewById(R.id.mPSSaveButton);  		
         mPSSaveButton.setOnClickListener(clickListener);
+        
+        mPSLow_Value = (EditText) view.findViewById(R.id.mPSLow_Value);  	 
+        mPSHigh_Value = (EditText) view.findViewById(R.id.mPSHigh_Value);
+
+
+        
 		return view;
 	}
 
@@ -243,4 +276,64 @@ public class FragmentPS extends SherlockFragment
 		// TODO Auto-generated method stub
 		super.onStop();
 	}
+	/*-------------------------------async task-------------------------------*/
+	private class MyAsyncTask extends AsyncTask<Void, Void, String> {
+		ProgressDialog progressDialog;
+		@Override
+		protected void onPreExecute() {
+			
+			progressDialog = new ProgressDialog(getActivity());
+			progressDialog.setIndeterminate(true);
+			progressDialog.setCancelable(true);
+			progressDialog.setTitle("Save");
+			progressDialog.setMessage("Saving...");
+			progressDialog.show();
+			progressDialog.setOnCancelListener(new OnCancelListener() {
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// cancel(true);
+				}
+			});
+		}
+
+		@Override
+		protected String doInBackground(Void... params) {
+			try {
+
+				
+				ToolsFileOps.setFileCxt(path_ps_puslefrequency, ToolsFileOps.led_pulse_freq_table[mPS_Freq_Idx]);
+				ToolsFileOps.setFileCxt(path_ps_gain, ToolsFileOps.ps_gain_table[mPS_Gain_Idx]);
+				ToolsFileOps.setFileCxt(path_ps_measurementtime, ToolsFileOps.ps_measurement_time_table[mPS_Time_Idx]);
+				ToolsFileOps.setFileCxt(path_ps_leddrivingcurrent, ToolsFileOps.led_driving_peak_count_table[mPS_Current_Idx]);
+
+				ToolsFileOps.setFileCxt(path_ps_leddutycycle, ToolsFileOps.led_duty_cycle_table[mPS_Cycle_Idx]);
+				ToolsFileOps.setFileCxt(path_ps_persist, ToolsFileOps.ps_persist_table[mPS_Persist_Idx]);
+
+				ToolsFileOps.setFileCxt(path_ps_low, mPSLow_Value.getText().toString());
+				ToolsFileOps.setFileCxt(path_ps_high,  mPSHigh_Value.getText().toString());
+
+				//	ToolsFileOps.setFileCxt(path_als_low, );
+				//ToolsFileOps.setFileCxt(path_als_high, ");
+				
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return "ok";
+		}
+
+		@Override
+		protected void onCancelled() {
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			progressDialog.cancel();
+			showToast("save ok");
+		}
+	}
+	/*---------------------async task end-------------*/	
+	
 }

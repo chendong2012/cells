@@ -100,6 +100,11 @@ public class ToolsFileOps {
 
     };
 
+    /* 描述：从指定的文件里面，获取数据
+     * 参数：String path:是完整路径
+     * 返回值：从文件里面读回来的字符串内容。
+     * */
+    
 	public static String getFileCxt(String path) throws IOException {
 		FileInputStream fis = new FileInputStream(path);
 		int len = fis.available();
@@ -109,6 +114,12 @@ public class ToolsFileOps {
 		return new String(bytes);
 	}
 
+    /* 描述：指定的文件，写入数据
+     * 参数：String path:是完整路径
+    * String str:要写入的字符串
+     * 返回值：从文件里面读回来的字符串内容。
+     * */
+	
 	public static void setFileCxt(String path, String str)
 			throws IOException {
 		
@@ -121,6 +132,7 @@ public class ToolsFileOps {
 		fos.close();
 	}
 
+	
 	public static StringBuffer execCommand(String command) throws IOException {
 		StringBuffer stringBuffer = new StringBuffer();
 		;
