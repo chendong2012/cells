@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginBottom="10dp"
+    android:background="@color/standard_white" >
+   <RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:background="@color/standard_white" >
+    
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:text="Voice Commands:"
+        android:textColor="@color/holo_blue"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/option1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:text="@string/number"
+        android:textColor="@color/holo_blue"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+    
+     <TextView
+         android:id="@+id/option2"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/option1"
+         android:gravity="center_vertical"
+         android:hint=""
+         android:padding="10dp"
+         android:text="@string/output"
+         android:textColor="@color/holo_blue"
+         android:textSize="20sp"
+         android:textStyle="bold" />
+     
+     <TextView
+         android:id="@+id/option3"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/option2"
+         android:gravity="center_vertical"
+         android:hint=""
+         android:padding="10dp"
+         android:text="@string/input"
+         android:textColor="@color/holo_blue"
+         android:textSize="20sp"
+         android:textStyle="bold" />
+     
+     <TextView
+         android:id="@+id/option4"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/option3"
+         android:gravity="center_vertical"
+         android:hint=""
+         android:padding="10dp"
+         android:text="@string/on"
+         android:textColor="@color/holo_blue"
+         android:textSize="20sp"
+         android:textStyle="bold" />
+     
+     <TextView
+         android:id="@+id/option5"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/option4"
+         android:gravity="center_vertical"
+         android:hint=""
+         android:padding="10dp"
+         android:text="@string/open"
+         android:textColor="@color/holo_blue"
+         android:textSize="20sp"
+         android:textStyle="bold" />
+     
+     <TextView
+         android:id="@+id/option6"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/option5"
+         android:gravity="center_vertical"
+         android:hint=""
+         android:padding="10dp"
+         android:text="@string/off"
+         android:textColor="@color/holo_blue"
+         android:textSize="20sp"
+         android:textStyle="bold" />
+     
+     <TextView
+         android:id="@+id/option7"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/option6"
+         android:gravity="center_vertical"
+         android:hint=""
+         android:padding="10dp"
+         android:text="@string/close"
+         android:textColor="@color/holo_blue"
+         android:textSize="20sp"
+         android:textStyle="bold" />
+     
+     <TextView
+         android:id="@+id/option8"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/option7"
+         android:gravity="center_vertical"
+         android:hint=""
+         android:padding="10dp"
+         android:text="@string/status"
+         android:textColor="@color/holo_blue"
+         android:textSize="20sp"
+         android:textStyle="bold" />
+
+     <Button
+         android:id="@+id/ok"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/option8"
+         android:text="OK" />
+
+</RelativeLayout>
+</ScrollView>

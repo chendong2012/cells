@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">sshtest</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+
+
+    <string name="application_name">Raspdroid</string>
+    <string name="menu_settings">Settings</string>
+    <string name="dialog_information_connectionerror">There was an error connecting to your Raspberry Pi. Please check your login credentials and that this device is connected to the same network as the Raspberry Pi.</string>
+    <string name="dialog_information_remoteterminal">Once connencted to your Raspberry Pi you can send terminal commands to it from this device.  Please note that not all commands will work and sequential commands should be done all at once using &amp;&amp; in between commands.</string>
+    <string name="dialog_information_superuserwarning">WARNING! Entering commands as \'Superuser\' can cause irreversible damage to your Raspberry Pi if you are not extremely careful! </string>
+    <string name="dialog_information_remotefiletransfer">Once connencted to your Raspberry Pi you can send/receive files from your device to your Raspberry Pi. Simply select a file from the file dialog and send it.</string>
+    <string name="toast_noparentdirectory">There is no parent directory to navigate to!</string>
+    <string name="toast_noconnection">You are not connected to your Raspberry Pi!</string>
+    <string name="toast_blanklogincredentials">One or more of your login credentials are blank!</string>
+    <string name="toast_nofileselected">You need to select a file to transfer!</string>
+    <string name="toast_wakelock">Wake lock is active!</string>
+    <string name="toast_connected">Connectection established!</string>
+    <string name="toast_commandblank">You need to enter in a command!</string>
+    <string name="toast_connectioncanceled">Connection attempt cancelled by user!</string>
+    <string name="error_general">Whoops something enexpected went wrong! Please restart the app. If the problem persists please contact the developers</string>
+    <string name="error_connection">There was an error connecting to the host, please check your login credentials and try again.</string>
+    <string name="general_sendcommand">Send command</string>
+    
+
+    <string name="title_section1">Voice Controlled</string>
+    <string name="title_section2">Voice Controlled</string>
+	<string name="press">Press and speak</string>
+	<string name="activate">activate</string>
+    <string name="sayaword">Say a word!</string>
+
+    <string name="intro">Press the button to speak!</string>
+    <string name="speech">Speak now!</string>
+    <string name="yousaid">You said</string>
+    <string name="chosen">chosen</string>
+    <string name="input">input</string>
+    <string name="open">open</string>
+    <string name="on">on</string>
+    <string name="close">close</string>
+    <string name="off">off</string>
+    <string name="pulse">pulse</string>
+    <string name="output">output</string>
+    <string name="sequence">sequence</string>
+    <string name="magic">magic</string>
+	<string name="ip">ip</string>
+    <string name="port">port</string>
+    <string name="GPIO">GPIO</string>
+    <string name="error_word">Unknown word</string>
+    <string name="word_intro">Suggested words</string>
+    <string name="number">number</string>
+    <string name="zero">0</string>
+    <string name="one">1</string>
+    <string name="four">4</string>
+    <string name="seventeen">17</string>
+    <string name="twentyone">21</string>
+    <string name="twentytwo">22</string>
+    <string name="ten">10</string>
+    <string name="nine">9</string>
+    <string name="eleven">11</string>
+    <string name="eighteen">18</string>
+    <string name="twentythree">23</string>
+    <string name="twentyfour">24</string>
+    <string name="twentyfive">25</string>
+    <string name="eight">8</string>
+    <string name="seven">7</string>
+    <string name="get">get</string>
+    <string name="status">status</string>
+    <string name="d_title">"Raspdroid @ Your Raspberry Pi"</string>
+    <string name="webiopi_title">"WebIOPi @ Your Raspberry Pi"</string>
+    <string name="webiopi_settings">"WebIOPi Settings"</string>
+    <string name="d_ip">"IP address:"</string>
+    <string name="d_user">"Username:"</string>
+    <string name="d_pass">"Password:"</string>
+    <string name="d_port">"Port:"</string>
+    <string name="d_pin">"PIN:"</string>
+    <string name="d_save">"Save"</string>
+    
+    <string name="buttonlabel1">GPIO 0</string>
+    <string name="buttonlabel2">GPIO 1</string>
+    <string name="buttonlabel3">GPIO 4</string>
+    <string name="buttonlabel4">GPIO 17</string>
+    <string name="buttonlabel5">GPIO 21</string>
+    <string name="buttonlabel6">GPIO 22</string>
+    <string name="buttonlabel7">GPIO 10</string>
+    <string name="buttonlabel8">GPIO 9</string>
+    <string name="buttonlabel9">GPIO 11</string>
+    <string name="buttonlabel10">GPIO 18</string>
+    <string name="buttonlabel11">GPIO 23</string>
+    <string name="buttonlabel12">GPIO 24</string>
+    <string name="buttonlabel13">GPIO 25</string>
+    <string name="buttonlabel14">GPIO 8</string>
+    <string name="buttonlabel15">GPIO 7</string>
+    
+    
+    
+    
+    
+    
+    
+</resources>
