@@ -107,7 +107,7 @@
                     android:textSize="@dimen/textsize" />
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/mHIGH_Value_TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -126,7 +126,7 @@
                     android:textSize="@dimen/textsize" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/mLOW_Value_TextView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -177,7 +177,7 @@
                     android:textSize="@dimen/textsize" />
 
                 <TextView
-                    android:id="@+id/TextView07"
+                    android:id="@+id/mReg_Value_TextView"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:text="value"
@@ -209,7 +209,8 @@
                     android:layout_weight="1"
                     android:text="Read"
                     android:textColor="@color/textcolor"
-                    android:textSize="@dimen/textsize" />
+                    android:textSize="@dimen/textsize"
+                     />
 
             </TableRow>
 

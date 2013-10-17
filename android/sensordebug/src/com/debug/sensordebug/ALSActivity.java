@@ -64,18 +64,22 @@ public class ALSActivity extends Activity {
         mALS_Gain.setAdapter(adapter);
         mALS_Persist.setAdapter(adapter);
         mALS_Time.setAdapter(adapter);
-        mALS_Rate.setAdapter(adapter);        
+        mALS_Rate.setAdapter(adapter);
         
+        mALS_Gain.setSelection(3);
         //添加事件Spinner事件监听    
         mALS_Gain.setOnItemSelectedListener(new SpinnerSelectedListener());
         mALS_Persist.setOnItemSelectedListener(new SpinnerSelectedListener());
         mALS_Time.setOnItemSelectedListener(new SpinnerSelectedListener());
         mALS_Rate.setOnItemSelectedListener(new SpinnerSelectedListener());        
         //设置默认值  
+       
         mALS_Gain.setVisibility(View.VISIBLE);  
         mALS_Persist.setVisibility(View.VISIBLE);
         mALS_Time.setVisibility(View.VISIBLE);  
         mALS_Rate.setVisibility(View.VISIBLE);        
+       
+
         
         mALSSaveButton.setOnClickListener(
         		new OnClickListener() {

@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Vector;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -21,11 +23,16 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivityBase;
 import com.viewpagerindicator.TitlePageIndicator;
 import com.viewpagerindicator.TitlePageIndicator.IndicatorStyle;
-
+import com.debug.sensordebug.fragments.*;
 
 
 public class ActivityMainScreen extends SherlockFragmentActivity implements SlidingActivityBase
 {
+	
+	void showToast(CharSequence msg) {
+
+		Toast.makeText(ActivityMainScreen.this, msg, Toast.LENGTH_SHORT).show();
+	}
 	 @Override
 	 protected void onCreate(Bundle savedInstanceState) 
 	 {
@@ -109,15 +116,22 @@ public class ActivityMainScreen extends SherlockFragmentActivity implements Slid
 			
 			@Override
 			public void onPageSelected(int pagenumberInteger) 
-			{
-				
+			{				
 		        /** When the page changes we will check and see if it is the first (0) page, if it is than
 		         *  we will make it easier to access the Sliding Menu by setting it's touchmode to fullscreen
 		         *  instead of the very edge of the screen **/
-
+				showToast("page"+Integer.toString(pagenumberInteger));
 				switch(pagenumberInteger)
-				{
+				{					
 					case 0:
+						ToolsFileOps.global_switch = 0;
+						break;
+					case 1:
+						ToolsFileOps.global_switch = 1;
+						break;
+					case 2:
+						ToolsFileOps.global_switch = 2;
+						break;
 					default:
 					break;				
 				}
@@ -125,7 +139,6 @@ public class ActivityMainScreen extends SherlockFragmentActivity implements Slid
        });
 	}
 
-	
 	@Override
 	public void setBehindContentView(View view, LayoutParams layoutParams) {
 		// TODO Auto-generated method stub
@@ -179,17 +192,6 @@ public class ActivityMainScreen extends SherlockFragmentActivity implements Slid
 		// TODO Auto-generated method stub
 		
 	}
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

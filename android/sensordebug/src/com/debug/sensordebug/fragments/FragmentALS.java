@@ -141,6 +141,7 @@ public class FragmentALS extends SherlockFragment {
 		mALS_Time = (Spinner) view.findViewById(R.id.mALS_Time);
 		mALS_Rate = (Spinner) view.findViewById(R.id.mALS_Rate);
 
+		
 		mALSSaveButton = (Button) view.findViewById(R.id.mALSSaveButton);
 		mALSSaveButton.setOnClickListener(new OnClickListener() {
 
@@ -177,7 +178,11 @@ public class FragmentALS extends SherlockFragment {
 		mALS_Persist.setAdapter(mALS_PersistAdapter);
 		mALS_Time.setAdapter(mALS_TimeAdapter);
 		mALS_Rate.setAdapter(mALS_RateAdapter);
-
+		
+		
+//		mALS_Gain.setSelection(3);
+		
+		
 		
 		// 添加事件Spinner事件监听
 		mALS_Gain
