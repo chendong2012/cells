@@ -65,7 +65,7 @@ public class ToolsFileOps {
 	public static final String ps_gain_table[] = { "16", "32", "64" };
 
 	public static final String ps_measurement_time_table[] = { "50", "70",
-			"100", "200", "500", "1000", "2000", };
+			"100", "200", "500", "1000", "2000", "10"};
 
 	public static final String ps_persist_table[] = { "0", "1", "2", "3", "4", "5",
 			"6", "7", "8", "9", "10", "11", "12", "13", "14", "15", };
@@ -76,6 +76,10 @@ public class ToolsFileOps {
 			"50", "100", };
 
 	public static final String led_duty_cycle_table[] = { "25", "50", "75", "100" };
+
+	
+	public static final String ps_pulsecount_table[] = { "0", "1", "2", "3", "4", "5",
+		"6", "7", "8", "9", "10", "11", "12", "13", "14", "15", };
 
 /*ps setting end*/
 	

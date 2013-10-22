@@ -120,7 +120,7 @@ public class ActivityMainScreen extends SherlockFragmentActivity implements Slid
 		        /** When the page changes we will check and see if it is the first (0) page, if it is than
 		         *  we will make it easier to access the Sliding Menu by setting it's touchmode to fullscreen
 		         *  instead of the very edge of the screen **/
-				showToast("page"+Integer.toString(pagenumberInteger));
+				//showToast("page"+Integer.toString(pagenumberInteger));
 				switch(pagenumberInteger)
 				{					
 					case 0:

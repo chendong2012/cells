@@ -179,8 +179,13 @@ public class FragmentALS extends SherlockFragment {
 		mALS_Time.setAdapter(mALS_TimeAdapter);
 		mALS_Rate.setAdapter(mALS_RateAdapter);
 		
-		
-//		mALS_Gain.setSelection(3);
+/*加上默认值*/
+		mALS_Gain.setSelection(3);
+	//	mALS_Persist.setSelection(3);
+	//	mALS_Time.setSelection(3);
+		mALS_Rate.setSelection(3);
+/*end*/
+
 		
 		
 		

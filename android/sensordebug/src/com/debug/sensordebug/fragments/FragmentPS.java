@@ -39,7 +39,7 @@ public class FragmentPS extends SherlockFragment
     final String path_ps_leddutycycle="/sys/devices/platform/als_ps/driver/ps_leddutycycle";    
     final String path_ps_persist="/sys/devices/platform/als_ps/driver/ps_persist";
    
-
+    final String path_ps_pulsecount="/sys/devices/platform/als_ps/driver/ps_pulsecount";
 
     final String path_ps_low="/sys/devices/platform/als_ps/driver/proximity_low";
     final String path_ps_high="/sys/devices/platform/als_ps/driver/proximity_high";
@@ -104,11 +104,13 @@ public class FragmentPS extends SherlockFragment
         mPS_Freq = (Spinner) view.findViewById(R.id.mPS_Freq);
         mPS_Gain = (Spinner) view.findViewById(R.id.mPS_Gain);
         
-        mPS_Persist = (Spinner) view.findViewById(R.id.mPS_Rate);
+        mPS_Persist = (Spinner) view.findViewById(R.id.mPS_Persist);
         mPS_Time = (Spinner) view.findViewById(R.id.mPS_Time);
+
         mPS_Cycle = (Spinner) view.findViewById(R.id.mPS_Cycle);
         mPS_Current = (Spinner) view.findViewById(R.id.mPS_Current);
-        mPS_PulseCount = (Spinner) view.findViewById(R.id.mPS_Persist);
+
+        mPS_PulseCount = (Spinner) view.findViewById(R.id.mPS_PulseCount);
 
         
         
@@ -196,7 +198,7 @@ public class FragmentPS extends SherlockFragment
                 android.R.layout.simple_spinner_item, ToolsFileOps.led_driving_peak_count_table);         
 
         ArrayAdapter<String> mPS_PulseCountAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, ToolsFileOps.data0to255_table);         
+                android.R.layout.simple_spinner_item, ToolsFileOps.ps_pulsecount_table);         
 
         mPS_FreqAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mPS_GainAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -215,6 +217,21 @@ public class FragmentPS extends SherlockFragment
         mPS_Cycle.setAdapter(mPS_CycleAdapter);        
         mPS_Current.setAdapter(mPS_CurrentAdapter);
         mPS_PulseCount.setAdapter(mPS_PulseCountAdapter);               
+        
+/*加上默认值*/
+   
+        mPS_Freq.setSelection(3);
+        //mPS_Gain.setSelection(3);
+       // mPS_Persist.setSelection(3);
+        
+        mPS_Time.setSelection(2);
+        mPS_Cycle.setSelection(3);
+        mPS_Current.setSelection(4);
+        
+        mPS_PulseCount.setSelection(1);
+       
+/*end*/        
+        
         
         //添加事件Spinner事件监听    
         mPS_Freq.setOnItemSelectedListener(new SpinnerSelectedListener_mPS_Freq());
@@ -311,7 +328,10 @@ public class FragmentPS extends SherlockFragment
 
 				ToolsFileOps.setFileCxt(path_ps_low, mPSLow_Value.getText().toString());
 				ToolsFileOps.setFileCxt(path_ps_high,  mPSHigh_Value.getText().toString());
+				ToolsFileOps.setFileCxt(path_ps_pulsecount,  ToolsFileOps.ps_pulsecount_table[mPS_PulseCount_Idx]);
 
+				
+				
 				//	ToolsFileOps.setFileCxt(path_als_low, );
 				//ToolsFileOps.setFileCxt(path_als_high, ");
 				

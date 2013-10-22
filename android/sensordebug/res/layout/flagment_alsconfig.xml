@@ -98,7 +98,7 @@
                 android:layout_weight="1"
                                     android:textColor="@color/textcolor"
                     android:textSize="@dimen/textsize" 
-                android:text="ALS Integration Time" />
+                android:text="ALS Integration Time(mS)" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -107,7 +107,7 @@
                 android:layout_weight="1"
                                     android:textColor="@color/textcolor"
                     android:textSize="@dimen/textsize" 
-                android:text="ALS Meas Pepeat Rate" />
+                android:text="ALS Meas Pepeat Rate(mS)" />
         </TableRow>
 
         <TableRow

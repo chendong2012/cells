@@ -35,7 +35,7 @@ public class FragmentSensorInfo extends SherlockFragment {
 
 
 	final String TAGS = "chendong";
-	final int UPDATE_CYCLE = 1000;
+	final int UPDATE_CYCLE = 200;
 	final boolean isdebug = false;
 
 	TextView mALS_Value_TextView;
@@ -235,8 +235,8 @@ public class FragmentSensorInfo extends SherlockFragment {
 		// TODO Auto-generated method stub
 		super.onDestroyView();
 
-		showToast("onDestroyView");
-		
+	//	showToast1("onDestroyView");
+		handler.removeCallbacks(runnable); 
 		mIsDestroyView = true;
 	}
 

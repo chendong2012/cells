@@ -53,7 +53,7 @@
                                 android:textColor="@color/textcolor"
                 android:textSize="@dimen/textsize" 
                 
-                android:text="Led Pulse Freq" />
+                android:text="Led Pulse Freq(kHz)" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -103,7 +103,7 @@
                                 android:textColor="@color/textcolor"
                 android:textSize="@dimen/textsize" 
                 
-                android:text="PS Measurement Time" />
+                android:text="PS Measurement Time(mS)" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -131,7 +131,7 @@
                 android:layout_weight="1" />
 
             <Spinner
-                android:id="@+id/mPS_Rate"
+                android:id="@+id/mPS_Persist"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                                 android:textColor="@color/textcolor"
@@ -163,7 +163,7 @@
                                 android:textColor="@color/textcolor"
                 android:textSize="@dimen/textsize" 
                 
-                android:text="LED Driving Peak Current" />
+                android:text="LED Driving Peak Current(mA)" />
         </TableRow>
 
         <TableRow
@@ -172,7 +172,7 @@
             android:layout_height="wrap_content" >
 
             <Spinner
-                android:id="@+id/mPS_Persist"
+                android:id="@+id/mPS_PulseCount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                                 android:textColor="@color/textcolor"
@@ -259,7 +259,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                                android:textColor="@color/textcolor"
+                                
                 android:textSize="@dimen/textsize" 
                 
                 android:ems="10" >
