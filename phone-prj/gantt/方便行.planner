@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<project name="" company="" manager="" phase="" project-start="20131124T000000Z" mrproject-version="2" calendar="1">
+  <properties/>
+  <phases/>
+  <calendars>
+    <day-types>
+      <day-type id="0" name="&#x5DE5;&#x4F5C;" description="&#x9ED8;&#x8BA4;&#x5DE5;&#x4F5C;&#x65E5;"/>
+      <day-type id="1" name="&#x65E0;&#x5DE5;&#x4F5C;" description="&#x9ED8;&#x8BA4;&#x7684;&#x4E0D;&#x5DE5;&#x4F5C;&#x65E5;"/>
+      <day-type id="2" name="&#x4F7F;&#x7528;&#x57FA;&#x7840;" description="&#x4F7F;&#x7528;&#x57FA;&#x65E5;&#x5386;&#x7684;&#x5929;"/>
+    </day-types>
+    <calendar id="1" name="&#x9ED8;&#x8BA4;">
+      <default-week mon="0" tue="0" wed="0" thu="0" fri="0" sat="1" sun="1"/>
+      <overridden-day-types>
+        <overridden-day-type id="0">
+          <interval start="0800" end="1200"/>
+          <interval start="1300" end="1700"/>
+        </overridden-day-type>
+      </overridden-day-types>
+      <days/>
+    </calendar>
+  </calendars>
+  <tasks>
+    <task id="1" name="&#x521D;&#x59CB;&#x9636;&#x6BB5;" note="" work="633600" start="20131124T000000Z" end="20131129T170000Z" work-start="20131125T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <task id="2" name="&#x7ED3;&#x6784;&#x8BBE;&#x60F3;" note="" work="144000" start="20131124T000000Z" end="20131126T142000Z" work-start="20131125T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="3" name="&#x627E;&#x7ED3;&#x6784;&#x5DE5;&#x7A0B;&#x5E08;" note="" work="144000" start="20131124T000000Z" end="20131129T170000Z" work-start="20131125T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="4" name="&#x5176;&#x5B83;&#x4EBA;&#x5458;&#x5B89;&#x6392;&#xFF08;&#x8F6F;&#x4EF6;&#x3001;&#x786C;&#x4EF6;&#x3001;&#x753B;&#x677F;&#xFF09;" note="" work="144000" start="20131124T000000Z" end="20131129T170000Z" work-start="20131125T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+      <task id="5" name="&#x62DB;&#x4EBA;&#x8BA1;&#x5212;" note="" work="201600" start="20131124T000000Z" end="20131128T120000Z" work-start="20131125T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+    </task>
+  </tasks>
+  <resource-groups/>
+  <resources>
+    <resource id="1" name="chendong" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="2" name="lyz" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="3" name="jtx" short-name="" type="1" units="0" email="" note="" std-rate="0"/>
+  </resources>
+  <allocations>
+    <allocation task-id="5" resource-id="1" units="100"/>
+    <allocation task-id="4" resource-id="1" units="100"/>
+    <allocation task-id="3" resource-id="1" units="100"/>
+    <allocation task-id="2" resource-id="1" units="100"/>
+    <allocation task-id="2" resource-id="2" units="100"/>
+    <allocation task-id="5" resource-id="3" units="100"/>
+    <allocation task-id="2" resource-id="3" units="100"/>
+  </allocations>
+</project>
