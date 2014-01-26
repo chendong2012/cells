@@ -4,7 +4,7 @@
 #include "L4Dr1.h"
 
 #include "AllAppGprot.h"
-#include "FrameworkStruct.h"
+//#include "FrameworkStruct.h"
 #include "GlobalConstants.h"
 #include "EventsGprot.h"
 #include "mmiappfnptrs.h"
@@ -14,11 +14,19 @@
 #include "HelloWorldTypes.h"
 #include "HelloWorldDefs.h"
 
-#include "MainMenuDef.h"
+//#include "MainMenuDef.h"
 
-#include "wgui_categories.h"
+//#include "wgui_categories.h"
 
 #include "Unicodexdcl.h"
+/*add by chend*/
+#include "gui.h"
+#include "gui_themes.h"
+#include "mmi_rp_app_mainmenu_def.h"
+
+
+
+
 
 /*模块入口*/
 void mmi_HelloWorld_entry(void)
