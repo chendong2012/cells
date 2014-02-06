@@ -6,6 +6,7 @@
 #include "AllAppGprot.h"
 //#include "FrameworkStruct.h"
 #include "GlobalConstants.h"
+
 #include "EventsGprot.h"
 #include "mmiappfnptrs.h"
 #include "HistoryGprot.h"
@@ -15,18 +16,34 @@
 #include "HelloWorldDefs.h"
 
 //#include "MainMenuDef.h"
-
 //#include "wgui_categories.h"
 
 #include "Unicodexdcl.h"
-/*add by chend*/
 #include "gui.h"
 #include "gui_themes.h"
 #include "mmi_rp_app_mainmenu_def.h"
 
+#include "GlobalResDef.h"			/*GRP_ID_ROOT*/
+//#include "mmi_frm_scenario_gprot.h"   /*MMI_FRM_NODE_SMART_CLOSE_FLAG*/
 
 
+///////////
 
+
+///////////
+
+
+//#include "Unicodedcl.h"
+#include "HistoryGprot_Int.h"
+extern U8 EntryNewScreen(U16 newscrnID, FuncPtr newExitHandler, FuncPtr newEntryHandler, void *flag);        /* execute current entry func handler */
+
+/*
+#include "mmi_rp_app_mainmenu_def.h"
+#include "gui_data_types.h"
+*/
+//#include "mmi_frm_scenario_gprot.h"
+
+static mmi_id g_main_menu_group_id;
 
 /*模块入口*/
 void mmi_HelloWorld_entry(void)
@@ -35,7 +52,18 @@ void mmi_HelloWorld_entry(void)
 	/* 强制退出当前屏幕，之后进入到我们的模块了 */
 	/* 上电缺省是idle屏幕，现进入MAIN_MENU_SCREENID屏 */
 	/* 注意看第二个参数，这个是当我们模块被强制退出时执行的一些操作 */
-	EntryNewScreen(MAIN_MENU_SCREENID, mmi_HelloWorld_exit, NULL, NULL);
+
+
+#if 1
+
+	//EntryNewScreen(MAIN_MENU_SCREENID, mmi_HelloWorld_exit, NULL, NULL);
+    g_main_menu_group_id = mmi_frm_group_create(GRP_ID_ROOT, GRP_ID_AUTO_GEN, NULL, NULL);
+    mmi_frm_group_enter(g_main_menu_group_id, 1);
+    if(mmi_frm_scrn_enter(g_main_menu_group_id, MAIN_MENU_SCREENID, NULL, NULL, 2) == MMI_FALSE)
+    {
+        return;
+    }
+
 
 	/* 关掉屏幕顶部的状态条，我们要用整个屏幕 */
 	entry_full_screen();
@@ -50,13 +78,14 @@ void mmi_HelloWorld_entry(void)
 	gui_set_text_color(UI_COLOR_RED);
 
 	/* 输出文本到显示缓冲, 注意是Unicode编码 */
-	gui_print_text(L"Hello, World");
+	gui_print_text(L"Hello, moring");
 
 	/* 刷新屏幕显示，MMI用的是双缓冲绘图方式，而且需要显式刷新 */
 	gui_BLT_double_buffer(0, 0, UI_device_width - 1, UI_device_height - 1);
 
 	/* 注册一个按键处理，右软键弹起时返回到之前被我们强制退出的模块 */
 	SetKeyHandler(GoBackHistory, KEY_RSK, KEY_EVENT_UP);
+#endif
 #endif
 }
 
@@ -72,13 +101,15 @@ void mmi_HelloWorld_entry(void)
 void mmi_HelloWorld_exit(void)
 {
 #ifdef	__MMI_HELLOWORLD_ENABLED__
+#if 1
 	history currHistory;
 	S16 nHistory = 0;
 
 	currHistory.scrnID = MAIN_MENU_SCREENID;
 	currHistory.entryFuncPtr = mmi_HelloWorld_entry;
-	pfnUnicodeStrcpy( (S8*)currHistory.inputBuffer, (S8*)&nHistory);
+	//pfnUnicodeStrcpy( (S8*)currHistory.inputBuffer, (S8*)&nHistory);
 
-	AddHistory(currHistory);
+	//AddHistory(currHistory);
+	#endif
 #endif
 }

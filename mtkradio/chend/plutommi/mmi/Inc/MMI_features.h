@@ -17317,5 +17317,10 @@
 	#define __MMI_ZI_VIETNAMESE__
 	#endif
 #endif
+
+
+//#if defined(MMI_HELLOWORLD_ENABLED)
 #define __MMI_HELLOWORLD_ENABLED__
+//#endif
+
 #endif /* __MMI_FEATURES__ */

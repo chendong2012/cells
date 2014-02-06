@@ -1188,8 +1188,8 @@ endif
 
 #add by chend begin 2014-01-16
 ifneq ($(filter __MMI_HELLOWORLD_ENABLED__ , $(strip $(MODULE_DEFS))),)
-SRC_LIST += plutommi/mmi/HelloWorld/Src/HelloWorld.c
-INC_DIR += plutommi/mmi/HelloWorld/Inc
-SRC_PATH += plutommi/mmi/HelloWorld/Src
+SRC_LIST += plutommi\mmi\HelloWorld\Src\HelloWorld.c
+INC_DIR += plutommi\mmi\HelloWorld\Inc
+SRC_PATH += plutommi\mmi\HelloWorld\Src
 endif
 #end
