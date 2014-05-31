@@ -13,10 +13,11 @@
 #include <IReceive.h>
 #include <user_activity.h>
 
-static void on_receive_getstatus(unsigned char *dat, unsigned char len);
+//static void on_receive_getstatus(unsigned char *dat, unsigned char len);
+static void on_gs();
 
 ISendCustom isender("gettemp");
-IReceive irev("getstatus", on_receive_getstatus);
+IReceive irev("getstatus", on_gs);
 static u2 *myu2;
 
 /*************************************/
@@ -68,19 +69,22 @@ int u2::init_ok()
 
 void u2::receive_listener(unsigned char *data, unsigned char len)
 {
-	Serial.println("u2::receive_listener");
 	if (m_init == 1) {
-		isender.msg_handler(data, len);
-		irev.msg_handler(data, len);
+//		isender.msg_handler(data, len);
+		irev.msg_handler(data, len, this);
 	}
 }
 
-static void on_receive_getstatus(unsigned char *dat, unsigned char len)
+//static void on_receive_getstatus(unsigned char *dat, unsigned char len)
+static void on_gs()
 {
+	Serial.println("getstatus");
+/*
 		if (irev.isNewPackage(dat)) {
 			irev.saveAckBuf((unsigned char *)"getstatus:ok", strlen("getstatus:ok"));
 			myu2->m_comm->send("getstatus:ok", strlen("getstatus:ok"));
 		} else {
 			myu2->m_comm->send((const char *)irev.getAckBuf(), irev.getAckBufLen());
 		}
+*/
 }

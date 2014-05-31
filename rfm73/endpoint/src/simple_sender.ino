@@ -28,7 +28,7 @@ playmp3<-------->playmp3<ok>
 
 
 ******************************************/
-#define LED_RED         8
+#define LED_RED         4
 
 user_activity *act = new u2();
 COMM comm(0, &RFM, act);
