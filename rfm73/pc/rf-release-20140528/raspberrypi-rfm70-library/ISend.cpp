@@ -92,8 +92,9 @@ void ISend::onReceive(unsigned char *dat, unsigned char len)
 void ISend::msg_handler(unsigned char *dat, unsigned char len)
 {
 	unsigned char ret;
-        ret = strncmp(item, (const char *)&dat[4], strlen(item));
-	if (ret == 0)
+
+        ret = strncmp((const char *)&item[1], (const char *)&dat[4], strlen((const char *)&item[1]));
+	if (ret == 0) {
 		if (getStatus() == S_S) {
 			setStatus(S_A);
 
@@ -102,6 +103,7 @@ void ISend::msg_handler(unsigned char *dat, unsigned char len)
 
 			onReceive(dat, len);
 		}
+	}
 }
 
 void *ISend::send_cb(void *ptr)
@@ -109,6 +111,7 @@ void *ISend::send_cb(void *ptr)
 	ISend *me = (ISend *)ptr;
 	for (;;) {
 		if (me->status == S_S) {
+			sleep(1);
 			me->trys++;
 			printf("send try:%d\n", me->trys);
 			me->sendRfDatas();
@@ -124,9 +127,9 @@ void *ISend::send_cb(void *ptr)
 			me->trys = 0;
 			me->setSendResult(RLT_OK);
 		} else {
+			sleep(1);
 		//	usleep(10000);
 		}
-			sleep(1);
 	}
 }
 

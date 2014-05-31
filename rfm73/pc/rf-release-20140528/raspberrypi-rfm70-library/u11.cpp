@@ -86,7 +86,6 @@ static void *thread_handle_rev_datas(void *ptr)
 		}
 		p->m_comm->get_local_addr(&saddr, &sport);
 		p->m_comm->get_remote_addr(&raddr, &rport);
-
 /*add your code here*/
                 isender.msg_handler(p->rev_buff, p->rev_len);
                 irev.msg_handler(p->rev_buff, p->rev_len);
@@ -101,7 +100,7 @@ static void *thread_main(void *ptr)
 	unsigned char ret;
 	user_activity *p = (user_activity*)ptr;
 	for(;;) {
-		sleep(5);
+		sleep(10);
 /*step 1*/
 		isender.trigerSend((unsigned char *)"getstatus");
 		for(;;) {
@@ -110,9 +109,9 @@ static void *thread_main(void *ptr)
 			if (ret == 1) {
 				printf("send datas ok:");
 /*step 3*/
-				printf("%s\n",isender.getReceiveData());
+//				printf("%s\n",isender.getReceiveData());
 				break;
-			} else if (ret == 0) {
+			} else if (ret == 2) {
 				printf("send datas fail\n");
 				break;
 			} else {
@@ -128,6 +127,7 @@ int u11::init_ok()
         int ret;
 	m_init = 1;
         pthread_t id;
+	m_sended = 1;
 	isender.setUserObj((user_activity *)this);
 
         ret = pthread_create(&id, NULL, thread_main, this);

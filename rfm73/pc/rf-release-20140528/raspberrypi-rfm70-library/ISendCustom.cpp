@@ -13,7 +13,7 @@ void ISendCustom::onReceive(unsigned char *dat, unsigned char len)
 
 void ISendCustom::sendRfDatas()
 {
-	printf("senddatas item,%d,%c%c%c%c,len: %d\n",\
+//	printf("senddatas item,%d,%c%c%c%c,len: %d\n",\
 		item[0], item[1], item[2], item[3],item[4],item_len);
 	_act->m_comm->send(item, item_len);
 
