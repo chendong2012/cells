@@ -1,8 +1,0 @@
-a.out
-*.o
-*.a
-test
-.project
-.metadata
-rfmTest
-rfm70_test

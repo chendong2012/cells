@@ -1,6 +1,6 @@
 #include <IReceive.h>
 
-IReceive::IReceive(const char *cmdstr,void (*cb)())
+IReceive::IReceive(const char *cmdstr,void (*cb)(unsigned char *dat, unsigned char len))
 {
 	index = 0;
 	_callback = cb;
@@ -20,7 +20,7 @@ void IReceive::msg_handler(unsigned char *dat, unsigned char len)
 	unsigned char ret;
         ret = strncmp(item, (const char *)&dat[5], strlen(item));
 	if (ret == 0) {
-		_callback();
+		_callback(dat, len);
 	}
 }
 
