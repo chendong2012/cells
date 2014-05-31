@@ -10,6 +10,7 @@
 #include <user_activity.h>
 #include <u2.h>
 #include <SoftTimer.h>
+#include <BlinkTask.h>
 
 /*************************/
 #define LOCAL_ADDR      3
@@ -27,9 +28,11 @@ playmp3<-------->playmp3<ok>
 
 
 ******************************************/
+#define LED_RED         8
+
 user_activity *act = new u2();
 COMM comm(0, &RFM, act);
-
+BlinkTask hartbeat1(LED_RED, 1000);
 char buf[32];
 
 static void irq_func(void)
@@ -56,6 +59,7 @@ void setup()
 
 	setup_irq();
 	act->init_ok();
+	hartbeat1.start();
 }
 
 /*all received datas will come here!!
