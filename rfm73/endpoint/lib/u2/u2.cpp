@@ -10,17 +10,14 @@
 #endif
 
 #include <ISendCustom.h>
-#include <IReceive.h>
+#include <IReceiveGS.h>
 #include <user_activity.h>
 
-//static void on_receive_getstatus(unsigned char *dat, unsigned char len);
-static void on_gs();
-
 ISendCustom isender("gettemp");
-IReceive irev("getstatus", on_gs);
+IReceiveGS irev("getstatus");
 static u2 *myu2;
 
-/*************************************/
+/*************************************************************************/
 u2::u2(void)
 {
 	m_sended = 1;
@@ -32,7 +29,10 @@ u2::u2(void)
 void u2::init_cmd_list()
 {
 	unsigned char i;
+
 	isender.setUserObj((user_activity *)this);
+	irev.setUserObj((user_activity *)this);
+
 	Serial.println("connecting...");
         for (;;) {
                 i = m_comm->connect();
@@ -70,21 +70,8 @@ int u2::init_ok()
 void u2::receive_listener(unsigned char *data, unsigned char len)
 {
 	if (m_init == 1) {
-//		isender.msg_handler(data, len);
-		irev.msg_handler(data, len, this);
+		isender.msg_handler(data, len);
+		irev.msg_handler(data, len);
 	}
 }
 
-//static void on_receive_getstatus(unsigned char *dat, unsigned char len)
-static void on_gs()
-{
-	Serial.println("getstatus");
-/*
-		if (irev.isNewPackage(dat)) {
-			irev.saveAckBuf((unsigned char *)"getstatus:ok", strlen("getstatus:ok"));
-			myu2->m_comm->send("getstatus:ok", strlen("getstatus:ok"));
-		} else {
-			myu2->m_comm->send((const char *)irev.getAckBuf(), irev.getAckBufLen());
-		}
-*/
-}

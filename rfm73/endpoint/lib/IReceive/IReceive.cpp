@@ -1,10 +1,9 @@
 #include <IReceive.h>
 #include <comm.h>
 
-IReceive::IReceive(const char *cmdstr,void (*cb)(void))
+IReceive::IReceive(const char *cmdstr)
 {
 	index = 0;
-	_callback = cb;
 	item = cmdstr;
 	clearAckBuf();
 }
@@ -16,18 +15,25 @@ void IReceive::setCmdStr(const char *cmdstr)
 	clearAckBuf();
 }
 
-void IReceive::msg_handler(unsigned char *dat, unsigned char len, user_activity *a)
+void IReceive::onReceive(unsigned char *dat, unsigned char len)
+{
+	return;
+}
+
+void IReceive::msg_handler(unsigned char *dat, unsigned char len)
 {
 	unsigned char ret;
         ret = strncmp(item, (const char *)&dat[5], strlen(item));
 	if (ret == 0) {
+		onReceive(dat, len);
+		/*
 		if (isNewPackage(dat)) {
 			saveAckBuf((unsigned char *)"getstatus:ok", strlen("getstatus:ok"));
 			a->m_comm->send("getstatus:ok", 12);
 		} else {
-			//a->m_comm->send((const char *)getAckBuf(), getAckBufLen());
-			a->m_comm->send("getstatus:ok", 12);
+			a->m_comm->send((const char *)getAckBuf(), getAckBufLen());
 		}
+		*/
 	}
 }
 

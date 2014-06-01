@@ -12,12 +12,13 @@ public:
 	unsigned char ack_len;
 
 	//IReceive(const char *cmdstr,void (*cb)(unsigned char *dat, unsigned char len));
-	IReceive(const char *cmdstr,void (*cb)(void));
+//	IReceive(const char *cmdstr,void (*cb)(void));
+	IReceive(const char *cmdstr);
 	void (*_callback)(void);
 	void setCmdStr(const char *cmdstr);
-//	void msg_handler(unsigned char *dat, unsigned char len);
-	void msg_handler(unsigned char *dat, unsigned char len, user_activity *a);
+	void msg_handler(unsigned char *dat, unsigned char len);
 	boolean isNewPackage(unsigned char *dat);
+	virtual void onReceive(unsigned char *dat, unsigned char len);
 
 	void saveAckBuf(unsigned char *buf, unsigned  char len);
 	unsigned char *getAckBuf();
