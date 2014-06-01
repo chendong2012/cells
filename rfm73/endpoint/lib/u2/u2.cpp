@@ -72,6 +72,8 @@ void u2::receive_listener(unsigned char *data, unsigned char len)
 	if (m_init == 1) {
 		isender.msg_handler(data, len);
 		irev.msg_handler(data, len);
+		//m_comm->send("getstatus:ok", 12);
+		//m_comm->send((const char *)aaaa, 12);
 	}
 }
 

@@ -8,7 +8,7 @@ class IReceive
 public:
         const char *item;
 	unsigned char index;
-	unsigned char ack_buf[28];
+	unsigned char ack_buf[32];
 	unsigned char ack_len;
 
 	//IReceive(const char *cmdstr,void (*cb)(unsigned char *dat, unsigned char len));
