@@ -1,6 +1,13 @@
 #include <ISend.h>
 #include <comm.h>
 #include <user_activity.h>
+/*
+#define putstring(x) SerialPrint_P(PSTR(x))
+void SerialPrint_P(PGM_P str) {
+	  for (uint8_t c; (c = pgm_read_byte(str)); str++) Serial.write(c);
+}
+//putstring("This is a nice long string that takes no memory");
+*/
 extern user_activity *myu2;
 /*
    建立状态机
@@ -12,6 +19,8 @@ extern user_activity *myu2;
 /*
 使用方法：
 １、构造对像
+	isend("dddd");
+	trigerSend("dddd");
 ２、设置要发送的命令字符串
 ３、在远程返回结果的地方加入自己的代码
 
@@ -21,12 +30,13 @@ ISend::ISend(const char *cmdstr)
 	trys = 0;
 	setStatus(S_I);
 	setSendResult(RLT_INIT);
-	memset(strRec,0,PACKAGE_LEN);
-	strRecLen=0;
+	clearAckData();
+        setCmdStr(cmdstr);
+
 	creat_send_thread();
 }
 
-void ISend::setCmdStr(unsigned char *cmdstr)
+void ISend::setCmdStr(const char *cmdstr)
 {
 	item_len = strlen((const char*)cmdstr);
 	item_len += 1;
@@ -60,12 +70,13 @@ unsigned char ISend::setSendResult(unsigned char result)
 	send_result = result;
 }
 
-unsigned char ISend::trigerSend(unsigned char *s)
+unsigned char ISend::trigerSend(const char *s)
 {
-        if (status == S_I) {
-                clearReceiveData();
+        if (getStatus() == S_I) {
+		clearAckData();
                 setCmdStr(s);
-                status = S_S;
+		setStatus(S_S);
+
                 setindex();
                 setSendResult(RLT_INIT);
                 sendRfDatas();
@@ -78,7 +89,7 @@ unsigned char ISend::trigerSend(unsigned char *s)
 void ISend::sendRfDatas()
 {
 	if (myu2 != NULL)
-		myu2->m_comm->send((const char *)getReceiveData(), getReceiveDataLen());
+		myu2->m_comm->send((const char *)item, item_len);
 	else 
 		Serial.println("myu2 is null");
         return;
@@ -96,9 +107,8 @@ void ISend::msg_handler(unsigned char *dat, unsigned char len)
 	if (ret == 0)
 		if (getStatus() == S_S) {
 			setStatus(S_A);
-			memcpy(strRec, dat, len);
-			strRecLen = len;
 			/*返回结果,打出来*/
+			/*处理所有接收回来的应答码*/
 			Serial.println((const char *)item);
 		}
 }
@@ -121,8 +131,6 @@ boolean ISend::send_cb(ISend *me)
 			me->disableSend();
 			me->trys = 0;
 			me->setSendResult(RLT_OK);
-		} else {
-		//	usleep(10000);
 		}
 		return true;
 }
@@ -137,18 +145,8 @@ unsigned char ISend::isResultOk(void)
 	return getSendResult();
 }
 
-unsigned char *ISend::getReceiveData()
+unsigned char ISend::clearAckData()
 {
-	return strRec;
+	memset(strAck, 0, PACKAGE_LEN);
+	strAckLen = 0;
 }
-unsigned char ISend::getReceiveDataLen()
-{
-	return strRecLen;
-}
-
-unsigned char ISend::clearReceiveData()
-{
-	memset(strRec, 0, PACKAGE_LEN);
-	strRecLen = 0;
-}
-
