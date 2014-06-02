@@ -14,20 +14,20 @@
 #include <ISend.h>
 #include <IReceive.h>
 #define LED_PIN 4
+static void cb_getstatus(unsigned char *dat, unsigned char len);
 const char * PROGMEM send_cmds[] = { 
 	"getsvrtm",
 	"cmd4"
 };
 /*********************/
-static ISend *isender;
-static IReceive *irec;
+ISend isender(send_cmds[0]);
+IReceive irec("getstatus", cb_getstatus);
 /*********************/
 
 const unsigned char PROGMEM send_cmds_count  = 2;
 
 user_activity *myu2=NULL;
 
-static void cb_getstatus(unsigned char *dat, unsigned char len);
 /*************************************************************************/
 u2::u2(void)
 {
@@ -35,8 +35,8 @@ u2::u2(void)
 	m_init = 0;
 	memset(rev_buff, 0, 32);
 	myu2 = this;
-	*isender = ISend(send_cmds[0]);
-	*irec =  IReceive("getstatus", cb_getstatus);
+	//*isender = ISend(send_cmds[0]);
+	//*irec =  IReceive("getstatus", cb_getstatus);
 }
 
 void u2::init_cmd_list()
@@ -66,7 +66,7 @@ static void irq_func(void)
 		delay(1000);
 		if (digitalRead(3)==0) {
 			Serial.println("int send");
-			isender->trigerSend(send_cmds[0]);
+			isender.trigerSend(send_cmds[0]);
 
 		}
 	}
@@ -79,14 +79,14 @@ int u2::init_ok()
 	pinMode(3, INPUT_PULLUP);
         pinMode(LED_PIN, OUTPUT);
 
-//	attachInterrupt(1, irq_func, FALLING); //port 3
+	attachInterrupt(1, irq_func, FALLING); //port 3
 }
 
 void u2::receive_listener(unsigned char *data, unsigned char len)
 {
 	if (m_init == 1) {
-		isender->msg_handler(data, len);
-		irec->msg_handler(data, len);
+		isender.msg_handler(data, len);
+		irec.msg_handler(data, len);
 
 
 	}
@@ -99,11 +99,11 @@ static void timer_func(void)
 	MsTimer2::stop();
 	div++;
 	if (div%2==0) {
-		isender->send_cb(isender);
+		isender.send_cb(&isender);
 	}
 
 	if(div%50==0) {
-		Serial.println("wdt over!");
+//		Serial.println("wdt over!");
 		digitalWrite(LED_PIN, ledlevel);
 		ledlevel = !ledlevel;
 	}
@@ -120,10 +120,11 @@ void u2::init_timer()
 
 static void cb_getstatus(unsigned char *dat, unsigned char len)
 {
-	if(irec->isNewPackage(dat)) {
+	if(irec.isNewPackage(dat)) {
 		myu2->m_comm->send("getstatus:ok", 12);	
-		irec->saveAckBuf((unsigned char *)"getstatus:ok", 12);
+		irec.saveAckBuf((unsigned char *)"getstatus:ok", 12);
 	} else {
-		myu2->m_comm->send("getstatus:ok", 12);	
+		myu2->m_comm->send((const char *)irec.getAckBuf(), irec.getAckBufLen());	
+	//	myu2->m_comm->send("getstatus:ok", 12);	
 	}
 }
