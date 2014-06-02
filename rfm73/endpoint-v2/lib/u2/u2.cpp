@@ -13,7 +13,12 @@
 #include <user_activity.h>
 #include <ISend.h>
 #include <IReceive.h>
-#define LED_PIN 4
+#include <CallMe.h>
+static boolean timer_func(void);
+CallMe cmrf(300, timer_func);
+
+
+
 static void cb_getstatus(unsigned char *dat, unsigned char len);
 const char * PROGMEM send_cmds[] = { 
 	"getsvrtm",
@@ -54,7 +59,7 @@ void u2::init_cmd_list()
                 }
         }
 
-	init_timer();
+	cmrf.start();
 	m_init = 1;
 }
 
@@ -77,7 +82,6 @@ int u2::init_ok()
 {
 	init_cmd_list();
 	pinMode(3, INPUT_PULLUP);
-        pinMode(LED_PIN, OUTPUT);
 
 	attachInterrupt(1, irq_func, FALLING); //port 3
 }
@@ -92,31 +96,17 @@ void u2::receive_listener(unsigned char *data, unsigned char len)
 	}
 }
 
-static void timer_func(void)
+static boolean timer_func(void)
 {
-	static boolean ledlevel = HIGH;
-	static unsigned char div=0;
-	MsTimer2::stop();
-	div++;
-	if (div%2==0) {
-		isender.send_cb(&isender);
-	}
-
-	if(div%50==0) {
-//		Serial.println("wdt over!");
-		digitalWrite(LED_PIN, ledlevel);
-		ledlevel = !ledlevel;
-	}
-
-	MsTimer2::start();
+	isender.send_cb(&isender);
 }
-
+/*
 void u2::init_timer()
 {
 	MsTimer2::set(20, timer_func); //80mS period
 	MsTimer2::start();
 }
-
+*/
 
 static void cb_getstatus(unsigned char *dat, unsigned char len)
 {

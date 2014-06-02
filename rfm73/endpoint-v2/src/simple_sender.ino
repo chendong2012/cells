@@ -10,6 +10,9 @@
 #include <user_activity.h>
 #include <u2.h>
 
+#include <CallMe.h>
+
+#define LED_PIN 4
 /*************************/
 #define LOCAL_ADDR      3
 #define LOCAL_PORT      90
@@ -28,10 +31,15 @@ playmp3<-------->playmp3<ok>
 ******************************************/
 user_activity *act = new u2();
 COMM comm(0, &RFM, act);
-
-
+CallMe cmled(1000, callme_cb);
 char buf[32];
 
+static boolean callme_cb(void)
+{
+	static boolean ledlevel = HIGH;
+	digitalWrite(4, ledlevel);
+	ledlevel = !ledlevel;
+}
 static void irq_func(void)
 {
 	RFM.tick();
@@ -57,6 +65,9 @@ void setup()
 
 	setup_irq();
 	act->init_ok();
+
+        pinMode(4, OUTPUT);
+	cmled.start();
 //	act->init_cmd_list();
         //delay(1000);
 #if 0
@@ -72,7 +83,7 @@ void setup()
         }
 #endif
 }
-
+/*
 void loop()
 {
 
@@ -80,7 +91,7 @@ void loop()
 //	comm.send(cmd_list[PLAYMP3].item, cmd_list[PLAYMP3].len);	
 //	delay(1000);
 }
-
+*/
 /*all received datas will come here!!
 and dispatch all comm objs*/
 void receiveEvent(void)
