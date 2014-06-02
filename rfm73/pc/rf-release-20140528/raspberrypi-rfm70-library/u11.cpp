@@ -98,9 +98,15 @@ static void *thread_handle_rev_datas(void *ptr)
 static void *thread_main(void *ptr)
 {
 	unsigned char ret;
+	unsigned char addr,port;
 	user_activity *p = (user_activity*)ptr;
 	for(;;) {
 		sleep(10);
+
+		p->m_comm->get_remote_addr(&addr,&port);
+		if (addr == 0) {
+			continue;
+		}
 /*step 1*/
 		isender.trigerSend((unsigned char *)"getstatus");
 		for(;;) {
