@@ -79,7 +79,7 @@ int u2::init_ok()
 	pinMode(3, INPUT_PULLUP);
         pinMode(LED_PIN, OUTPUT);
 
-//	attachInterrupt(1, irq_func, FALLING); //port 3
+	attachInterrupt(1, irq_func, FALLING); //port 3
 }
 
 void u2::receive_listener(unsigned char *data, unsigned char len)
@@ -103,7 +103,7 @@ static void timer_func(void)
 	}
 
 	if(div%50==0) {
-		Serial.println("wdt over!");
+//		Serial.println("wdt over!");
 		digitalWrite(LED_PIN, ledlevel);
 		ledlevel = !ledlevel;
 	}
@@ -124,6 +124,7 @@ static void cb_getstatus(unsigned char *dat, unsigned char len)
 		myu2->m_comm->send("getstatus:ok", 12);	
 		irec.saveAckBuf((unsigned char *)"getstatus:ok", 12);
 	} else {
-		myu2->m_comm->send("getstatus:ok", 12);	
+		myu2->m_comm->send((const char *)irec.getAckBuf(), irec.getAckBufLen());	
+	//	myu2->m_comm->send("getstatus:ok", 12);	
 	}
 }
