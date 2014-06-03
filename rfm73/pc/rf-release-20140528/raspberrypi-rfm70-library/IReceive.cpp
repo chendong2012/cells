@@ -1,38 +1,59 @@
 #include <IReceive.h>
 #include <string.h>
 
-IReceive::IReceive(const char *cmdstr)
+IReceive::IReceive(const char *cmdstr, void (*cb)(unsigned char *dat, unsigned char len))
 {
-	strcpy((char *)item, (const char*)cmdstr);
+	index = 0;
+	item = cmdstr;
+	clearAckBuf();
+	_cb = cb;
 }
 
-void IReceive::setCmdStr(unsigned char *cmdstr)
+void IReceive::setCmdStr(const char *cmdstr)
 {
-	strcpy((char *)item, (const char*)cmdstr);
+	index = 0;
+	item = cmdstr;
+	clearAckBuf();
 }
 
-void IReceive::onReceive()
-{
-	return;
-}
-
-/*外部调用*/
 void IReceive::msg_handler(unsigned char *dat, unsigned char len)
 {
 	unsigned char ret;
-        ret = strncmp(item, (const char *)&dat[4], strlen(item));
+        ret = strncmp(item, (const char *)&dat[5], strlen(item));
 	if (ret == 0) {
-			if (isNewPackage(dat[5]))
-				onReceive();
-			/*send ack datas*/
+		if (_cb != NULL)
+			_cb(dat, len);
 	}
 }
 
-bool IReceive::isNewPackage(unsigned char dat)
+boolean IReceive::isNewPackage(unsigned char *dat)
 {
-	if (index == dat) {
+	if (index == dat[4]) {
 		return false;
 	} else {
+		index = dat[4];
 		return true;
 	}
+}
+
+void IReceive::clearAckBuf()
+{
+	memset(ack_buf,0, 32);
+	ack_len = 0;
+}
+
+void IReceive::saveAckBuf(unsigned char *buf, unsigned  char len)
+{
+	memcpy(ack_buf, buf, len);
+	ack_len = len;
+}
+
+unsigned char *IReceive::getAckBuf()
+{
+	return ack_buf;
+}
+
+unsigned char IReceive::getAckBufLen()
+{
+	return ack_len;
 }
