@@ -21,8 +21,10 @@ void IReceive::msg_handler(unsigned char *dat, unsigned char len)
 	unsigned char ret;
         ret = strncmp(item, (const char *)&dat[5], strlen(item));
 	if (ret == 0) {
-		if (_cb != NULL)
+		if (_cb != NULL) {
 			_cb(dat, len);
+			printf("ack request info");
+		}
 	}
 }
 
