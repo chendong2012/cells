@@ -14,8 +14,8 @@
 user_activity *myu2=NULL;
 
 ISendCustom isender("getstatus");
-IReceive irev("gettemp");
 
+static void cb_get_server_timer(unsigned char *dat, unsigned char len);
 IReceive irec("getsvrtm", cb_get_server_timer);
 
 u11::u11(void)
@@ -92,7 +92,7 @@ static void *thread_handle_rev_datas(void *ptr)
 		p->m_comm->get_remote_addr(&raddr, &rport);
 /*add your code here*/
                 isender.msg_handler(p->rev_buff, p->rev_len);
-                irev.msg_handler(p->rev_buff, p->rev_len);
+                irec.msg_handler(p->rev_buff, p->rev_len);
 /*add your code end*/
                 pthread_mutex_unlock(&g_mutex);
         }

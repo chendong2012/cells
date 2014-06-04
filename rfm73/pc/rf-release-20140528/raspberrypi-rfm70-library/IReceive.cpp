@@ -26,7 +26,7 @@ void IReceive::msg_handler(unsigned char *dat, unsigned char len)
 	}
 }
 
-boolean IReceive::isNewPackage(unsigned char *dat)
+bool IReceive::isNewPackage(unsigned char *dat)
 {
 	if (index == dat[4]) {
 		return false;
