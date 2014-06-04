@@ -11,14 +11,18 @@
 #include <string.h>
 #include <unistd.h>
 
+user_activity *myu2=NULL;
 
 ISendCustom isender("getstatus");
-IReceive irev("gettemp");
 
+static void cb_get_server_timer(unsigned char *dat, unsigned char len);
+IReceive irec("getsvrtm", cb_get_server_timer);
 
 u11::u11(void)
 {
 	printf("hello i am u11\n");
+        myu2 = this;
+
 
 }
 
@@ -88,7 +92,7 @@ static void *thread_handle_rev_datas(void *ptr)
 		p->m_comm->get_remote_addr(&raddr, &rport);
 /*add your code here*/
                 isender.msg_handler(p->rev_buff, p->rev_len);
-                irev.msg_handler(p->rev_buff, p->rev_len);
+                irec.msg_handler(p->rev_buff, p->rev_len);
 /*add your code end*/
                 pthread_mutex_unlock(&g_mutex);
         }
@@ -216,3 +220,18 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 	pthread_mutex_unlock(&g_mutex_net);
 	return 1;
 }
+
+/*收到客户端要获取服务器端的时间，进行应答,看看是否是第一次发过来的同一条命令，
+如是的话，执行动作并返回
+如是同一条命令，但是第二次以上发送的，就把老结果返回去*/
+static void cb_get_server_timer(unsigned char *dat, unsigned char len)
+{
+	/*第５个字节开始才是内容*/
+        if(irec.isNewPackage(dat)) {
+                myu2->m_comm->send("getsvrtm:12:00", 14);
+                irec.saveAckBuf((unsigned char *)"getsvrtm:12:00", 14);
+        } else {
+                myu2->m_comm->send((const char *)irec.getAckBuf(), irec.getAckBufLen());
+        }
+}
+

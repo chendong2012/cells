@@ -2,6 +2,8 @@
 #define __IRECEIVE__H
 #include <user_activity.h>
 
+#include <stdio.h>
+#include <stdlib.h>
 class IReceive
 {
 public:
@@ -15,7 +17,7 @@ public:
 
 	void setCmdStr(const char *cmdstr);
 	void msg_handler(unsigned char *dat, unsigned char len);
-	boolean isNewPackage(unsigned char *dat);
+	bool isNewPackage(unsigned char *dat);
 
 	void clearAckBuf();
 	void saveAckBuf(unsigned char *buf, unsigned  char len);
