@@ -79,6 +79,7 @@ unsigned char ISend::trigerSend(const char *s)
 
                 setindex();
                 setSendResult(RLT_INIT);
+	//	Serial.println(s);
                 sendRfDatas();
                 return 1;
         } else {
@@ -88,9 +89,9 @@ unsigned char ISend::trigerSend(const char *s)
 
 void ISend::sendRfDatas()
 {
-	if (myu2 != NULL)
+	if (myu2 != NULL) {
 		myu2->m_comm->send((const char *)item, item_len);
-	else 
+	} else 
 		Serial.println("myu2 is null");
         return;
 }
@@ -103,13 +104,13 @@ void ISend::disableSend()
 void ISend::msg_handler(unsigned char *dat, unsigned char len)
 {
 	unsigned char ret;
-        ret = strncmp(item, (const char *)&dat[4], strlen(item));
+        ret = strncmp((char *)&item[1], (const char *)&dat[4], item_len-1);
 	if (ret == 0)
 		if (getStatus() == S_S) {
 			setStatus(S_A);
 			/*返回结果,打出来*/
 			/*处理所有接收回来的应答码*/
-			Serial.println((const char *)item);
+			Serial.println("rec ack");
 		}
 }
 
@@ -118,7 +119,6 @@ boolean ISend::send_cb(ISend *me)
 {
 		if (me->status == S_S) {
 			me->trys++;
-			printf("send try:%d\n", me->trys);
 			me->sendRfDatas();
 			if (me->trys >= MAX_TRY) {
 				me->trys = 0;

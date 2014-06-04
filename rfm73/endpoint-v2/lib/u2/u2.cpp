@@ -15,12 +15,12 @@
 #include <IReceive.h>
 #include <CallMe.h>
 static boolean timer_func(void);
-CallMe cmrf(300, timer_func);
+CallMe cmrf(500, timer_func);
 
 
 
 static void cb_getstatus(unsigned char *dat, unsigned char len);
-const char * PROGMEM send_cmds[] = { 
+const char * send_cmds[] = { 
 	"getsvrtm",
 	"cmd4"
 };
@@ -70,7 +70,8 @@ static void irq_func(void)
 	if (digitalRead(3)==0) {
 		delay(1000);
 		if (digitalRead(3)==0) {
-			Serial.println("int send");
+//			Serial.println("int send");
+//			Serial.println(send_cmds[0]);
 			isender.trigerSend(send_cmds[0]);
 
 		}
