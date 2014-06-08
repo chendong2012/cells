@@ -83,6 +83,7 @@ int u2::init_ok()
 {
 	init_cmd_list();
 	pinMode(3, INPUT_PULLUP);
+        pinMode(5, OUTPUT);
 
 	attachInterrupt(1, irq_func, FALLING); //port 3
 }
@@ -111,7 +112,11 @@ void u2::init_timer()
 
 static void cb_getstatus(unsigned char *dat, unsigned char len)
 {
+        static boolean ledlevel = HIGH;
 	if(irec.isNewPackage(dat)) {
+
+		digitalWrite(5, ledlevel);
+		ledlevel = !ledlevel;
 		myu2->m_comm->send("getstatus:ok", 12);	
 		irec.saveAckBuf((unsigned char *)"getstatus:ok", 12);
 	} else {
