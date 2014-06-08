@@ -10,5 +10,6 @@ public:
 	void receive_listener(unsigned char *data, unsigned char len);
 	int init_ok();
 	int send_net_package(unsigned char *buf, unsigned char *len);
+	unsigned char send_package(unsigned char *dat, unsigned char len);
 };
 #endif

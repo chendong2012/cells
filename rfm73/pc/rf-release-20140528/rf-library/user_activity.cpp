@@ -134,6 +134,7 @@ void user_activity::setup_timer(void)
 }
 
 
+/*a1, p1,表示本地地址，a2,p2表示远程地址*/
 unsigned char user_activity::check_addr(unsigned char a1, unsigned char p1, unsigned char a2, unsigned char p2)
 {
 	unsigned char addr;

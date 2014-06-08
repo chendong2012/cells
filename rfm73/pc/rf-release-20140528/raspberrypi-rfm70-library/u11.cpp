@@ -131,6 +131,33 @@ static void *thread_main(void *ptr)
 	}
 }
 
+/*
+ *返回０表示异常
+ *返回１表示成功
+ *返回２表示失败
+ * */
+unsigned char u11::send_package(unsigned char *dat, unsigned char len)
+{
+	unsigned char ret=0;
+/*step 1*/
+	isender.trigerSend(dat);
+	for(;;) {
+/*step 2*/
+		ret = isender.isResultOk();
+		if (ret == 1) {
+			printf("send datas ok:");
+/*step 3*/
+			break;
+		} else if (ret == 2) {
+			printf("send datas fail\n");
+			break;
+		} else {
+			usleep(100000);
+		}
+	}
+	return ret;
+}
+
 /*初始化后流程等等*/
 int u11::init_ok()
 {
@@ -167,7 +194,8 @@ void u11::receive_listener(unsigned char *data, unsigned char len)
 	}
 }
 
-/*对外接口*/
+/*对外接口:
+ * buf:本地地址(addr:port)，远程地址(addr:port) 发送数据*/
 int u11::send_net_package(unsigned char *buf, unsigned char *len)
 {
 	unsigned char l;
@@ -175,12 +203,16 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 	unsigned char port;
 	unsigned char ret;
 
+#if 0
 	struct timeval now;
 	struct timespec outtime;
+#endif
 
 	unsigned char tempbuf[32];
 	memset(tempbuf, 0x00, 32);
 	memcpy(tempbuf, buf, *len);
+
+	printf("send send_net_package.....\n");
 
 /*首先判断是否为自己的地址，如果不是就直接返回０就完了*/
 	ret = check_addr(tempbuf[0], tempbuf[1], tempbuf[2], tempbuf[3]);
@@ -193,10 +225,27 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 		return 0;
 	}
 
+	ret = send_package((const char *)(&tempbuf[4]), (*len-4));
+	if (ret == 1) {
+		l = strlen((const char *)&rev_buff[4]);
+		printf("send_net_package:(ack ok\n");
+//		printf("send_net_package:(ack from [%d:%d] to [%d:%d]):%s\n",tempbuf[2], tempbuf[3], tempbuf[0], tempbuf[1],&rev_buff[4]);
+		memcpy((void *)buf, (const void *)&rev_buff[4], l);
+		*len = l;
+	} else (ret == 2) {
+		printf("send_net_package:(ack fail)\n");
+	} else {
+		printf("send_net_package:(ack exception)\n");
+	}
+
+#if 0
+	/*在这里把数据发送出去*/
 	m_comm->send((const char *)(&tempbuf[4]), (*len-4));
 
 	pthread_mutex_lock(&g_mutex_net);
 
+	/*设置等待回来的时间，如果超时的话，那么就表示发送失败了，
+	 *远程没有反馈回来*/
 	gettimeofday(&now, NULL);
 	outtime.tv_sec = now.tv_sec + 5;
 	outtime.tv_nsec = now.tv_usec * 1000;
@@ -212,12 +261,14 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 	} else {
 
 		l = strlen((const char *)&rev_buff[4]);
-		printf("next to web ack:%s\n",&rev_buff[4]);
+		printf("send_net_package:(ack from [%d:%d] to [%d:%d]):%s\n",tempbuf[2], tempbuf[3], tempbuf[0], tempbuf[1],&rev_buff[4]);
+
 		memcpy((void *)buf, (const void *)&rev_buff[4], l);
 		*len = l;
 	}
 
 	pthread_mutex_unlock(&g_mutex_net);
+#endif
 	return 1;
 }
 
