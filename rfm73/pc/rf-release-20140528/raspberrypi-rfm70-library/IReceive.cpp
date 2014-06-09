@@ -16,6 +16,15 @@ void IReceive::setCmdStr(const char *cmdstr)
 	clearAckBuf();
 }
 
+/*只是比较接收部分所指定的字符串,收到的数据可能比这个多，
+ * 那么多的部分就是变量了
+ * 比如:
+ *ledon
+ * led 是固定部分
+ * on　就是变量
+ * 现在比较的只是led,
+ * 就是看主动发送从第６个字节开始是否有led字样,
+ * 如有表示是符合条件的*/
 void IReceive::msg_handler(unsigned char *dat, unsigned char len)
 {
 	unsigned char ret;
