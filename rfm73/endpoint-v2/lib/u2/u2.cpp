@@ -17,16 +17,14 @@
 static boolean timer_func(void);
 CallMe cmrf(500, timer_func);
 
-
-
-static void cb_getstatus(unsigned char *dat, unsigned char len);
+static void cb_led(unsigned char *dat, unsigned char len);
 const char * send_cmds[] = { 
 	"getsvrtm",
 	"cmd4"
 };
 /*********************/
 ISend isender(send_cmds[0]);
-IReceive irec("getstatus", cb_getstatus);
+IReceive irec("led", cb_led);
 /*********************/
 
 const unsigned char PROGMEM send_cmds_count  = 2;
@@ -110,17 +108,22 @@ void u2::init_timer()
 }
 */
 
-static void cb_getstatus(unsigned char *dat, unsigned char len)
+static void cb_led(unsigned char *dat, unsigned char len)
 {
-        static boolean ledlevel = HIGH;
 	if(irec.isNewPackage(dat)) {
+		if(irec.cmpAction(dat, len , (unsigned char *)"on")) {
+			digitalWrite(5, HIGH);
 
-		digitalWrite(5, ledlevel);
-		ledlevel = !ledlevel;
+		} else if (irec.cmpAction(dat, len , (unsigned char *)"off")) {
+			digitalWrite(5, LOW);
+
+		} else {
+				
+		}
+
 		myu2->m_comm->send("getstatus:ok", 12);	
 		irec.saveAckBuf((unsigned char *)"getstatus:ok", 12);
 	} else {
 		myu2->m_comm->send((const char *)irec.getAckBuf(), irec.getAckBufLen());	
-	//	myu2->m_comm->send("getstatus:ok", 12);	
 	}
 }

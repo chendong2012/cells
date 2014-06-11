@@ -23,5 +23,7 @@ public:
 
 	unsigned char *getAckBuf();
 	unsigned char getAckBufLen();
+	unsigned char getCmdLen(void);
+	unsigned char cmpAction(unsigned char *dat, unsigned char len, unsigned char *var);
 };
 #endif
