@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <MsTimer2.h>
 
 #include "comm.h"
 #include "u2.h"
@@ -19,7 +18,7 @@ CallMe cmrf(500, timer_func);
 
 static void cb_led(unsigned char *dat, unsigned char len);
 const char * send_cmds[] = { 
-	"getsvrtm",
+	"getsvrtm",/*获取服务器的时间*/
 	"cmd4"
 };
 /*********************/
@@ -38,8 +37,6 @@ u2::u2(void)
 	m_init = 0;
 	memset(rev_buff, 0, 32);
 	myu2 = this;
-	//*isender = ISend(send_cmds[0]);
-	//*irec =  IReceive("getstatus", cb_getstatus);
 }
 
 void u2::init_cmd_list()
@@ -68,10 +65,7 @@ static void irq_func(void)
 	if (digitalRead(3)==0) {
 		delay(1000);
 		if (digitalRead(3)==0) {
-//			Serial.println("int send");
-//			Serial.println(send_cmds[0]);
 			isender.trigerSend(send_cmds[0]);
-
 		}
 	}
 	attachInterrupt(1, irq_func, FALLING); //port 3
@@ -100,14 +94,11 @@ static boolean timer_func(void)
 {
 	isender.send_cb(&isender);
 }
-/*
-void u2::init_timer()
-{
-	MsTimer2::set(20, timer_func); //80mS period
-	MsTimer2::start();
-}
-*/
 
+/*
+ *接收到从远程过来的ＬＥＤ命令，然后根据变量判断，是开灯还是关灯，
+  并执行相关动作。
+**/
 static void cb_led(unsigned char *dat, unsigned char len)
 {
 	if(irec.isNewPackage(dat)) {
