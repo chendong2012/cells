@@ -94,7 +94,7 @@ void setup()
 //	setup_client();
 
 //	users[0] = myclient;
-	users[0] = act;
+	users[0] = act1;
 	rfthrd = new rfthread(users, 1);
 	rfthrd->init_ok();
 }
