@@ -195,7 +195,12 @@ void u11::receive_listener(unsigned char *data, unsigned char len)
 }
 
 /*对外接口:
- * buf:本地地址(addr:port)，远程地址(addr:port) 发送数据*/
+ * buf:本地地址(addr:port)，远程地址(addr:port) 发送数据
+ *以设置风扇为例：
+ *1.81->3.90-fanspeed
+ *1.81->3.90-fanoff
+ *
+ * */
 int u11::send_net_package(unsigned char *buf, unsigned char *len)
 {
 	unsigned char l;
@@ -215,7 +220,9 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 	printf("send send_net_package.....\n");
 
 /*首先判断是否为自己的地址，如果不是就直接返回０就完了*/
-	ret = check_addr(tempbuf[0], tempbuf[1], tempbuf[2], tempbuf[3]);
+
+	ret = check_addr_ex((const char *)buf);
+//	ret = check_addr(tempbuf[0], tempbuf[1], tempbuf[2], tempbuf[3]);
 	if (ret == 0) {
 		return 0;
 	}
@@ -225,17 +232,20 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 		return 0;
 	}
 
-	ret = send_package((const char *)(&tempbuf[4]), (*len-4));
+//	ret = send_package((const char *)(&tempbuf[4]), (*len-4));
+	ret = send_package((unsigned char *)get_send_package_ctx((const char *)buf), strlen((const char *)get_send_package_ctx((const char *)buf)));
 	if (ret == 1) {
 		l = strlen((const char *)&rev_buff[4]);
 		printf("send_net_package:(ack ok\n");
 //		printf("send_net_package:(ack from [%d:%d] to [%d:%d]):%s\n",tempbuf[2], tempbuf[3], tempbuf[0], tempbuf[1],&rev_buff[4]);
 		memcpy((void *)buf, (const void *)&rev_buff[4], l);
 		*len = l;
-	} else (ret == 2) {
+	} else if (ret == 2) {
 		printf("send_net_package:(ack fail)\n");
+		return 0;
 	} else {
 		printf("send_net_package:(ack exception)\n");
+		return 0;
 	}
 
 #if 0
