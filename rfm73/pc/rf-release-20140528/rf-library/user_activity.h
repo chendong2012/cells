@@ -12,6 +12,8 @@ public:
 	void ack_timeout(void);
 	void setup_timer(void);
 	unsigned char check_addr(unsigned char a1, unsigned char p1, unsigned char a2, unsigned char p2);
+	unsigned char check_addr_ex(const char *s);
+	char *get_send_package_ctx(const char *s);
 
 	virtual int send_net_package(unsigned char *buf, unsigned char *len)
 	{

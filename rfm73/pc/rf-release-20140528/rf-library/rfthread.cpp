@@ -118,12 +118,14 @@ static void *thread_main(void *ptr)
 		}
 		if (ret == 1) {
 			/*把结果返回给客户端*/
-			if(send(sockfd_client, buf, recvbytes, 0)<0) {
-				printf("Send File: Failed\n");
+			//if(send(sockfd_client, buf, recvbytes, 0)<0) {
+			if(send(sockfd_client, "ok", 2, 0)<0) {
+				printf("Send File: Successful\n");
 				exit(6);
 			}
 		} else {
-			if(send(sockfd_client, "no ack", 6, 0)<0) {
+			//if(send(sockfd_client, "no ack", 6, 0)<0) {
+			if(send(sockfd_client, "fail", 4, 0)<0) {
 				printf("Send File: Failed\n");
 				exit(7);
 			}

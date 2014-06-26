@@ -149,5 +149,28 @@ unsigned char user_activity::check_addr(unsigned char a1, unsigned char p1, unsi
 	return 1;
 }
 
-/**********************************************/
+/*返回０表示地址不是本地的(这个对像),
+ * 输入字符串：1.81->3.90-具体内容...
+ *
+ * */
+unsigned char user_activity::check_addr_ex(const char *s)
+{
+	unsigned char a, b, c, d;
+	sscanf(s, "%d.%d->%d.%d-", &a, &b, &c, &d);
+//	printf("a=%d b=%d c=%d d=%d", a, b , c ,d);
+	return check_addr(a, b, c, d);
+}
 
+/*
+ * 输入字符串：1.81->3.90-具体内容...
+ *返回实际的控制命令字符串(具体内容)，输入的是原始字符串
+ * */
+char *user_activity::get_send_package_ctx(const char *s)
+{
+	unsigned char a, b, c, d;
+	char *ctx;
+	sscanf(s, "%d.%d->%d.%d-%s", &a, &b, &c, &d, ctx);
+	return ctx;
+}
+
+/**********************************************/
