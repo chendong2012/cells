@@ -19,7 +19,7 @@
 #define REMOTE_ADDR     1 
 #define REMOTE_PORT     81
 /*************************/
-
+#define DEBUG
 /*************command list*****************
 
 1>:
@@ -94,10 +94,14 @@ void loop()
 */
 /*all received datas will come here!!
 and dispatch all comm objs*/
+/*这是RF中断入口函数，当有数据的时候，
+ * 就会触发这个函数调用，所以是中断上下文，
+ * 不应处理太多的事情,根据之前的经验，太多
+ * 的ＬＯＧ，发导致死机*/
 void receiveEvent(void)
 {
 	char *p = (char *)RFM.getRcvBuffer();
-#if 1
+#ifdef DEBUG
 	sprintf(buf, "%d:%d->%d:%d >%s",p[0], p[1], p[2], p[3], &p[4]);
 	Serial.println(buf);
 #endif

@@ -13,17 +13,29 @@
 #include <ISend.h>
 #include <IReceive.h>
 #include <CallMe.h>
+//#define LED_FUNC
+#define FAN_FUNC
 static boolean timer_func(void);
 CallMe cmrf(500, timer_func);
 
+#ifdef LED_FUNC
 static void cb_led(unsigned char *dat, unsigned char len);
+IReceive irec("led", cb_led);
+#endif
+
+#ifdef FAN_FUNC
+static void cb_fan(unsigned char *dat, unsigned char len);
+IReceive irec_fan("fan", cb_fan);
+#endif
+
+/*主动发送的命令集合*/
 const char * send_cmds[] = { 
 	"getsvrtm",/*获取服务器的时间*/
 	"cmd4"
 };
 /*********************/
 ISend isender(send_cmds[0]);
-IReceive irec("led", cb_led);
+
 /*********************/
 
 const unsigned char PROGMEM send_cmds_count  = 2;
@@ -84,8 +96,12 @@ void u2::receive_listener(unsigned char *data, unsigned char len)
 {
 	if (m_init == 1) {
 		isender.msg_handler(data, len);
+#ifdef LED_FUNC
 		irec.msg_handler(data, len);
-
+#endif
+#ifdef FAN_FUNC
+		irec_fan.msg_handler(data, len);
+#endif
 
 	}
 }
@@ -95,6 +111,7 @@ static boolean timer_func(void)
 	isender.send_cb(&isender);
 }
 
+#ifdef LED_FUNC
 /*
  *接收到从远程过来的ＬＥＤ命令，然后根据变量判断，是开灯还是关灯，
   并执行相关动作。
@@ -118,3 +135,32 @@ static void cb_led(unsigned char *dat, unsigned char len)
 		myu2->m_comm->send((const char *)irec.getAckBuf(), irec.getAckBufLen());	
 	}
 }
+#endif
+
+#ifdef FAN_FUNC
+/*
+ *接收到从远程过来的风扇控制命令，然后根据变量判断，是开灯还是关灯，
+  并执行相关动作。
+**/
+static void cb_fan(unsigned char *dat, unsigned char len)
+{
+	if(irec_fan.isNewPackage(dat)) {
+		if(irec_fan.cmpAction(dat, len , (unsigned char *)"speed")) {
+			digitalWrite(5, HIGH);
+			delay(20);
+			digitalWrite(5, LOW);
+		} else if (irec_fan.cmpAction(dat, len , (unsigned char *)"off")) {
+			digitalWrite(5, HIGH);
+			delay(20);
+			digitalWrite(5, LOW);
+		} else {
+				
+		}
+
+		myu2->m_comm->send("fan:ok", 6);
+		irec_fan.saveAckBuf((unsigned char *)"fan:ok", 6);
+	} else {
+		myu2->m_comm->send((const char *)irec_fan.getAckBuf(), irec_fan.getAckBufLen());	
+	}
+}
+#endif
