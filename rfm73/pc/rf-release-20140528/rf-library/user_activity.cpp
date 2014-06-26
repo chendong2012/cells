@@ -140,10 +140,12 @@ unsigned char user_activity::check_addr(unsigned char a1, unsigned char p1, unsi
 	unsigned char addr;
 	unsigned char port;
 	m_comm->get_local_addr(&addr, &port);
+
 	if ((a1 != addr) || (p1 != port))
 		return 0;
 
 	m_comm->get_remote_addr(&addr, &port);
+
 	if ((a2 != addr) || (p2 != port))
 		return 0;
 	return 1;
@@ -155,10 +157,10 @@ unsigned char user_activity::check_addr(unsigned char a1, unsigned char p1, unsi
  * */
 unsigned char user_activity::check_addr_ex(const char *s)
 {
-	unsigned char a, b, c, d;
+	int a, b, c, d;
 	sscanf(s, "%d.%d->%d.%d-", &a, &b, &c, &d);
-//	printf("a=%d b=%d c=%d d=%d", a, b , c ,d);
-	return check_addr(a, b, c, d);
+	printf("a=%d b=%d c=%d d=%d", a, b , c ,d);
+	return check_addr((unsigned char)a, (unsigned char)b, (unsigned char)c, (unsigned char)d);
 }
 
 /*
@@ -167,7 +169,7 @@ unsigned char user_activity::check_addr_ex(const char *s)
  * */
 char *user_activity::get_send_package_ctx(const char *s)
 {
-	unsigned char a, b, c, d;
+	int a, b, c, d;
 	char *ctx;
 	sscanf(s, "%d.%d->%d.%d-%s", &a, &b, &c, &d, ctx);
 	return ctx;
