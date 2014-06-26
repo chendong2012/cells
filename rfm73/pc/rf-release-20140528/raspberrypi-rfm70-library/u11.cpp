@@ -13,7 +13,7 @@
 
 user_activity *myu2=NULL;
 
-ISendCustom isender("getstatus");
+ISendCustom isender("fan");
 
 static void cb_get_server_timer(unsigned char *dat, unsigned char len);
 IReceive irec("getsvrtm", cb_get_server_timer);
@@ -106,6 +106,10 @@ static void *thread_main(void *ptr)
 	user_activity *p = (user_activity*)ptr;
 	for(;;) {
 		sleep(10);
+	}
+#if 0
+	for(;;) {
+		sleep(10);
 
 		p->m_comm->get_remote_addr(&addr,&port);
 		if (addr == 0) {
@@ -129,6 +133,7 @@ static void *thread_main(void *ptr)
 			}
 		}
 	}
+#endif
 }
 
 /*
@@ -207,6 +212,7 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 	unsigned char addr;
 	unsigned char port;
 	unsigned char ret;
+	int a, b, c, d;
 
 #if 0
 	struct timeval now;
@@ -214,16 +220,19 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 #endif
 
 	unsigned char tempbuf[32];
+	unsigned char ctxbuf[32];
 	memset(tempbuf, 0x00, 32);
+	memset(ctxbuf, 0x00, 32);
 	memcpy(tempbuf, buf, *len);
 
-	printf("send send_net_package.....\n");
+	printf("send send_net_package.....len=%d\n", *len);
 
 /*首先判断是否为自己的地址，如果不是就直接返回０就完了*/
 
-	ret = check_addr_ex((const char *)buf);
+	ret = check_addr_ex((const char *)tempbuf);
 //	ret = check_addr(tempbuf[0], tempbuf[1], tempbuf[2], tempbuf[3]);
 	if (ret == 0) {
+		printf("check_addr_ex fail!!!\n");
 		return 0;
 	}
 
@@ -232,8 +241,11 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 		return 0;
 	}
 
+	sscanf((const char *)tempbuf, "%d.%d->%d.%d-%s", &a, &b, &c, &d, ctxbuf);
+	ret = send_package((unsigned char *)ctxbuf, strlen((const char *)ctxbuf));
+
 //	ret = send_package((const char *)(&tempbuf[4]), (*len-4));
-	ret = send_package((unsigned char *)get_send_package_ctx((const char *)buf), strlen((const char *)get_send_package_ctx((const char *)buf)));
+//	ret = send_package((unsigned char *)get_send_package_ctx((const char *)tempbuf), strlen((const char *)get_send_package_ctx((const char *)tempbuf)));
 	if (ret == 1) {
 		l = strlen((const char *)&rev_buff[4]);
 		printf("send_net_package:(ack ok\n");
