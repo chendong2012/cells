@@ -147,18 +147,22 @@ static void cb_fan(unsigned char *dat, unsigned char len)
 	if(irec_fan.isNewPackage(dat)) {
 		if(irec_fan.cmpAction(dat, len , (unsigned char *)"speed")) {
 			digitalWrite(5, HIGH);
-			delay(20);
+			delay(200);
 			digitalWrite(5, LOW);
+			myu2->m_comm->send("fanspeed:ok", 11);
+			irec_fan.saveAckBuf((unsigned char *)"fanspeed:ok", 11);
+
 		} else if (irec_fan.cmpAction(dat, len , (unsigned char *)"off")) {
 			digitalWrite(5, HIGH);
-			delay(20);
+			delay(200);
 			digitalWrite(5, LOW);
+			myu2->m_comm->send("fanoff:ok", 9);
+			irec_fan.saveAckBuf((unsigned char *)"fanoff:ok", 9);
+
 		} else {
 				
 		}
 
-		myu2->m_comm->send("fan:ok", 6);
-		irec_fan.saveAckBuf((unsigned char *)"fan:ok", 6);
 	} else {
 		myu2->m_comm->send((const char *)irec_fan.getAckBuf(), irec_fan.getAckBufLen());	
 	}
