@@ -90,10 +90,12 @@ static void *thread_handle_rev_datas(void *ptr)
 		}
 		p->m_comm->get_local_addr(&saddr, &sport);
 		p->m_comm->get_remote_addr(&raddr, &rport);
+
 /*add your code here*/
                 isender.msg_handler(p->rev_buff, p->rev_len);
                 irec.msg_handler(p->rev_buff, p->rev_len);
 /*add your code end*/
+
                 pthread_mutex_unlock(&g_mutex);
         }
 }
@@ -137,18 +139,21 @@ static void *thread_main(void *ptr)
 }
 
 /*
+ * 这是一个发送数据包的通用函数：
+ * dat:表示具体要发送的数据
+ * len:表示具体要发送的数据的内容
  *返回０表示异常
  *返回１表示成功
  *返回２表示失败
  * */
-unsigned char u11::send_package(unsigned char *dat, unsigned char len)
+unsigned char u11::send_package(unsigned char *dat, unsigned char len, ISendCustom *psender)
 {
 	unsigned char ret=0;
 /*step 1*/
-	isender.trigerSend(dat);
+	psender->trigerSend(dat);
 	for(;;) {
 /*step 2*/
-		ret = isender.isResultOk();
+		ret = psender->isResultOk();
 		if (ret == 1) {
 			printf("send datas ok:");
 /*step 3*/
@@ -214,11 +219,6 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 	unsigned char ret;
 	int a, b, c, d;
 
-#if 0
-	struct timeval now;
-	struct timespec outtime;
-#endif
-
 	unsigned char tempbuf[32];
 	unsigned char ctxbuf[32];
 	memset(tempbuf, 0x00, 32);
@@ -227,10 +227,11 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 
 	printf("send send_net_package.....len=%d\n", *len);
 
-/*首先判断是否为自己的地址，如果不是就直接返回０就完了*/
-
+/*判断
+ *用户输入的从网址过来的数据进行分析：
+ *１、发送方的地址，以及接收方的地址是否符合。包括，对像的地址以及这个对像所连接的远程地址
+ */
 	ret = check_addr_ex((const char *)tempbuf);
-//	ret = check_addr(tempbuf[0], tempbuf[1], tempbuf[2], tempbuf[3]);
 	if (ret == 0) {
 		printf("check_addr_ex fail!!!\n");
 		return 0;
@@ -242,14 +243,11 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 	}
 
 	sscanf((const char *)tempbuf, "%d.%d->%d.%d-%s", &a, &b, &c, &d, ctxbuf);
-	ret = send_package((unsigned char *)ctxbuf, strlen((const char *)ctxbuf));
+	ret = send_package((unsigned char *)ctxbuf, strlen((const char *)ctxbuf), &isender);
 
-//	ret = send_package((const char *)(&tempbuf[4]), (*len-4));
-//	ret = send_package((unsigned char *)get_send_package_ctx((const char *)tempbuf), strlen((const char *)get_send_package_ctx((const char *)tempbuf)));
 	if (ret == 1) {
 		l = strlen((const char *)&rev_buff[4]);
 		printf("send_net_package:(ack ok\n");
-//		printf("send_net_package:(ack from [%d:%d] to [%d:%d]):%s\n",tempbuf[2], tempbuf[3], tempbuf[0], tempbuf[1],&rev_buff[4]);
 		memcpy((void *)buf, (const void *)&rev_buff[4], l);
 		*len = l;
 	} else if (ret == 2) {
@@ -259,38 +257,6 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 		printf("send_net_package:(ack exception)\n");
 		return 0;
 	}
-
-#if 0
-	/*在这里把数据发送出去*/
-	m_comm->send((const char *)(&tempbuf[4]), (*len-4));
-
-	pthread_mutex_lock(&g_mutex_net);
-
-	/*设置等待回来的时间，如果超时的话，那么就表示发送失败了，
-	 *远程没有反馈回来*/
-	gettimeofday(&now, NULL);
-	outtime.tv_sec = now.tv_sec + 5;
-	outtime.tv_nsec = now.tv_usec * 1000;
-	pthread_cond_timedwait(&g_cond_net, &g_mutex_net, &outtime);
-
-	if(ret == ETIMEDOUT) {
-		if (m_comm->get_status() == STATUS_LISTEN) {
-			l = 7;
-			printf("next to web ack:timeout\n");
-			memcpy((void *)buf, "timeout", 7);
-			*len = l;
-		}
-	} else {
-
-		l = strlen((const char *)&rev_buff[4]);
-		printf("send_net_package:(ack from [%d:%d] to [%d:%d]):%s\n",tempbuf[2], tempbuf[3], tempbuf[0], tempbuf[1],&rev_buff[4]);
-
-		memcpy((void *)buf, (const void *)&rev_buff[4], l);
-		*len = l;
-	}
-
-	pthread_mutex_unlock(&g_mutex_net);
-#endif
 	return 1;
 }
 
@@ -307,4 +273,3 @@ static void cb_get_server_timer(unsigned char *dat, unsigned char len)
                 myu2->m_comm->send((const char *)irec.getAckBuf(), irec.getAckBufLen());
         }
 }
-
