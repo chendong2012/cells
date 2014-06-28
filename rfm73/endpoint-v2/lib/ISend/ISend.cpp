@@ -15,12 +15,32 @@ extern user_activity *myu2;
    ２、正在发送中
    ３、发送完毕
    4、对方确认
-   */
+*/
 /*
-使用方法：
+如何使用此对像：
 １、构造对像
 	isend("dddd");
-	trigerSend("dddd");
+2、发送数据：
+	trigerSend("dddd"); //这个dddd表示要发送出去的完整内容。注意不是关键字
+	如果不管结果的话，到此就ＯＫ了
+３、如果要看最后发送的情况，就要设置一个for语句：
+*step 1
+       psender->trigerSend(dat);
+       for(;;) {
+*step 2
+               ret = psender->isResultOk();
+               if (ret == 1) {
+                       printf("send datas ok:");
+*step 3
+                        break;
+                } else if (ret == 2) {
+                        printf("send datas fail\n");
+                        break;
+                } else {
+                        usleep(100000);
+                }
+       }
+
 ２、设置要发送的命令字符串
 ３、在远程返回结果的地方加入自己的代码
 
@@ -36,6 +56,11 @@ ISend::ISend(const char *cmdstr)
 	creat_send_thread();
 }
 
+/*
+ *把要发送的字符串关键字，存到item数组里
+ *item[0],存放的是发送重试次数,也是包的识别码 
+ *item[1]后，存的是具体要发送出去的数据了。
+ * */
 void ISend::setCmdStr(const char *cmdstr)
 {
 	item_len = strlen((const char*)cmdstr);
@@ -43,6 +68,12 @@ void ISend::setCmdStr(const char *cmdstr)
 	strcpy((char *)&item[1], (const char*)cmdstr);
 }
 
+/*每次trigerSend 一次
+*index 就会加1,每个index 对应一次发送，
+*因为每次发送，要想到多发几次才会成功的情况，
+*但是index是不变的。
+*index的对应一次完整发送，有可能失败或是成功
+* */
 unsigned char ISend::setindex()
 {
 	index++;
@@ -110,13 +141,23 @@ void ISend::msg_handler(unsigned char *dat, unsigned char len)
 			setStatus(S_A);
 			/*返回结果,打出来*/
 			/*处理所有接收回来的应答码*/
+#if 0
 			Serial.println("rec ack");
+#endif
 		}
 }
 
-/*70mS run a time*/
+/*这是一个核心函数
+ *在全局初始化后，就会一直每隔一定时间运行一次
+ *当对像处于发送状态后，定时检查，是否还处于发送
+ *状态，如是的话，就再次发送：
+ 这样做的目的，多次发送，如果收不到远程的应答，就会再次
+ 发送，如果重复次数多于MAX_TRY就会把状态恢复为S_I,
+ 变为没有初始状态了
+ * 70mS run a time*/
 boolean ISend::send_cb(ISend *me)
 {
+	/*查看对像是否是处于发送状态，如是，就会发送数据出去*/
 		if (me->status == S_S) {
 			me->trys++;
 			me->sendRfDatas();
@@ -134,7 +175,6 @@ boolean ISend::send_cb(ISend *me)
 		}
 		return true;
 }
-
 unsigned char ISend::creat_send_thread()
 {
 	return 1;
