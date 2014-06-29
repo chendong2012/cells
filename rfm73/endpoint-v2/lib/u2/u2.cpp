@@ -13,6 +13,7 @@
 #include <ISend.h>
 #include <IReceive.h>
 #include <CallMe.h>
+#include <DelayRun.h>
 //#define LED_FUNC
 #define FAN_FUNC
 static boolean timer_func(void);
@@ -27,6 +28,12 @@ IReceive irec("led", cb_led);
 static void cb_fan(unsigned char *dat, unsigned char len);
 IReceive irec_fan("fan", cb_fan);
 #endif
+/*fan_down*/
+DelayRun speed_press_task(10, press_speed_key);
+/*fan_up*/
+DelayRun speed_release_task(2000, release_speed_key, &press_task);
+
+
 
 /*主动发送的命令集合*/
 const char * send_cmds[] = { 
