@@ -14,6 +14,7 @@
 #include <IReceive.h>
 #include <CallMe.h>
 #include <DelayRun.h>
+#include <Task.h>
 //#define LED_FUNC
 #define FAN_FUNC
 static boolean timer_func(void);
@@ -28,11 +29,43 @@ IReceive irec("led", cb_led);
 static void cb_fan(unsigned char *dat, unsigned char len);
 IReceive irec_fan("fan", cb_fan);
 #endif
-/*fan_down*/
-DelayRun speed_press_task(10, press_speed_key);
-/*fan_up*/
-DelayRun speed_release_task(2000, release_speed_key, &press_task);
 
+static boolean press_speed_key(Task* task);
+static boolean release_speed_key(Task* task);
+
+static boolean press_off_key(Task* task);
+static boolean release_off_key(Task* task);
+
+DelayRun speed_release_task(500, release_speed_key);
+DelayRun speed_press_task(10, press_speed_key, &speed_release_task);
+
+DelayRun off_release_task(500, release_off_key);
+DelayRun off_press_task(10, press_off_key, &off_release_task);
+
+boolean press_speed_key(Task* task)
+{
+	digitalWrite(5, HIGH);
+	return true;
+}
+
+boolean release_speed_key(Task* task)
+{
+	digitalWrite(5, LOW);
+	return false;
+}
+
+///
+boolean press_off_key(Task* task)
+{
+	digitalWrite(6, HIGH);
+	return true;
+}
+
+boolean release_off_key(Task* task)
+{
+	digitalWrite(6, LOW);
+	return false;
+}
 
 
 /*主动发送的命令集合*/
@@ -95,6 +128,9 @@ int u2::init_ok()
 	init_cmd_list();
 	pinMode(3, INPUT_PULLUP);
         pinMode(5, OUTPUT);
+        pinMode(6, OUTPUT);
+	digitalWrite(5, LOW);
+	digitalWrite(6, LOW);
 
 	attachInterrupt(1, irq_func, FALLING); //port 3
 }
@@ -153,16 +189,20 @@ static void cb_fan(unsigned char *dat, unsigned char len)
 {
 	if(irec_fan.isNewPackage(dat)) {
 		if(irec_fan.cmpAction(dat, len , (unsigned char *)"speed")) {
+			speed_press_task.startDelayed();
+/*
 			digitalWrite(5, HIGH);
 			delay(200);
 			digitalWrite(5, LOW);
+*/
 			myu2->m_comm->send("fanspeed:ok", 11);
 			irec_fan.saveAckBuf((unsigned char *)"fanspeed:ok", 11);
 
 		} else if (irec_fan.cmpAction(dat, len , (unsigned char *)"off")) {
-			digitalWrite(5, HIGH);
-			delay(200);
-			digitalWrite(5, LOW);
+			off_press_task.startDelayed();
+			//digitalWrite(5, HIGH);
+			//delay(200);
+			//digitalWrite(5, LOW);
 			myu2->m_comm->send("fanoff:ok", 9);
 			irec_fan.saveAckBuf((unsigned char *)"fanoff:ok", 9);
 
