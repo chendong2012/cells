@@ -36,9 +36,11 @@ static boolean release_speed_key(Task* task);
 static boolean press_off_key(Task* task);
 static boolean release_off_key(Task* task);
 
+/*风扇调速的任务*/
 DelayRun speed_release_task(500, release_speed_key);
 DelayRun speed_press_task(10, press_speed_key, &speed_release_task);
 
+/*风扇关机的任务*/
 DelayRun off_release_task(500, release_off_key);
 DelayRun off_press_task(10, press_off_key, &off_release_task);
 
