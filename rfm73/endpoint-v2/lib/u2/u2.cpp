@@ -17,6 +17,14 @@
 #include <Task.h>
 //#define LED_FUNC
 #define FAN_FUNC
+
+#ifdef FAN_FUNC
+#define FAN_SPEED_KEY 5
+#define FAN_STOP_KEY 6
+#endif
+
+#define LED_SWITCH_KEY 7
+
 static boolean timer_func(void);
 CallMe cmrf(500, timer_func);
 
@@ -46,26 +54,26 @@ DelayRun off_press_task(10, press_off_key, &off_release_task);
 
 boolean press_speed_key(Task* task)
 {
-	digitalWrite(5, HIGH);
+	digitalWrite(FAN_SPEED_KEY, HIGH);
 	return true;
 }
 
 boolean release_speed_key(Task* task)
 {
-	digitalWrite(5, LOW);
+	digitalWrite(FAN_SPEED_KEY, LOW);
 	return false;
 }
 
 ///
 boolean press_off_key(Task* task)
 {
-	digitalWrite(6, HIGH);
+	digitalWrite(FAN_STOP_KEY, HIGH);
 	return true;
 }
 
 boolean release_off_key(Task* task)
 {
-	digitalWrite(6, LOW);
+	digitalWrite(FAN_STOP_KEY, LOW);
 	return false;
 }
 
@@ -77,7 +85,6 @@ const char * send_cmds[] = {
 };
 /*********************/
 ISend isender(send_cmds[0]);
-
 /*********************/
 
 const unsigned char PROGMEM send_cmds_count  = 2;
@@ -129,10 +136,14 @@ int u2::init_ok()
 {
 	init_cmd_list();
 	pinMode(3, INPUT_PULLUP);
-        pinMode(5, OUTPUT);
-        pinMode(6, OUTPUT);
-	digitalWrite(5, LOW);
-	digitalWrite(6, LOW);
+
+        pinMode(FAN_SPEED_KEY, OUTPUT);
+        pinMode(FAN_STOP_KEY, OUTPUT);
+	digitalWrite(FAN_SPEED_KEY, LOW);
+	digitalWrite(FAN_STOP_KEY, LOW);
+
+        pinMode(LED_SWITCH_KEY, OUTPUT);
+	digitalWrite(LED_SWITCH_KEY, LOW);
 
 	attachInterrupt(1, irq_func, FALLING); //port 3
 }
@@ -165,10 +176,10 @@ static void cb_led(unsigned char *dat, unsigned char len)
 {
 	if(irec.isNewPackage(dat)) {
 		if(irec.cmpAction(dat, len , (unsigned char *)"on")) {
-			digitalWrite(5, HIGH);
+			digitalWrite(LED_SWITCH_KEY, HIGH);
 
 		} else if (irec.cmpAction(dat, len , (unsigned char *)"off")) {
-			digitalWrite(5, LOW);
+			digitalWrite(LED_SWITCH_KEY, LOW);
 
 		} else {
 				
@@ -192,19 +203,13 @@ static void cb_fan(unsigned char *dat, unsigned char len)
 	if(irec_fan.isNewPackage(dat)) {
 		if(irec_fan.cmpAction(dat, len , (unsigned char *)"speed")) {
 			speed_press_task.startDelayed();
-/*
-			digitalWrite(5, HIGH);
-			delay(200);
-			digitalWrite(5, LOW);
-*/
+
 			myu2->m_comm->send("fanspeed:ok", 11);
 			irec_fan.saveAckBuf((unsigned char *)"fanspeed:ok", 11);
 
 		} else if (irec_fan.cmpAction(dat, len , (unsigned char *)"off")) {
 			off_press_task.startDelayed();
-			//digitalWrite(5, HIGH);
-			//delay(200);
-			//digitalWrite(5, LOW);
+
 			myu2->m_comm->send("fanoff:ok", 9);
 			irec_fan.saveAckBuf((unsigned char *)"fanoff:ok", 9);
 

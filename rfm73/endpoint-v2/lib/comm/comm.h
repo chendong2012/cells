@@ -31,7 +31,7 @@ class rfm73;
 #define SERVER_ID	1
 class COMM {
         public:
-	COMM(unsigned char id, rfm73 *rfm, user_activity *activity);
+	COMM(unsigned char id, rfm73 *rfm);
         void send(const char *buf, unsigned char len);
 	int connect();
         void create(void);
@@ -42,7 +42,7 @@ class COMM {
 	unsigned char get_status(void);
 	void reset_listen_status(void);
 	unsigned char is_mydata(byte *p);
-
+	void attach_user_activity(user_activity *activity);
 	void reset_client_status(void);
 
 

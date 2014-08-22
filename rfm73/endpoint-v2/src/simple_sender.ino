@@ -21,16 +21,13 @@
 /*************************/
 #define DEBUG
 /*************command list*****************
-
 1>:
 gettime<-------->gettime<11:0[0~9]>
 2>:
 playmp3<-------->playmp3<ok>
-
-
 ******************************************/
 user_activity *act = new u2();
-COMM comm(0, &RFM, act);
+COMM comm(0, &RFM);
 CallMe cmled(1000, callme_cb);
 char buf[32];
 
@@ -40,6 +37,7 @@ static boolean callme_cb(void)
 	digitalWrite(4, ledlevel);
 	ledlevel = !ledlevel;
 }
+
 static void irq_func(void)
 {
 	RFM.tick();
@@ -56,42 +54,22 @@ void setup()
 	Serial.begin(9600);
 	Serial.println("reset...ok!");
 
+/*初始化comm的本地地址和远程地址*/
 	comm.set_local_addr(LOCAL_ADDR, LOCAL_PORT);
 	comm.set_remote_addr(REMOTE_ADDR, REMOTE_PORT);
+	comm.attach_user_activity(act);
 
 	RFM.Begin();
-
 	RFM.onReceive(receiveEvent);
-
 	setup_irq();
+
+	/*这里面包括了等待连接的过程,要改进*/
 	act->init_ok();
 
         pinMode(4, OUTPUT);
 	cmled.start();
-//	act->init_cmd_list();
-        //delay(1000);
-#if 0
-	Serial.println("connecting...");
-        for (;;) {
-                i = comm.connect();
-                if (i==0) {
-			delay(2000);
-                } else {
-                        Serial.println("connected ok!\n");
-                        break;
-                }
-        }
-#endif
 }
-/*
-void loop()
-{
 
-//	Serial.println("loop!");
-//	comm.send(cmd_list[PLAYMP3].item, cmd_list[PLAYMP3].len);	
-//	delay(1000);
-}
-*/
 /*all received datas will come here!!
 and dispatch all comm objs*/
 /*这是RF中断入口函数，当有数据的时候，
