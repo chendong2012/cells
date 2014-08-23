@@ -4,7 +4,7 @@
 #include "user_activity.h"
 #define NELEMS(x)  (sizeof(x) / sizeof(x[0]))
 
-COMM::COMM(unsigned char id, rfm73 *rfm)
+COMM::COMM(unsigned char id)
 {
         is_server = id;
 	if (is_server == I_AM_SERVER) {
@@ -13,7 +13,8 @@ COMM::COMM(unsigned char id, rfm73 *rfm)
 		status = CLIENT_STATUS_CONNECTING;
 	}
         memset(rcv_buff,0,PACKAGE_LEN);
-	m_rfm = rfm;
+	m_activity = NULL;
+	m_rfm = NULL;
 }
 
 /*new: attach activity*/
@@ -21,6 +22,12 @@ void COMM::attach_user_activity(user_activity *activity)
 {
 	m_activity = activity;
 	m_activity->set_comm(this);
+}
+
+/*new: attach activity*/
+void COMM::attach_rfm(rfm73 *rfm)
+{
+	m_rfm = rfm;
 }
 
 unsigned char COMM::is_mydata(byte *p)
@@ -35,6 +42,11 @@ unsigned char COMM::is_mydata(byte *p)
 
 void COMM::read(unsigned char *buf, unsigned char len)
 {
+	if (m_activity == NULL)
+		return;
+	if (m_rfm == NULL)
+		return;
+
 	memcpy((void *)rcv_buff, (const void *)buf, PACKAGE_LEN);
 
         /**********

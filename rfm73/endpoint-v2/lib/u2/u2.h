@@ -7,8 +7,5 @@ public:
 	u2();
 	void receive_listener(unsigned char *data, unsigned char len);
 	int init_ok();
-	void init_cmd_list();
-
-	void init_timer();
 };
 #endif

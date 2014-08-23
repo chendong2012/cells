@@ -26,7 +26,9 @@
 #define LED_SWITCH_KEY 7
 
 static boolean timer_func(void);
+static boolean connect_func(void);
 CallMe cmrf(500, timer_func);
+CallMe connect_task(500, connect_func);
 
 #ifdef LED_FUNC
 static void cb_led(unsigned char *dat, unsigned char len);
@@ -100,25 +102,6 @@ u2::u2(void)
 	myu2 = this;
 }
 
-void u2::init_cmd_list()
-{
-	unsigned char i;
-
-	Serial.println("connecting...");
-        for (;;) {
-                i = m_comm->connect();
-                if (i==0) {
-			delay(2000);
-                } else {
-                        Serial.println("connected ok!\n");
-                        break;
-                }
-        }
-
-	cmrf.start();
-	m_init = 1;
-}
-
 static void irq_func(void)
 {
 	detachInterrupt(1); //port 3
@@ -134,20 +117,11 @@ static void irq_func(void)
 
 int u2::init_ok()
 {
-	init_cmd_list();
-	pinMode(3, INPUT_PULLUP);
-
-        pinMode(FAN_SPEED_KEY, OUTPUT);
-        pinMode(FAN_STOP_KEY, OUTPUT);
-	digitalWrite(FAN_SPEED_KEY, LOW);
-	digitalWrite(FAN_STOP_KEY, LOW);
-
-        pinMode(LED_SWITCH_KEY, OUTPUT);
-	digitalWrite(LED_SWITCH_KEY, LOW);
-
-	attachInterrupt(1, irq_func, FALLING); //port 3
+	Serial.println("connecting...");
+	connect_task.start();
 }
 
+/*comm 对像会调这个对像*/
 void u2::receive_listener(unsigned char *data, unsigned char len)
 {
 	if (m_init == 1) {
@@ -165,8 +139,39 @@ void u2::receive_listener(unsigned char *data, unsigned char len)
 static boolean timer_func(void)
 {
 	isender.send_cb(&isender);
+	return true;
 }
 
+static boolean connect_func(void)
+{
+	unsigned char i;
+	if (myu2->m_init == 1)
+		return false;
+
+	if (1==myu2->m_comm->connect()) {
+		Serial.println("connected ok!\n");
+		pinMode(3, INPUT_PULLUP);
+
+		/*fan*/
+		pinMode(FAN_SPEED_KEY, OUTPUT);
+		pinMode(FAN_STOP_KEY, OUTPUT);
+		digitalWrite(FAN_SPEED_KEY, LOW);
+		digitalWrite(FAN_STOP_KEY, LOW);
+		/*end*/
+
+		/*led*/
+		pinMode(LED_SWITCH_KEY, OUTPUT);
+		digitalWrite(LED_SWITCH_KEY, LOW);
+		/*end*/
+
+		attachInterrupt(1, irq_func, FALLING); //port 3
+
+		connect_task.stop();
+		myu2->m_init = 1;
+		cmrf.start();
+	}
+	return true;
+}
 #ifdef LED_FUNC
 /*
  *接收到从远程过来的ＬＥＤ命令，然后根据变量判断，是开灯还是关灯，

@@ -20,21 +20,18 @@
 #define REMOTE_PORT     81
 /*************************/
 #define DEBUG
-/*************command list*****************
-1>:
-gettime<-------->gettime<11:0[0~9]>
-2>:
-playmp3<-------->playmp3<ok>
-******************************************/
+
+#define TICK_LED 6
+
 user_activity *act = new u2();
-COMM comm(0, &RFM);
+COMM comm(0);
 CallMe cmled(1000, callme_cb);
 char buf[32];
 
 static boolean callme_cb(void)
 {
 	static boolean ledlevel = HIGH;
-	digitalWrite(4, ledlevel);
+	digitalWrite(TICK_LED, ledlevel);
 	ledlevel = !ledlevel;
 }
 
@@ -57,7 +54,10 @@ void setup()
 /*初始化comm的本地地址和远程地址*/
 	comm.set_local_addr(LOCAL_ADDR, LOCAL_PORT);
 	comm.set_remote_addr(REMOTE_ADDR, REMOTE_PORT);
+
+/*work ok*/
 	comm.attach_user_activity(act);
+	comm.attach_rfm(&RFM);
 
 	RFM.Begin();
 	RFM.onReceive(receiveEvent);
@@ -66,7 +66,8 @@ void setup()
 	/*这里面包括了等待连接的过程,要改进*/
 	act->init_ok();
 
-        pinMode(4, OUTPUT);
+
+        pinMode(TICK_LED, OUTPUT);
 	cmled.start();
 }
 
