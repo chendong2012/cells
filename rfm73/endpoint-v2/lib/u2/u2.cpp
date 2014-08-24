@@ -19,6 +19,14 @@
 #include <Task.h>
 #include "public.h"
 
+#ifdef LED_REMOTE_CONTROL
+extern IReceive irec_led;
+#endif
+
+#ifdef FAN_REMOTE_CONTROL
+extern IReceive irec_fan;
+#endif
+
 static boolean timer_func(void);
 static boolean connect_func(void);
 static boolean key_thread(void);
@@ -27,54 +35,8 @@ CallMe cmrf(500, timer_func);
 CallMe connect_task(500, connect_func);
 CallMe key_task(500, key_thread);
 
-#ifdef LED_FUNC
-static void cb_led(unsigned char *dat, unsigned char len);
-IReceive irec("led", cb_led);
-#endif
 
-#ifdef FAN_FUNC
-static void cb_fan(unsigned char *dat, unsigned char len);
-IReceive irec_fan("fan", cb_fan);
-#endif
 
-static boolean press_speed_key(Task* task);
-static boolean release_speed_key(Task* task);
-
-static boolean press_off_key(Task* task);
-static boolean release_off_key(Task* task);
-
-/*风扇调速的任务*/
-DelayRun speed_release_task(500, release_speed_key);
-DelayRun speed_press_task(10, press_speed_key, &speed_release_task);
-
-/*风扇关机的任务*/
-DelayRun off_release_task(500, release_off_key);
-DelayRun off_press_task(10, press_off_key, &off_release_task);
-
-boolean press_speed_key(Task* task)
-{
-	digitalWrite(FAN_SPEED_KEY, HIGH);
-	return true;
-}
-
-boolean release_speed_key(Task* task)
-{
-	digitalWrite(FAN_SPEED_KEY, LOW);
-	return false;
-}
-
-///
-boolean press_off_key(Task* task)
-{
-	digitalWrite(FAN_STOP_KEY, HIGH);
-	return true;
-}
-
-boolean release_off_key(Task* task)
-{
-	digitalWrite(FAN_STOP_KEY, LOW);
-	return false;
-}
 
 
 /*主动发送的命令集合*/
@@ -116,13 +78,12 @@ void u2::receive_listener(unsigned char *data, unsigned char len)
 {
 	if (m_init == 1) {
 		isender.msg_handler(data, len);
-#ifdef LED_FUNC
-		irec.msg_handler(data, len);
+#ifdef LED_REMOTE_CONTROL
+		irec_led.msg_handler(data, len);
 #endif
-#ifdef FAN_FUNC
+#ifdef FAN_REMOTE_CONTROL
 		irec_fan.msg_handler(data, len);
 #endif
-
 	}
 }
 
@@ -149,8 +110,8 @@ static boolean connect_func(void)
 		/*end*/
 
 		/*led*/
-		pinMode(LED_SWITCH_KEY, OUTPUT);
-		digitalWrite(LED_SWITCH_KEY, LOW);
+		pinMode(LED_SWITCH_GPIO, OUTPUT);
+		digitalWrite(LED_SWITCH_GPIO, LOW);
 		/*end*/
 
 		/*key handler*/
@@ -171,7 +132,7 @@ static boolean key_thread(void)
 	if (press_ok_flag == false) {
 		if (digitalRead(GPIO3_KEY)==0) { //过一指定时间，有键按下
 			press_count++;
-			if (press_count>0) {//按下超过一定时间了，认为有真正的键按下
+			if (press_count>0) {//按下超过一定时间，认为有真正的键按下
 				isender.trigerSend(send_cmds[0]);
 				press_ok_flag = true;
 			}
@@ -189,61 +150,3 @@ static boolean key_thread(void)
 		}
 	}
 }
-
-
-
-#ifdef LED_FUNC
-/*
- *接收到从远程过来的ＬＥＤ命令，然后根据变量判断，是开灯还是关灯，
-  并执行相关动作。
-**/
-static void cb_led(unsigned char *dat, unsigned char len)
-{
-	if(irec.isNewPackage(dat)) {
-		if(irec.cmpAction(dat, len , (unsigned char *)"on")) {
-			digitalWrite(LED_SWITCH_KEY, HIGH);
-
-		} else if (irec.cmpAction(dat, len , (unsigned char *)"off")) {
-			digitalWrite(LED_SWITCH_KEY, LOW);
-
-		} else {
-				
-		}
-
-		myu2->m_comm->send("getstatus:ok", 12);	
-		irec.saveAckBuf((unsigned char *)"getstatus:ok", 12);
-	} else {
-		myu2->m_comm->send((const char *)irec.getAckBuf(), irec.getAckBufLen());	
-	}
-}
-#endif
-
-#ifdef FAN_FUNC
-/*
- *接收到从远程过来的风扇控制命令，然后根据变量判断，是开灯还是关灯，
-  并执行相关动作。
-**/
-static void cb_fan(unsigned char *dat, unsigned char len)
-{
-	if(irec_fan.isNewPackage(dat)) {
-		if(irec_fan.cmpAction(dat, len , (unsigned char *)"speed")) {
-			speed_press_task.startDelayed();
-
-			myu2->m_comm->send("fanspeed:ok", 11);
-			irec_fan.saveAckBuf((unsigned char *)"fanspeed:ok", 11);
-
-		} else if (irec_fan.cmpAction(dat, len , (unsigned char *)"off")) {
-			off_press_task.startDelayed();
-
-			myu2->m_comm->send("fanoff:ok", 9);
-			irec_fan.saveAckBuf((unsigned char *)"fanoff:ok", 9);
-
-		} else {
-				
-		}
-
-	} else {
-		myu2->m_comm->send((const char *)irec_fan.getAckBuf(), irec_fan.getAckBufLen());	
-	}
-}
-#endif

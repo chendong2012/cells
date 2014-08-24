@@ -10,6 +10,7 @@
 #include <user_activity.h>
 #include <u2.h>
 #include "public.h"
+#include "test.h"
 
 #include <CallMe.h>
 
@@ -29,6 +30,7 @@ char buf[32];
 static boolean callme_cb(void)
 {
 	static boolean ledlevel = HIGH;
+	char a = aaa;
 	digitalWrite(TICK_LED, ledlevel);
 	ledlevel = !ledlevel;
 }

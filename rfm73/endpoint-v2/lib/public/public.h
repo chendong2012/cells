@@ -18,20 +18,43 @@
 
 
 
-/*===u2 dir===*/
-//#define LED_FUNC
-#define FAN_FUNC
+#define LED_REMOTE_CONTROL
+#define FAN_REMOTE_CONTROL
 
-#ifdef FAN_FUNC
+/*================LED_REMOTE_CONTROL====================*/
+#ifdef LED_REMOTE_CONTROL
+#define LED_REMOTE_KEYWORD "led"
+#define LED_REMOTE_ON "on"
+#define LED_REMOTE_OFF "off"
+#define LED_SWITCH_GPIO 7
+
+#define LED_REMOTE_ACK_OK "led:ok"
+#define LED_REMOTE_ACK_FAIL "led:fail"
+#endif
+
+/*================FAN_REMOTE_CONTROL====================*/
+#ifdef FAN_REMOTE_CONTROL
+#define FAN_REMOTE_KEYWORD "fan"
+#define FAN_REMOTE_SPEED "speed"
+#define FAN_REMOTE_OFF "off"
+
+#define FAN_REMOTE_ACK_SPEED_OK "fanspeed:ok"
+#define FAN_REMOTE_ACK_SPEED_FAIL "fanspeed:fail"
+
+#define FAN_REMOTE_ACK_OFF_OK "fanoff:ok"
+#define FAN_REMOTE_ACK_OFF_FAIL "fanoff:fail"
+
 #define FAN_SPEED_KEY 5
 #define FAN_STOP_KEY 6
 #endif
-#define LED_SWITCH_KEY 7
+
+
+
+
+
 
 #define GPIO3_KEY 3 
 #define  GPIO3_KEY_IRQ 1 
-
-
 
 /*对于中断管脚配置注意事项
  *１、要配成输入带上拉功能
@@ -45,5 +68,8 @@
  * */
 
 
-#endif
 
+
+
+
+#endif
