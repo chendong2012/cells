@@ -21,14 +21,10 @@
 #define CLIENT_STATUS_CONNECTED 0Xe1
 #define CLIENT_STATUS_NOT_CONNECT 0Xe2
 
-#define I_AM_CLIENT 0
-#define I_AM_SERVER 1
+#define PACKAGE_LEN	32
 
 class user_activity;
 class rfm73;
-#define PACKAGE_LEN	32
-
-#define SERVER_ID	1
 class COMM {
         public:
 	COMM(unsigned char id);

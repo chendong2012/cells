@@ -9,6 +9,7 @@
 #include <comm.h>
 #include <user_activity.h>
 #include <u2.h>
+#include "public.h"
 
 #include <CallMe.h>
 
@@ -19,12 +20,9 @@
 #define REMOTE_ADDR     1 
 #define REMOTE_PORT     81
 /*************************/
-#define DEBUG
-
-#define TICK_LED 6
 
 user_activity *act = new u2();
-COMM comm(0);
+COMM comm(I_AM_CLIENT);
 CallMe cmled(1000, callme_cb);
 char buf[32];
 
@@ -65,7 +63,6 @@ void setup()
 
 	/*这里面包括了等待连接的过程,要改进*/
 	act->init_ok();
-
 
         pinMode(TICK_LED, OUTPUT);
 	cmled.start();

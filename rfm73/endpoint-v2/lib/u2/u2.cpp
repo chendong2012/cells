@@ -4,31 +4,28 @@
 #include "comm.h"
 #include "u2.h"
 #include <errno.h>
+/*
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
 #else
 #include "WProgram.h"
 #endif
+*/
 #include <user_activity.h>
 #include <ISend.h>
 #include <IReceive.h>
 #include <CallMe.h>
 #include <DelayRun.h>
 #include <Task.h>
-//#define LED_FUNC
-#define FAN_FUNC
-
-#ifdef FAN_FUNC
-#define FAN_SPEED_KEY 5
-#define FAN_STOP_KEY 6
-#endif
-
-#define LED_SWITCH_KEY 7
+#include "public.h"
 
 static boolean timer_func(void);
 static boolean connect_func(void);
+static boolean key_thread(void);
+
 CallMe cmrf(500, timer_func);
 CallMe connect_task(500, connect_func);
+CallMe key_task(500, key_thread);
 
 #ifdef LED_FUNC
 static void cb_led(unsigned char *dat, unsigned char len);
@@ -102,17 +99,10 @@ u2::u2(void)
 	myu2 = this;
 }
 
-static void irq_func(void)
+static void key_irq_func(void)
 {
-	detachInterrupt(1); //port 3
-	delay(1000);
-	if (digitalRead(3)==0) {
-		delay(1000);
-		if (digitalRead(3)==0) {
-			isender.trigerSend(send_cmds[0]);
-		}
-	}
-	attachInterrupt(1, irq_func, FALLING); //port 3
+	detachInterrupt(GPIO3_KEY_IRQ);
+	key_task.start();
 }
 
 int u2::init_ok()
@@ -150,7 +140,6 @@ static boolean connect_func(void)
 
 	if (1==myu2->m_comm->connect()) {
 		Serial.println("connected ok!\n");
-		pinMode(3, INPUT_PULLUP);
 
 		/*fan*/
 		pinMode(FAN_SPEED_KEY, OUTPUT);
@@ -164,7 +153,9 @@ static boolean connect_func(void)
 		digitalWrite(LED_SWITCH_KEY, LOW);
 		/*end*/
 
-		attachInterrupt(1, irq_func, FALLING); //port 3
+		/*key handler*/
+		pinMode(GPIO3_KEY, INPUT_PULLUP);
+		attachInterrupt(GPIO3_KEY_IRQ, key_irq_func, FALLING);
 
 		connect_task.stop();
 		myu2->m_init = 1;
@@ -172,6 +163,35 @@ static boolean connect_func(void)
 	}
 	return true;
 }
+
+static boolean key_thread(void)
+{
+	static char press_ok_flag=0;
+	static char press_count=0;
+	if (press_ok_flag == false) {
+		if (digitalRead(GPIO3_KEY)==0) { //过一指定时间，有键按下
+			press_count++;
+			if (press_count>0) {//按下超过一定时间了，认为有真正的键按下
+				isender.trigerSend(send_cmds[0]);
+				press_ok_flag = true;
+			}
+		} else {/*表示时间不到松开了*/
+			attachInterrupt(GPIO3_KEY_IRQ, key_irq_func, FALLING);
+		}
+
+	} else {//等待松开
+		if(digitalRead(GPIO3_KEY)==1) { //已松开了
+			press_ok_flag = false;
+			key_task.stop();
+			attachInterrupt(GPIO3_KEY_IRQ, key_irq_func, FALLING);
+		} else {
+			//还按着，没有松开
+		}
+	}
+}
+
+
+
 #ifdef LED_FUNC
 /*
  *接收到从远程过来的ＬＥＤ命令，然后根据变量判断，是开灯还是关灯，

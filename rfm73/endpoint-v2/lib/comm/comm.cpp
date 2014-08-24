@@ -2,6 +2,7 @@
 #include "comm.h"
 #include "rfm73.h"
 #include "user_activity.h"
+#include "public.h"
 #define NELEMS(x)  (sizeof(x) / sizeof(x[0]))
 
 COMM::COMM(unsigned char id)
