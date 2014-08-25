@@ -55,20 +55,23 @@ static boolean release_off_key(Task* task)
 **/
 static void cb_fan(unsigned char *dat, unsigned char len)
 {
+	unsigned char len;
 	if(irec_fan.isNewPackage(dat)) {
 		if(irec_fan.cmpAction(dat, len , (unsigned char *)FAN_REMOTE_SPEED)) {
 
 			speed_press_task.startDelayed();
 
-			myu2->m_comm->send(FAN_REMOTE_ACK_SPEED_OK, strlen(FAN_REMOTE_ACK_SPEED_OK));
-			irec_fan.saveAckBuf((unsigned char *)FAN_REMOTE_ACK_SPEED_OK, strlen(FAN_REMOTE_ACK_SPEED_OK));
+			len = strlen(FAN_REMOTE_ACK_SPEED_OK);
+			myu2->m_comm->send(FAN_REMOTE_ACK_SPEED_OK, len);
+			irec_fan.saveAckBuf((unsigned char *)FAN_REMOTE_ACK_SPEED_OK, len);
 
 		} else if (irec_fan.cmpAction(dat, len , (unsigned char *)FAN_REMOTE_OFF)) {
 
 			off_press_task.startDelayed();
 
-			myu2->m_comm->send(FAN_REMOTE_ACK_OFF_OK, strlen(FAN_REMOTE_ACK_OFF_OK));
-			irec_fan.saveAckBuf((unsigned char *)FAN_REMOTE_ACK_OFF_OK, strlen(FAN_REMOTE_ACK_OFF_OK));
+			len = strlen(FAN_REMOTE_ACK_OFF_OK);
+			myu2->m_comm->send(FAN_REMOTE_ACK_OFF_OK, len);
+			irec_fan.saveAckBuf((unsigned char *)FAN_REMOTE_ACK_OFF_OK, len);
 
 		} else {
 				
