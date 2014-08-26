@@ -6,7 +6,7 @@
 #include "WProgram.h"
 #endif
 
-#define DEBUG
+//#define DEBUG
 
 /*comm dir*/
 #define I_AM_CLIENT	0

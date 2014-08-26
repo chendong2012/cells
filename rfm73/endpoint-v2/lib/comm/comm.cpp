@@ -118,10 +118,11 @@ void COMM::read(unsigned char *buf, unsigned char len)
 	m_activity->receive_listener(rcv_buff, len); //交给对像去接收
 }
 
+static unsigned char sendbuf[32];
 void COMM::send(const char *buf, unsigned char len)
 {
 	unsigned char ret;
-        unsigned char sendbuf[32];
+	memset(sendbuf, 0, 32);
         sendbuf[0] = src_addr;
         sendbuf[1] = src_port;
         sendbuf[2] = dst_addr;

@@ -45,5 +45,13 @@ public:
 	unsigned char isResultOk(void);
         void  sendRfDatas();/*发送数据*/
 	unsigned char clearAckData();
+
+	unsigned char *getAckData();
+	unsigned char getAckDataLen();
+	unsigned char *getItemData(void);
+	unsigned char getItemDataLen(void);
+
+
+
 };
 #endif

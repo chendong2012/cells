@@ -19,6 +19,7 @@
 #include <Task.h>
 #include "public.h"
 
+extern char g_buf[32];
 #ifdef LED_REMOTE_CONTROL
 extern IReceive irec_led;
 #endif

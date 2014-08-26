@@ -64,6 +64,7 @@ ISend::ISend(const char *cmdstr, void (*cb)(unsigned char *dat, unsigned char le
  * */
 void ISend::setCmdStr(const char *cmdstr)
 {
+	memset(item, 0x00, PACKAGE_LEN);
 	item_len = strlen((const char*)cmdstr);
 	item_len += 1;
 	strcpy((char *)&item[1], (const char*)cmdstr);
@@ -145,6 +146,10 @@ void ISend::msg_handler(unsigned char *dat, unsigned char len)
 #if 0
 			Serial.println("rec ack");
 #endif
+			clearAckData();
+			strncpy((char *)strAck, (const char *)&dat[4+item_len], len-4-item_len);
+			strAckLen = len -4-item_len;
+
 			if (_cb != NULL)
 				_cb(dat, len);
 		}
@@ -192,4 +197,24 @@ unsigned char ISend::clearAckData()
 {
 	memset(strAck, 0, PACKAGE_LEN);
 	strAckLen = 0;
+}
+
+//new interface
+unsigned char *ISend::getAckData(void)
+{
+	return strAck;
+}
+
+unsigned char ISend::getAckDataLen(void)
+{
+	return strAckLen;
+}
+unsigned char *ISend::getItemData(void)
+{
+	return (unsigned char *)&item[1];
+}
+
+unsigned char ISend::getItemDataLen(void)
+{
+	return item_len - 1;
 }

@@ -58,9 +58,7 @@ static void cb_fan(unsigned char *dat, unsigned char len)
 	unsigned char l;
 	if(irec_fan.isNewPackage(dat)) {
 		if(irec_fan.cmpAction(dat, len , (unsigned char *)FAN_REMOTE_SPEED)) {
-
 			speed_press_task.startDelayed();
-
 			l = strlen(FAN_REMOTE_ACK_SPEED_OK);
 			myu2->m_comm->send(FAN_REMOTE_ACK_SPEED_OK, l);
 			irec_fan.saveAckBuf((unsigned char *)FAN_REMOTE_ACK_SPEED_OK, l);

@@ -1,6 +1,6 @@
 #include <IReceive.h>
 #include <comm.h>
-
+extern char g_buf[32];
 /*
  *针对item的组成
  *１、关键字，用于匹配（比如led）
@@ -46,13 +46,23 @@ unsigned char IReceive::cmpAction(unsigned char *dat, unsigned char len, unsigne
 	return 0;
 }
 
+static char ii=0;
 void IReceive::msg_handler(unsigned char *dat, unsigned char len)
 {
 	unsigned char ret;
+	ii++;	
+
+
         ret = strncmp(item, (const char *)&dat[5], strlen(item));
 	if (ret == 0) {
-		if (_cb != NULL)
+		if (_cb != NULL) {
 			_cb(dat, len);
+		}
+	} else {
+	}
+	if (ii == 2) {
+		//sprintf(g_buf, "%d:%d->%d:%d >%s",dat[0], dat[1], dat[2], dat[3], &dat[4]);
+//		Serial.println((char *)dat);
 	}
 }
 
