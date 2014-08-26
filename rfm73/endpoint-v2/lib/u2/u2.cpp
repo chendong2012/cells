@@ -27,26 +27,15 @@ extern IReceive irec_led;
 extern IReceive irec_fan;
 #endif
 
-static boolean timer_func(void);
+extern ISend sendors;
+extern CallMe cmrf;
+extern const char * send_cmds[];
+
 static boolean connect_func(void);
 static boolean key_thread(void);
 
-CallMe cmrf(500, timer_func);
 CallMe connect_task(500, connect_func);
 CallMe key_task(500, key_thread);
-
-
-
-
-
-/*主动发送的命令集合*/
-const char * send_cmds[] = { 
-	"getsvrtm",/*获取服务器的时间*/
-	"cmd4"
-};
-/*********************/
-ISend isender(send_cmds[0]);
-/*********************/
 
 const unsigned char PROGMEM send_cmds_count  = 2;
 
@@ -77,7 +66,7 @@ int u2::init_ok()
 void u2::receive_listener(unsigned char *data, unsigned char len)
 {
 	if (m_init == 1) {
-		isender.msg_handler(data, len);
+		sendors.msg_handler(data, len);
 #ifdef LED_REMOTE_CONTROL
 		irec_led.msg_handler(data, len);
 #endif
@@ -85,12 +74,6 @@ void u2::receive_listener(unsigned char *data, unsigned char len)
 		irec_fan.msg_handler(data, len);
 #endif
 	}
-}
-
-static boolean timer_func(void)
-{
-	isender.send_cb(&isender);
-	return true;
 }
 
 static boolean connect_func(void)
@@ -133,7 +116,7 @@ static boolean key_thread(void)
 		if (digitalRead(GPIO3_KEY)==0) { //过一指定时间，有键按下
 			press_count++;
 			if (press_count>0) {//按下超过一定时间，认为有真正的键按下
-				isender.trigerSend(send_cmds[0]);
+				sendors.trigerSend(send_cmds[GET_SERVER_TIME]);
 				press_ok_flag = true;
 			}
 		} else {/*表示时间不到松开了*/

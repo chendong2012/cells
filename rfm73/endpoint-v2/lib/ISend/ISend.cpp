@@ -45,7 +45,7 @@ extern user_activity *myu2;
 ３、在远程返回结果的地方加入自己的代码
 
 */
-ISend::ISend(const char *cmdstr)
+ISend::ISend(const char *cmdstr, void (*cb)(unsigned char *dat, unsigned char len))
 {
 	trys = 0;
 	setStatus(S_I);
@@ -54,6 +54,7 @@ ISend::ISend(const char *cmdstr)
         setCmdStr(cmdstr);
 
 	creat_send_thread();
+	_cb = cb;
 }
 
 /*
@@ -144,6 +145,8 @@ void ISend::msg_handler(unsigned char *dat, unsigned char len)
 #if 0
 			Serial.println("rec ack");
 #endif
+			if (_cb != NULL)
+				_cb(dat, len);
 		}
 }
 

@@ -28,12 +28,13 @@ public:
 	unsigned char strAck[PACKAGE_LEN];
 	unsigned char strAckLen;
 
-	ISend(const char *cmdstr);
+	ISend(const char *cmdstr, void (*cb)(unsigned char *dat, unsigned char len));
 	void setStatus(unsigned char s);
 	void setCmdStr(const char *cmdstr);
 	void msg_handler(unsigned char *dat, unsigned char len);/*消息处理*/
 	unsigned char setSendResult(unsigned char result);
 	unsigned char getSendResult(void);
+	void (*_cb)(unsigned char *dat, unsigned char len);
 
 	unsigned char getStatus();
 	unsigned char trigerSend(const char *s);
