@@ -648,7 +648,6 @@ uint8_t rfm73::sendPayload(uint8_t * payload, uint8_t len, uint8_t toAck)
     debug(rfm73_DEBUG_FIFO_FULL);
     return 0;
   }
-//	Serial.println((char *)payload);
   // send payload
   setPinState(pinCS, LOW);
   delayMs(rfm73_CS_DELAY);

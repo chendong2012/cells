@@ -24,7 +24,7 @@
 user_activity *act = new u2();
 COMM comm(I_AM_CLIENT);
 CallMe cmled(1000, callme_cb);
-char g_buf1[32];
+char g_debug[32];
 
 static boolean callme_cb(void)
 {
@@ -48,7 +48,7 @@ void setup()
 	byte i;
 	Serial.begin(9600);
 	Serial.println("reset...ok!");
-	memset(g_buf1,0,32);
+	memset(g_debug,0,32);
 /*初始化comm的本地地址和远程地址*/
 	comm.set_local_addr(LOCAL_ADDR, LOCAL_PORT);
 	comm.set_remote_addr(REMOTE_ADDR, REMOTE_PORT);
@@ -80,8 +80,8 @@ void receiveEvent(void)
 	char *p = (char *)RFM.getRcvBuffer();
 	delay(10);
 #ifdef DEBUG
-	sprintf(g_buf1, "%d:%d->%d:%d >%s",p[0], p[1], p[2], p[3], &p[4]);
-//	Serial.println(g_buf);
+	sprintf(g_debug, "%d:%d->%d:%d >%s",p[0], p[1], p[2], p[3], &p[4]);
+//	Serial.println(g_debug);
 #endif
 	comm.read((unsigned char *)p, RFM.getPacketLength());
 }

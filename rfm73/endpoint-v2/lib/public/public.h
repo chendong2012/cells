@@ -8,6 +8,7 @@
 
 //#define DEBUG
 
+extern char g_debug[32];
 /*comm dir*/
 #define I_AM_CLIENT	0
 #define I_AM_SERVER	1
@@ -67,7 +68,7 @@
  ５、每等０。５秒，检查是否为高电平，如是，表示用户已松开键，开中断
  * */
 /*sendors*/
-#define GET_SERVER_TIME		0
+#define CMD_GET_SERVER_TIME		0
 
 
 

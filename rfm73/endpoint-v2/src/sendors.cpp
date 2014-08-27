@@ -1,7 +1,7 @@
 #include <CallMe.h>
 #include <ISend.h>
 
-extern char g_buf1[32];
+
 static void cb_sendors(unsigned char *dat, unsigned char len);
 
 /*主动发送的命令集合*/
@@ -22,6 +22,9 @@ static boolean timer_func(void)
 
 static void cb_sendors(unsigned char *dat, unsigned char len)
 {
+	if (strcmp(send_cmds[CMD_GET_SERVER_TIME],sendors.getItemData())==0) {
+			
+	}
 //	sprintf(g_buf, "%s:", sendors.getItemData());
 //	Serial.println(g_buf);
 //	sprintf(g_buf, "%s", sendors.getAckData());
