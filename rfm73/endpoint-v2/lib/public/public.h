@@ -22,16 +22,20 @@ extern char g_debug[32];
 #define LED_REMOTE_CONTROL
 #define FAN_REMOTE_CONTROL
 
+/*本地被动接收部分*/
 /*================LED_REMOTE_CONTROL====================*/
 #ifdef LED_REMOTE_CONTROL
 #define LED_REMOTE_KEYWORD "led"
 #define LED_REMOTE_ON "on"
 #define LED_REMOTE_OFF "off"
-#define LED_SWITCH_GPIO 7
 
 #define LED_REMOTE_ACK_OK "led:ok"
 #define LED_REMOTE_ACK_FAIL "led:fail"
+
+
+#define LED_SWITCH_GPIO 7
 #endif
+/*******************************************************/
 
 /*================FAN_REMOTE_CONTROL====================*/
 #ifdef FAN_REMOTE_CONTROL
@@ -48,12 +52,13 @@ extern char g_debug[32];
 #define FAN_SPEED_KEY 5
 #define FAN_STOP_KEY 6
 #endif
+/*******************************************************/
 
 
 
 
 
-
+/********************键盘功能**************************/
 #define GPIO3_KEY 3 
 #define  GPIO3_KEY_IRQ 1 
 
@@ -67,40 +72,9 @@ extern char g_debug[32];
  ４、认为有键按下。触发动作。这时不开中断
  ５、每等０。５秒，检查是否为高电平，如是，表示用户已松开键，开中断
  * */
-/*sendors*/
+
+/*本地主动发送命令部分*/
+/*====================sendors==========================*/
 #define CMD_GET_SERVER_TIME		0
 
-
-
-
-
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

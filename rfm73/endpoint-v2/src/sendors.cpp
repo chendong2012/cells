@@ -1,5 +1,6 @@
 #include <CallMe.h>
 #include <ISend.h>
+#include <public.h>
 
 
 static void cb_sendors(unsigned char *dat, unsigned char len);
@@ -22,11 +23,10 @@ static boolean timer_func(void)
 
 static void cb_sendors(unsigned char *dat, unsigned char len)
 {
-	if (strcmp(send_cmds[CMD_GET_SERVER_TIME],sendors.getItemData())==0) {
-			
+	if (strcmp(send_cmds[CMD_GET_SERVER_TIME],(const char *)sendors.getItemData())==0) {
+		sprintf(g_buf, "%s:", sendors.getItemData());
+		Serial.println(g_buf);
+		sprintf(g_buf, "%s", sendors.getAckData());
+		Serial.println(g_buf);
 	}
-//	sprintf(g_buf, "%s:", sendors.getItemData());
-//	Serial.println(g_buf);
-//	sprintf(g_buf, "%s", sendors.getAckData());
-//	Serial.println(g_buf);
 }

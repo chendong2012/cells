@@ -116,7 +116,7 @@ static boolean key_thread(void)
 		if (digitalRead(GPIO3_KEY)==0) { //过一指定时间，有键按下
 			press_count++;
 			if (press_count>0) {//按下超过一定时间，认为有真正的键按下
-				sendors.trigerSend(send_cmds[GET_SERVER_TIME]);
+				sendors.trigerSend(send_cmds[CMD_GET_SERVER_TIME]);
 				press_ok_flag = true;
 			}
 		} else {/*表示时间不到松开了*/
