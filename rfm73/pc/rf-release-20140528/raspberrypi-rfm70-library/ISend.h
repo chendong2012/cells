@@ -1,7 +1,7 @@
 #ifndef __ISEND__H
 #define __ISEND__H
 #define MAX_TRY 10
-#define CMD_MAX_LEN 16
+#define PACKAGE_LEN 32
 enum {
 	S_I,
 	S_S,
@@ -18,35 +18,41 @@ enum {
 class ISend
 {
 public:
-        char item[CMD_MAX_LEN];
+        char item[PACKAGE_LEN];
 	unsigned char item_len;
 	unsigned char index;
 	unsigned char status;
 	unsigned char trys;
 	unsigned char send_result;
-	unsigned char strRec[32];
-	unsigned char strRecLen;
+	unsigned char strAck[PACKAGE_LEN];
+	unsigned char strAckLen;
 
 
-	ISend(const char *cmdstr);
-	virtual void onReceive(unsigned char *dat, unsigned char len);
-	virtual void sendRfDatas();
+	ISend(const char *cmdstr, void (*cb)(unsigned char *dat, unsigned char len));
 	void setStatus(unsigned char s);
-	void setCmdStr(unsigned char *cmdstr);
-	void msg_handler(unsigned char *dat, unsigned char len);
+	void setCmdStr(const char *cmdstr);
+	void msg_handler(unsigned char *dat, unsigned char len);/*消息处理*/
 	unsigned char setSendResult(unsigned char result);
 	unsigned char getSendResult(void);
+	virtual void onReceive(unsigned char *dat, unsigned char len);
+	virtual void sendRfDatas();
 
 	unsigned char getStatus();
-	unsigned char trigerSend(unsigned char *s);
+	unsigned char trigerSend(const char *s);
 	void disableSend(void);
 	static void *send_cb(void *ptr);
 	unsigned char setindex();
 	unsigned char creat_send_thread();
-	unsigned char *getReceiveData();
-	unsigned char getReceiveDataLen();
-	unsigned char clearReceiveData();
 	unsigned char isResultOk(void);
+        void  sendRfDatas();/*发送数据*/
+	unsigned char clearAckData();
+
+	unsigned char *getAckData();
+	unsigned char getAckDataLen();
+	unsigned char *getItemData(void);
+	unsigned char getItemDataLen(void);
+
+
 
 };
 #endif
