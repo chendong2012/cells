@@ -59,8 +59,8 @@ extern char g_debug[32];
 
 
 /********************键盘功能**************************/
-#define GPIO3_KEY 3 
-#define  GPIO3_KEY_IRQ 1 
+#define GPIO3_KEY 3
+#define  GPIO3_KEY_IRQ 1
 
 /*对于中断管脚配置注意事项
  *１、要配成输入带上拉功能
@@ -75,6 +75,8 @@ extern char g_debug[32];
 
 /*本地主动发送命令部分*/
 /*====================sendors==========================*/
-#define CMD_GET_SERVER_TIME		0
+#define CMD_GET_SERVER_TIME		"time"
 
 #endif
+
+

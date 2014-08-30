@@ -51,8 +51,7 @@ ISend::ISend(const char *cmdstr, void (*cb)(unsigned char *dat, unsigned char le
 	setStatus(S_I);
 	setSendResult(RLT_INIT);
 	clearAckData();
-        setCmdStr(cmdstr);
-
+   setCmdStr(cmdstr);
 	creat_send_thread();
 	_cb = cb;
 }
@@ -112,7 +111,7 @@ unsigned char ISend::trigerSend(const char *s)
 
                 setindex();
                 setSendResult(RLT_INIT);
-	//	Serial.println(s);
+
                 sendRfDatas();
                 return 1;
         } else {
@@ -138,14 +137,12 @@ void ISend::msg_handler(unsigned char *dat, unsigned char len)
 {
 	unsigned char ret;
         ret = strncmp((char *)&item[1], (const char *)&dat[4], item_len-1);
-	if (ret == 0)
+	if (ret == 0) {
 		if (getStatus() == S_S) {
 			setStatus(S_A);
 			/*返回结果,打出来*/
 			/*处理所有接收回来的应答码*/
-#if 0
-			Serial.println("rec ack");
-#endif
+
 			clearAckData();
 			strncpy((char *)strAck, (const char *)&dat[4+item_len], len-4-item_len);
 			strAckLen = len -4-item_len;
@@ -153,6 +150,7 @@ void ISend::msg_handler(unsigned char *dat, unsigned char len)
 			if (_cb != NULL)
 				_cb(dat, len);
 		}
+	}
 }
 
 /*这是一个核心函数
@@ -183,6 +181,7 @@ boolean ISend::send_cb(ISend *me)
 		}
 		return true;
 }
+
 unsigned char ISend::creat_send_thread()
 {
 	return 1;
