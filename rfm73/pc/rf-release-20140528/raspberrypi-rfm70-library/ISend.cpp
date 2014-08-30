@@ -48,9 +48,9 @@ ISend::ISend(const char *cmdstr, void (*cb)(unsigned char *dat, unsigned char le
 	setStatus(S_I);
 	setSendResult(RLT_INIT);
 	clearAckData();
-   setCmdStr(cmdstr);
+	setCmdStr(cmdstr);
 	_cb = cb;
-//	creat_send_thread();
+	creat_send_thread();
 }
 
 /*
