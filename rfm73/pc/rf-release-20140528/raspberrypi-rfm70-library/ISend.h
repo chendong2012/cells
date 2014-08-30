@@ -1,5 +1,6 @@
 #ifndef __ISEND__H
 #define __ISEND__H
+#include <user_activity.h>
 #define MAX_TRY 10
 #define PACKAGE_LEN 32
 enum {
@@ -34,8 +35,8 @@ public:
 	void msg_handler(unsigned char *dat, unsigned char len);/*消息处理*/
 	unsigned char setSendResult(unsigned char result);
 	unsigned char getSendResult(void);
-	virtual void onReceive(unsigned char *dat, unsigned char len);
-	virtual void sendRfDatas();
+	void onReceive(unsigned char *dat, unsigned char len);
+	void sendRfDatas();
 
 	unsigned char getStatus();
 	unsigned char trigerSend(const char *s);
@@ -44,7 +45,6 @@ public:
 	unsigned char setindex();
 	unsigned char creat_send_thread();
 	unsigned char isResultOk(void);
-        void  sendRfDatas();/*发送数据*/
 	unsigned char clearAckData();
 
 	unsigned char *getAckData();
@@ -52,7 +52,9 @@ public:
 	unsigned char *getItemData(void);
 	unsigned char getItemDataLen(void);
 
-
+	user_activity *_act;
+        void (*_cb)(unsigned char *dat, unsigned char len);
+	void setUserObj(user_activity *a);
 
 };
 #endif

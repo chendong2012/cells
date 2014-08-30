@@ -6,14 +6,18 @@
 #include "user_activity.h"
 #include <sys/time.h>
 #include <errno.h>
-#include <ISendCustom.h>
 #include <IReceive.h>
 #include <string.h>
 #include <unistd.h>
+#include <ISend.h>
+
+void cb_sent_backmsg(unsigned char *dat, unsigned char len)
+{
+	printf("cb_sent_backmsg......\n");
+}
 
 user_activity *myu2=NULL;
-
-ISendCustom isender("fan");
+ISend isender("fan", cb_sent_backmsg);
 
 static void cb_get_server_timer(unsigned char *dat, unsigned char len);
 IReceive irec("getsvrtm", cb_get_server_timer);
@@ -22,8 +26,6 @@ u11::u11(void)
 {
 	printf("hello i am u11\n");
         myu2 = this;
-
-
 }
 
 /*作为服务器端
@@ -146,11 +148,11 @@ static void *thread_main(void *ptr)
  *返回１表示成功
  *返回２表示失败
  * */
-unsigned char u11::send_package(unsigned char *dat, unsigned char len, ISendCustom *psender)
+unsigned char u11::send_package(unsigned char *dat, unsigned char len, ISend *psender)
 {
 	unsigned char ret=0;
 /*step 1*/
-	psender->trigerSend(dat);
+	psender->trigerSend((const char *)dat);
 	for(;;) {
 /*step 2*/
 		ret = psender->isResultOk();

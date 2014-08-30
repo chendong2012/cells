@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <unistd.h>
+#include "comm.h"
 
 /*
    建立状态机
@@ -48,7 +49,8 @@ ISend::ISend(const char *cmdstr, void (*cb)(unsigned char *dat, unsigned char le
 	setSendResult(RLT_INIT);
 	clearAckData();
    setCmdStr(cmdstr);
-	creat_send_thread();
+	_cb = cb;
+//	creat_send_thread();
 }
 
 /*
@@ -116,7 +118,8 @@ unsigned char ISend::trigerSend(const char *s)
 
 void ISend::sendRfDatas()
 {
-	printf("ISend::sendRfDatas\n");
+	_act->m_comm->send(item, item_len);
+//	printf("ISend::sendRfDatas\n");
         return;
 }
 
@@ -128,6 +131,8 @@ void ISend::disableSend()
 /*receive ack from remote:set finish flag*/
 void ISend::onReceive(unsigned char *dat, unsigned char len)
 {
+	if (_cb != NULL)
+		_cb(dat, len);
 	return;
 }
 
@@ -227,4 +232,9 @@ unsigned char *ISend::getItemData(void)
 unsigned char ISend::getItemDataLen(void)
 {
 	return item_len - 1;
+}
+
+void ISend::setUserObj(user_activity *a)
+{
+        _act = a;
 }
