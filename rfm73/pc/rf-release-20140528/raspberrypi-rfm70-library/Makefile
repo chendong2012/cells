@@ -23,7 +23,7 @@ rfm70:          rfm70.o
 rfm70_test:        rfm70_test
 	@echo [link]
 #	$(CC) u1.cpp u2.cpp user_activity.cpp rfm70_test.cpp comm.cpp rftimer.cpp rfthread.cpp -o $@ -I. $(LDFLAGS) -L. $(LIBS) -lrfm70  -lrt -lpthread
-	$(CC) u1.cpp u11.cpp rfm70_test.cpp ISend.cpp ISendCustom.cpp IReceive.cpp -o $@ -I. $(LDFLAGS) -L. $(LIBS) -lrf  -lrt -lpthread
+	$(CC) u1.cpp u11.cpp rfm70_test.cpp ISend.cpp IReceive.cpp time_server.cpp -o $@ -I. $(LDFLAGS) -L. $(LIBS) -lrf  -lrt -lpthread
 .c.o:
 	@echo [CC] $<
 	@$(CC) -c $(CFLAGS) $< -o $@

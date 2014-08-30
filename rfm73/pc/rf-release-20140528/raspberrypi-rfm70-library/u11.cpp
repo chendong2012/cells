@@ -4,26 +4,26 @@
 #include <pthread.h>
 #include "u11.h"
 #include "user_activity.h"
-#include <sys/time.h>
 #include <errno.h>
-#include <ISendCustom.h>
 #include <IReceive.h>
 #include <string.h>
 #include <unistd.h>
+#include <ISend.h>
+
+extern IReceive irec_time_server;
+void cb_sent_backmsg(unsigned char *dat, unsigned char len)
+{
+	printf("cb_sent_backmsg......\n");
+}
 
 user_activity *myu2=NULL;
+ISend isender("fan", cb_sent_backmsg);
 
-ISendCustom isender("fan");
-
-static void cb_get_server_timer(unsigned char *dat, unsigned char len);
-IReceive irec("getsvrtm", cb_get_server_timer);
 
 u11::u11(void)
 {
 	printf("hello i am u11\n");
         myu2 = this;
-
-
 }
 
 /*作为服务器端
@@ -93,7 +93,7 @@ static void *thread_handle_rev_datas(void *ptr)
 
 /*add your code here*/
                 isender.msg_handler(p->rev_buff, p->rev_len);
-                irec.msg_handler(p->rev_buff, p->rev_len);
+                irec_time_server.msg_handler(p->rev_buff, p->rev_len);
 /*add your code end*/
 
                 pthread_mutex_unlock(&g_mutex);
@@ -109,33 +109,6 @@ static void *thread_main(void *ptr)
 	for(;;) {
 		sleep(10);
 	}
-#if 0
-	for(;;) {
-		sleep(10);
-
-		p->m_comm->get_remote_addr(&addr,&port);
-		if (addr == 0) {
-			continue;
-		}
-/*step 1*/
-		isender.trigerSend((unsigned char *)"getstatus");
-		for(;;) {
-/*step 2*/
-			ret = isender.isResultOk();
-			if (ret == 1) {
-				printf("send datas ok:");
-/*step 3*/
-//				printf("%s\n",isender.getReceiveData());
-				break;
-			} else if (ret == 2) {
-				printf("send datas fail\n");
-				break;
-			} else {
-				usleep(100000);
-			}
-		}
-	}
-#endif
 }
 
 /*
@@ -146,11 +119,11 @@ static void *thread_main(void *ptr)
  *返回１表示成功
  *返回２表示失败
  * */
-unsigned char u11::send_package(unsigned char *dat, unsigned char len, ISendCustom *psender)
+unsigned char u11::send_package(unsigned char *dat, unsigned char len, ISend *psender)
 {
 	unsigned char ret=0;
 /*step 1*/
-	psender->trigerSend(dat);
+	psender->trigerSend((const char *)dat);
 	for(;;) {
 /*step 2*/
 		ret = psender->isResultOk();
@@ -258,18 +231,4 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 		return 0;
 	}
 	return 1;
-}
-
-/*收到客户端要获取服务器端的时间，进行应答,看看是否是第一次发过来的同一条命令，
-如是的话，执行动作并返回
-如是同一条命令，但是第二次以上发送的，就把老结果返回去*/
-static void cb_get_server_timer(unsigned char *dat, unsigned char len)
-{
-	/*第５个字节开始才是内容*/
-        if(irec.isNewPackage(dat)) {
-                myu2->m_comm->send("getsvrtm:12:00", 14);
-                irec.saveAckBuf((unsigned char *)"getsvrtm:12:00", 14);
-        } else {
-                myu2->m_comm->send((const char *)irec.getAckBuf(), irec.getAckBufLen());
-        }
 }
