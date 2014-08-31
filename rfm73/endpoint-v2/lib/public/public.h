@@ -18,6 +18,21 @@ extern char g_debug[32];
 #define TICK_LED 6
 
 
+/*===============================*/
+#define LOCAL_ADDR      3
+#define LOCAL_PORT      90
+#define REMOTE_ADDR     1 
+#define REMOTE_PORT     81
+
+#define BRD_LOCAL_ADDR 3
+#define BRD_LOCAL_PORT 0xff
+#define BRD_REMOTE_ADDR 1
+#define BRD_REMOTE_PORT 0xff
+
+
+
+/*===============================*/
+
 
 #define LED_REMOTE_CONTROL
 #define FAN_REMOTE_CONTROL
@@ -54,6 +69,17 @@ extern char g_debug[32];
 #endif
 /*******************************************************/
 
+/*================BROADCAST_REMOTE_CONTROL====================*/
+#define BRD_REMOTE_CONTROL
+#ifdef BRD_REMOTE_CONTROL
+#define BRD_REMOTE_KEYWORD "brd"
+#define BRD_REMOTE_ON "on"
+#define BRD_REMOTE_OFF "off"
+
+#define BRD_REMOTE_ACK_OK "brd:ok"
+#define BRD_REMOTE_ACK_FAIL "brd:fail"
+#endif
+/*******************************************************/
 
 
 

@@ -9,20 +9,18 @@
 #include <comm.h>
 #include <user_activity.h>
 #include <u2.h>
+#include <uff.h>
 #include "public.h"
 
 #include <CallMe.h>
 
 #define LED_PIN 4
-/*************************/
-#define LOCAL_ADDR      3
-#define LOCAL_PORT      90
-#define REMOTE_ADDR     1 
-#define REMOTE_PORT     81
-/*************************/
 
 user_activity *act = new u2();
+user_activity *act_uff = new uff();
 COMM comm(I_AM_CLIENT);
+COMM comm_uff(I_AM_CLIENT);
+
 CallMe cmled(1000, callme_cb);
 char g_debug[32];
 
@@ -53,9 +51,15 @@ void setup()
 	comm.set_local_addr(LOCAL_ADDR, LOCAL_PORT);
 	comm.set_remote_addr(REMOTE_ADDR, REMOTE_PORT);
 
+	comm_uff.set_local_addr(BRD_LOCAL_ADDR, BRD_LOCAL_PORT);
+	comm_uff.set_remote_addr(BRD_REMOTE_ADDR, BRD_REMOTE_PORT);
+
 /*work ok*/
 	comm.attach_user_activity(act);
 	comm.attach_rfm(&RFM);
+
+	comm_uff.attach_user_activity(act_uff);
+	comm_uff.attach_rfm(&RFM);
 
 	RFM.Begin();
 	RFM.onReceive(receiveEvent);
@@ -63,6 +67,7 @@ void setup()
 
 	/*这里面包括了等待连接的过程,要改进*/
 	act->init_ok();
+	act_uff->init_ok();
 
         pinMode(TICK_LED, OUTPUT);
 	cmled.start();
