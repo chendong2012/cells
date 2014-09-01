@@ -7,7 +7,6 @@
 #include <sys/time.h>
 #include <errno.h>
 
-static unsigned char send_brd(unsigned char *dat, unsigned char len, ISend *psender);
 ISend isender("brd", cb_sent_backmsg);
 u1::u1(void)
 {
@@ -22,7 +21,6 @@ u1::u1(void)
 
 static pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t g_cond = PTHREAD_COND_INITIALIZER;
-
 
 static pthread_mutex_t g_mutex_net = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t g_cond_net = PTHREAD_COND_INITIALIZER;
@@ -65,9 +63,4 @@ void u1::receive_listener(unsigned char *data, unsigned char len)
 		rev_len = len;
 		pthread_cond_broadcast(&g_cond);
 	}
-}
-
-static unsigned char send_brd(unsigned char *dat, unsigned char len, ISend *psender)
-{
-        psender->trigerSend((const char *)dat);
 }
