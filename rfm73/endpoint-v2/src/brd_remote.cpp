@@ -9,14 +9,10 @@ static void cb_remote_control_brd(unsigned char *dat, unsigned char len);
 IReceive irec_brd(BRD_REMOTE_KEYWORD, cb_remote_control_brd);
 
 
-/*
- *接收到从远程过来的ＬＥＤ命令，然后根据变量判断，是开灯还是关灯，
-  并执行相关动作。
-**/
 static void cb_remote_control_brd(unsigned char *dat, unsigned char len)
 {
 	if(irec_brd.isNewPackage(dat)) {
-		;
+		Serial.println("%s", (const char *)&dat[5]);
 /*
 		if(irec_brd.cmpAction(dat, len , (unsigned char *)LED_REMOTE_ON)) {
 			;
