@@ -45,6 +45,7 @@
 ISend::ISend(const char *cmdstr, void (*cb)(unsigned char *dat, unsigned char len))
 {
 	trys = 0;
+	_type = 0;
 	setStatus(S_I);
 	setSendResult(RLT_INIT);
 	clearAckData();
@@ -110,6 +111,10 @@ unsigned char ISend::trigerSend(const char *s)
                 setSendResult(RLT_INIT);
 
                 sendRfDatas();
+		if (_type == 1) {
+			setStatus(S_I);
+			setSendResult(RLT_OK);
+		}
                 return 1;
         } else {
                 return 0;
@@ -238,3 +243,9 @@ void ISend::setUserObj(user_activity *a)
 {
         _act = a;
 }
+
+void ISend::setSendType(unsigned char type)
+{
+	_type = type;
+}
+

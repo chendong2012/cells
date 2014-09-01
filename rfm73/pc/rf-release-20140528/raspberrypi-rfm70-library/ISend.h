@@ -55,6 +55,7 @@ public:
 	user_activity *_act;
         void (*_cb)(unsigned char *dat, unsigned char len);
 	void setUserObj(user_activity *a);
+	unsigned char _type;
 
 };
 #endif
