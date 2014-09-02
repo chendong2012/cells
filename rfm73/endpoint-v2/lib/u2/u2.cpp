@@ -66,7 +66,7 @@ int u2::init_ok()
 void u2::receive_listener(unsigned char *data, unsigned char len)
 {
 	if (m_init == 1) {
-		sendors.msg_handler(data, len);
+		//sendors.msg_handler(data, len);
 #ifdef LED_REMOTE_CONTROL
 		irec_led.msg_handler(data, len);
 #endif

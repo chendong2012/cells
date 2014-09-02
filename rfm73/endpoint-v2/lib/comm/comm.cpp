@@ -71,7 +71,12 @@ void COMM::read(unsigned char *buf, unsigned char len)
 	if (!is_mydata(rcv_buff)) {
 //	if (rcv_buff[2] != src_addr || (rcv_buff[3] != src_port)) {
 
-		return;	
+		/*remote is xx.0xf and local is xx.0xf will pass*/
+		if ((rcv_buff[1] == 0x0f) && (is_server == I_AM_CLIENT) && (src_port==0xf)) {
+			;
+		} else {
+			return;	
+		}
 	}
 
 /*server connect part*/

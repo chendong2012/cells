@@ -62,6 +62,8 @@ static void cb_fan(unsigned char *dat, unsigned char len)
 			l = strlen(FAN_REMOTE_ACK_SPEED_OK);
 			myu2->m_comm->send(FAN_REMOTE_ACK_SPEED_OK, l);
 			irec_fan.saveAckBuf((unsigned char *)FAN_REMOTE_ACK_SPEED_OK, l);
+			sprintf(g_debug, "%s", (const char *)&dat[5]);
+			Serial.println((const char *)g_debug);
 
 		} else if (irec_fan.cmpAction(dat, len , (unsigned char *)FAN_REMOTE_OFF)) {
 
