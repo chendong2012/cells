@@ -57,11 +57,12 @@ void setup()
 	comm_uff.attach_id(I_AM_CLIENT);
 	comm.set_local_addr(LOCAL_ADDR, LOCAL_PORT);
 	comm.set_remote_addr(REMOTE_ADDR, REMOTE_PORT);
+	comm_uff.set_accept_addrs(0, 0);
 
 	comm_uff.set_local_addr(3, 15);
 	//comm_uff.set_remote_addr(BRD_REMOTE_ADDR, BRD_REMOTE_PORT);
 	comm_uff.set_remote_addr(1, 15);
-
+	comm_uff.set_accept_addrs(1, 15);
 /*work ok*/
 	comm.attach_user_activity((user_activity *)&act);
 	comm.attach_rfm(&RFM);

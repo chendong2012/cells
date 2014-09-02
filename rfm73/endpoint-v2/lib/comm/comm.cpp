@@ -39,6 +39,9 @@ unsigned char COMM::is_mydata(byte *p)
 	Serial.println((const char *)g_debug);
 	*/
 
+	if(is_accept_addrs(p)) {
+		return 1;
+	}
 //	sprintf(g_debug, "c:%d-%d-%d-%d", p[0], p[1], p[2], p[3]);
 //	Serial.println((const char *)g_debug);
 //	sprintf(g_debug, "c:%d-%d-%d-%d", aa, bb, cc, dd);
@@ -49,6 +52,7 @@ unsigned char COMM::is_mydata(byte *p)
 //	    (p[2] == aa) && (p[3] == bb)) {
 		return 1;
 	} else {
+
 		return 0;
 	}
 }
@@ -227,5 +231,19 @@ void COMM::attach_id(unsigned char id)
 		status_bug = CLIENT_STATUS_CONNECTING;
 	}
 }
+
+unsigned char COMM::is_accept_addrs(unsigned char *paddr)
+{
+	if ((paddr[0] == _accept_addr) && (paddr[1] == _accept_port)) {
+		return 1;
+	}
+}
+
+unsigned char COMM::set_accept_addrs(unsigned char addr, unsigned char port)
+{
+	_accept_addr = addr;
+	_accept_port = port;
+}
+
 COMM comm;
 COMM comm_uff;

@@ -44,7 +44,6 @@ user_activity *myu2=NULL;
 /*************************************************************************/
 u2::u2(void)
 {
-	m_sended = 1;
 	m_init = 0;
 	memset(rev_buff, 0, 32);
 	myu2 = this;

@@ -62,20 +62,21 @@ class COMM {
 	}
 /*这是一个发送的注册函数*/
 	static void (*sendcb)(unsigned char *buf, unsigned char len);
-	int test;
+	unsigned char is_accept_addrs(unsigned char *paddr);
+	unsigned char set_accept_addrs(unsigned char addr, unsigned char port);
 
 public:
-        unsigned char init;
         unsigned char dst_addr;
         unsigned char dst_port;
         unsigned char src_addr;
         unsigned char src_port;
         unsigned char is_server; /*0 server, 1 client*/
         volatile unsigned char status_bug;	/*0 is free 1 connected*/
-        unsigned char result;
         unsigned char rcv_buff[32];
 	user_activity *m_activity;
 	rfm73 *m_rfm;
+	unsigned char _accept_addr;
+	unsigned char _accept_port;
 };
 
 

@@ -11,14 +11,12 @@ public:
 	{
 		return 0;
 	}
+
+
 	void set_comm(COMM *comm);
 	COMM *m_comm;
-	int a;
 	unsigned char rev_buff[32];
 	unsigned char rev_len;
-
 	int m_init;
-
-	int m_sended;
 };
 #endif
