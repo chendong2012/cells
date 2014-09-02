@@ -46,7 +46,6 @@ class COMM {
         void set_remote_addr(unsigned char addr, unsigned char port);
         void set_local_addr(unsigned char addr, unsigned char port);
 	void conect_ack(void);
-	void init_watchdog(void);
 	unsigned char get_status(void);
 	void reset_listen_status(void);
 
