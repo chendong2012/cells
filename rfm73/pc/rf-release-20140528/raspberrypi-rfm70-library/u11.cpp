@@ -10,69 +10,47 @@
 #include <unistd.h>
 #include <ISend.h>
 
-extern IReceive irec_time_server;
-void cb_sent_backmsg(unsigned char *dat, unsigned char len)
-{
-	printf("cb_sent_backmsg......\n");
-}
+static void cb_sent_backmsg(unsigned char *dat, unsigned char len);
+user_activity *myu11=NULL;
 
-user_activity *myu2=NULL;
-ISend isender("fan", cb_sent_backmsg);
+/****************************************************************************/
+
+extern IReceive irec_time_server;		/*用于远程想得到当前时间信息*/
+ISend isender_fan("fan", cb_sent_backmsg);	/*fan 控制*/
+
+/****************************************************************************/
+
+
+
+
+static void cb_sent_backmsg(unsigned char *dat, unsigned char len)
+{
+	printf("isender_fan:cb_sent_backmsg!!!\n");
+}
 
 
 u11::u11(void)
 {
-	printf("hello i am u11\n");
-        myu2 = this;
+        myu11 = this;
 }
-
-/*作为服务器端
-如有消息到达，
-1、广播给系统
-2、把消息传出去
-*/
 
 static pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t g_cond = PTHREAD_COND_INITIALIZER;
 
-
-/**/
 static pthread_mutex_t g_mutex_net = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t g_cond_net = PTHREAD_COND_INITIALIZER;
 
-static int gettime(char *buf)
-{
-	struct tm  *ptm;
-	long   ts;
-	int    y,m,d,h,n,s;
-	ts = time(NULL);
-	ptm = localtime(&ts);
-
-	y = ptm->tm_year+1900;  //年
-	m = ptm->tm_mon+1;      //月
-	d = ptm->tm_mday;       //日
-	h = ptm->tm_hour;       //时
-	n = ptm->tm_min;        //分
-	s = ptm->tm_sec;        //秒 
-	return sprintf(buf,"%02d",s);
-//	return sprintf(buf,"%02d:%02d",h,n);
-}
 
 /*主要用来接收到要处理的信息:
-
 1,并做相关的动作
 2,回复相关信息等等
 */
 static void *thread_handle_rev_datas(void *ptr)
 {
-	unsigned char saddr,sport,raddr,rport, id;	
 	unsigned char len;
 	int ret;
 	struct timeval now;
 	struct timespec outtime;
-
-	char buf[32];
-	unsigned char i='0';
 
 	user_activity *p = (user_activity*)ptr;
 	sleep(1);
@@ -85,16 +63,16 @@ static void *thread_handle_rev_datas(void *ptr)
 
 		ret = pthread_cond_timedwait(&g_cond, &g_mutex, &outtime);
 		if(ret == ETIMEDOUT) {
-				pthread_mutex_unlock(&g_mutex);
-				continue;
+			pthread_mutex_unlock(&g_mutex);
+			continue;
 		}
-		p->m_comm->get_local_addr(&saddr, &sport);
-		p->m_comm->get_remote_addr(&raddr, &rport);
 
-/*add your code here*/
-                isender.msg_handler(p->rev_buff, p->rev_len);
+/*========================add your code here=======================*/
+
+                isender_fan.msg_handler(p->rev_buff, p->rev_len);
                 irec_time_server.msg_handler(p->rev_buff, p->rev_len);
-/*add your code end*/
+
+/*========================add your code end =======================*/
 
                 pthread_mutex_unlock(&g_mutex);
         }
@@ -148,11 +126,10 @@ int u11::init_ok()
 	m_init = 1;
         pthread_t id;
 	m_sended = 1;
-	isender.setUserObj((user_activity *)this);
+	isender_fan.setUserObj((user_activity *)this);
 
         ret = pthread_create(&id, NULL, thread_main, this);
         if(ret) {
-                printf("create pthread_main error\n");
 		return 1;
         }
 
@@ -164,7 +141,7 @@ int u11::init_ok()
 	return 0;
 }
 
-/*这个是从comm 类调过来的，当有数据来时, 并且已确认就是给自己的会来到这个类对像*/
+/*这个是从comm 类调过来的，当有数据来时, 并且已确认就是给自己(1:81)的会来到这个类对像*/
 /*所有收到的数据都会放到data, data[len]=='\0',len 表示整个包的长度*/
 void u11::receive_listener(unsigned char *data, unsigned char len)
 {
@@ -180,8 +157,8 @@ void u11::receive_listener(unsigned char *data, unsigned char len)
 /*对外接口:
  * buf:本地地址(addr:port)，远程地址(addr:port) 发送数据
  *以设置风扇为例：
- *1.81->3.90-fanspeed
- *1.81->3.90-fanoff
+ *1.81->3.90-fanspeed 	(这是服务器过来的格式)
+ *1.81->3.90-fanoff	(这是服务器过来的格式)
  *
  * */
 int u11::send_net_package(unsigned char *buf, unsigned char *len)
@@ -197,8 +174,6 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 	memset(tempbuf, 0x00, 32);
 	memset(ctxbuf, 0x00, 32);
 	memcpy(tempbuf, buf, *len);
-
-	printf("send send_net_package.....len=%d\n", *len);
 
 /*判断
  *用户输入的从网址过来的数据进行分析：
@@ -216,11 +191,11 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 	}
 
 	sscanf((const char *)tempbuf, "%d.%d->%d.%d-%s", &a, &b, &c, &d, ctxbuf);
-	ret = send_package((unsigned char *)ctxbuf, strlen((const char *)ctxbuf), &isender);
+	ret = send_package((unsigned char *)ctxbuf, strlen((const char *)ctxbuf), &isender_fan);
 
 	if (ret == 1) {
 		l = strlen((const char *)&rev_buff[4]);
-		printf("send_net_package:(ack ok\n");
+		printf("send_net_package:ack ok\n");
 		memcpy((void *)buf, (const void *)&rev_buff[4], l);
 		*len = l;
 	} else if (ret == 2) {

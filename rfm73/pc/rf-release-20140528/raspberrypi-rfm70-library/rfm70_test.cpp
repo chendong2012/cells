@@ -45,25 +45,11 @@ void irq_func(void)
 void receiveEvent(void *rcvbuf, uint8_t len) {
         uint8_t i=0;
         uint8_t *buf=(uint8_t *)rcvbuf;
-#if 0
-        printf("len 0x%02x:", len);
-#if 0
-        for (i=0; i< len; i++) {
-                printf("0x%02x ", buf[i]);
-        }
-#endif
-        printf("%s", buf);
-        printf("\n");
-#endif
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 		/*收到数据给到对像分析*/
 	comm.read((unsigned char *)rcvbuf, len);
 	comm1.read((unsigned char *)rcvbuf, len);
-//	comm_client.read((unsigned char *)rcvbuf, len);
-	//comm2.read((unsigned char *)rcvbuf, len);
-	//comm3.read((unsigned char *)rcvbuf, len);
-	//and so on
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 }
 /********************************************************************************/
@@ -107,14 +93,3 @@ int main(void)
 		usleep(20000);
 	}
 }
-
-#if 0
-void func(void)
-{
-	time_t now;   //实例化time_t结构
-	struct tm *timenow;    //实例化tm结构指针
-	time(&now);   //time函数读取现在的时间(国际标准时间非北京时间)，然后传值给now
-	timenow = localtime(&now);//localtime函数把从time取得的时间now换算成你电脑中的时间(>就是你设置的地区)
-	printf("Local time is %s\n", asctime(timenow)); //上句中asctime函数把时间转换成字符，>通过printf()函数输出
-}
-#endif

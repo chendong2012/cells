@@ -32,7 +32,7 @@ void IReceive::msg_handler(unsigned char *dat, unsigned char len)
 	if (ret == 0) {
 		if (_cb != NULL) {
 			_cb(dat, len);
-			printf("ack request info");
+		//	printf("ack request info");
 		}
 	}
 }

@@ -244,6 +244,7 @@ void ISend::setUserObj(user_activity *a)
         _act = a;
 }
 
+/*表示发送完一次后，就结束，不会再去等远程的返回信息*/
 void ISend::setSendType(unsigned char type)
 {
 	_type = type;
