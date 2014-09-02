@@ -2,4 +2,4 @@
 ino clean
 ino build
 ino upload
-ino serial
+ino serial -b 115200
