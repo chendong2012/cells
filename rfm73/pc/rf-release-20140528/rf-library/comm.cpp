@@ -84,7 +84,6 @@ COMM::COMM(unsigned char id, RFM70 *rfm, user_activity *activity)
 	m_activity->set_comm(this);
 
 	m_activity->init_ok();
-	init_watchdog();
 #if 0
 	if (is_server == I_AM_CLIENT) {
 		m_activity->init_ok();
