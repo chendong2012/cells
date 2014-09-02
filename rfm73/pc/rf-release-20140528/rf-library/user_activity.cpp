@@ -159,7 +159,6 @@ unsigned char user_activity::check_addr_ex(const char *s)
 {
 	int a, b, c, d;
 	sscanf(s, "%d.%d->%d.%d-", &a, &b, &c, &d);
-	printf("a=%d b=%d c=%d d=%d", a, b , c ,d);
 	return check_addr((unsigned char)a, (unsigned char)b, (unsigned char)c, (unsigned char)d);
 }
 

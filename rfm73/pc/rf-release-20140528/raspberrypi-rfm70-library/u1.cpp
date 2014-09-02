@@ -8,6 +8,7 @@
 #include <sys/time.h>
 #include <errno.h>
 
+static int gettime(char *buf);
 static void cb_msg(unsigned char *dat, unsigned char len)
 {
 	printf("u1 cb_msg\n");
@@ -34,14 +35,14 @@ static pthread_cond_t g_cond_net = PTHREAD_COND_INITIALIZER;
 /*主动发送*/
 static void *thread_main(void *ptr)
 {
+	char buf[32];
 	user_activity *p = (user_activity*)ptr;
 	for(;;) {
-		sleep(5);
+		sleep(30);
 		if (p->m_comm->get_status() == STATUS_LISTEN) {
 			printf("comm no client!!!\n");
 		}
-		printf("send...!!!\n");
-		isender_brd.trigerSend("brd1200");
+		gettime(buf);
 	}
 }
 
@@ -73,4 +74,22 @@ void u1::receive_listener(unsigned char *data, unsigned char len)
 		rev_len = len;
 		pthread_cond_broadcast(&g_cond);
 	}
+}
+
+static int gettime(char *buf)
+{
+	struct tm  *ptm;
+	long   ts;
+	int    y,m,d,h,n,s;
+	ts = time(NULL);
+	ptm = localtime(&ts);
+
+	y = ptm->tm_year+1900;  //年
+	m = ptm->tm_mon+1;      //月
+	d = ptm->tm_mday;       //日
+	h = ptm->tm_hour;       //时
+	n = ptm->tm_min;        //分
+	s = ptm->tm_sec;        //秒 
+	sprintf(buf,"brd%04d,%02d,%02d,%02d,%02d,%02d",y,m,d,h,n,s);
+	isender_brd.trigerSend(buf);
 }
