@@ -25,9 +25,9 @@ extern char g_debug[32];
 #define REMOTE_PORT     81
 
 #define BRD_LOCAL_ADDR 3
-#define BRD_LOCAL_PORT 0xff
+#define BRD_LOCAL_PORT 15
 #define BRD_REMOTE_ADDR 1
-#define BRD_REMOTE_PORT 0xff
+#define BRD_REMOTE_PORT 15
 
 
 

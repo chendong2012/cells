@@ -58,7 +58,7 @@ static void key_irq_func(void)
 
 int u2::init_ok()
 {
-	Serial.println("connecting...");
+//	Serial.println("connecting...");
 	connect_task.start();
 }
 
@@ -83,7 +83,7 @@ static boolean connect_func(void)
 		return false;
 
 	if (1==myu2->m_comm->connect()) {
-		Serial.println("connected ok!\n");
+		Serial.println("cok!\n");
 
 		/*fan*/
 		pinMode(FAN_SPEED_KEY, OUTPUT);
@@ -117,6 +117,7 @@ static boolean key_thread(void)
 			press_count++;
 			if (press_count>0) {//按下超过一定时间，认为有真正的键按下
 				sendors.trigerSend(CMD_GET_SERVER_TIME);
+			Serial.println("p");
 				press_ok_flag = true;
 			}
 		} else {/*表示时间不到松开了*/

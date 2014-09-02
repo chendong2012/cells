@@ -16,10 +16,14 @@
 
 #define LED_PIN 4
 
-user_activity *act = new u2();
-user_activity *act_uff = new uff();
-COMM comm(I_AM_CLIENT);
-COMM comm_uff(I_AM_CLIENT);
+//COMM comm_uff(I_AM_CLIENT);
+//COMM comm(I_AM_CLIENT);
+
+u2 act;
+uff act_uff;
+
+//user_activity *act = new u2();
+//user_activity *act_uff = new uff();
 
 CallMe cmled(1000, callme_cb);
 char g_debug[32];
@@ -48,17 +52,21 @@ void setup()
 	Serial.println("reset...ok!");
 	memset(g_debug,0,32);
 /*初始化comm的本地地址和远程地址*/
+
+	comm.attach_id(I_AM_CLIENT);
+	comm_uff.attach_id(I_AM_CLIENT);
 	comm.set_local_addr(LOCAL_ADDR, LOCAL_PORT);
 	comm.set_remote_addr(REMOTE_ADDR, REMOTE_PORT);
 
-	comm_uff.set_local_addr(BRD_LOCAL_ADDR, BRD_LOCAL_PORT);
-	comm_uff.set_remote_addr(BRD_REMOTE_ADDR, BRD_REMOTE_PORT);
+	comm_uff.set_local_addr(3, 15);
+	//comm_uff.set_remote_addr(BRD_REMOTE_ADDR, BRD_REMOTE_PORT);
+	comm_uff.set_remote_addr(1, 15);
 
 /*work ok*/
-	comm.attach_user_activity(act);
+	comm.attach_user_activity((user_activity *)&act);
 	comm.attach_rfm(&RFM);
 
-	comm_uff.attach_user_activity(act_uff);
+	comm_uff.attach_user_activity((user_activity *)&act_uff);
 	comm_uff.attach_rfm(&RFM);
 
 	RFM.Begin();
@@ -66,8 +74,8 @@ void setup()
 	setup_irq();
 
 	/*这里面包括了等待连接的过程,要改进*/
-	act->init_ok();
-	act_uff->init_ok();
+	act.init_ok();
+	act_uff.init_ok();
 
         pinMode(TICK_LED, OUTPUT);
 	cmled.start();
@@ -83,10 +91,11 @@ and dispatch all comm objs*/
 void receiveEvent(void)
 {
 	char *p = (char *)RFM.getRcvBuffer();
-	delay(10);
+//	delay(10);
 #ifdef DEBUG
-	sprintf(g_debug, "%d:%d->%d:%d >%s",p[0], p[1], p[2], p[3], &p[4]);
+//	sprintf(g_debug, "%d:%d->%d:%d >%s",p[0], p[1], p[2], p[3], &p[4]);
 //	Serial.println(g_debug);
 #endif
 	comm.read((unsigned char *)p, RFM.getPacketLength());
+	comm_uff.read((unsigned char *)p, RFM.getPacketLength());
 }

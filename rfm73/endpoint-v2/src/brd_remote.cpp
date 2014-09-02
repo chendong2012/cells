@@ -11,8 +11,11 @@ IReceive irec_brd(BRD_REMOTE_KEYWORD, cb_remote_control_brd);
 
 static void cb_remote_control_brd(unsigned char *dat, unsigned char len)
 {
+		sprintf(g_debug, "%s:", (const char *)&dat[5]);
+		Serial.println((const char *)g_debug);
 	if(irec_brd.isNewPackage(dat)) {
-		Serial.println("%s", (const char *)&dat[5]);
+		sprintf(g_debug, "%s:", (const char *)&dat[5]);
+		Serial.println((const char *)g_debug);
 /*
 		if(irec_brd.cmpAction(dat, len , (unsigned char *)LED_REMOTE_ON)) {
 			;

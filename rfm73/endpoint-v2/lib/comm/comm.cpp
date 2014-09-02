@@ -4,15 +4,11 @@
 #include "user_activity.h"
 #include "public.h"
 #define NELEMS(x)  (sizeof(x) / sizeof(x[0]))
-
-COMM::COMM(unsigned char id)
+//unsigned char aa,bb,cc,dd;
+//unsigned char status_bug;
+COMM::COMM()
 {
-        is_server = id;
-	if (is_server == I_AM_SERVER) {
-		status = STATUS_LISTEN;
-	} else {
-		status = CLIENT_STATUS_CONNECTING;
-	}
+	
         memset(rcv_buff,0,PACKAGE_LEN);
 	m_activity = NULL;
 	m_rfm = NULL;
@@ -21,6 +17,7 @@ COMM::COMM(unsigned char id)
 /*new: attach activity*/
 void COMM::attach_user_activity(user_activity *activity)
 {
+	//m_activity = &act_uff;
 	m_activity = activity;
 	m_activity->set_comm(this);
 }
@@ -33,8 +30,23 @@ void COMM::attach_rfm(rfm73 *rfm)
 
 unsigned char COMM::is_mydata(byte *p)
 {
+	/*
+	if ((p[1] == 0xff) && (p[0] == dst_addr)) {
+		return 1;
+	}
+
+	sprintf(g_debug, "%d-%d-%d-%d", p[0], p[1], p[2], p[3]);
+	Serial.println((const char *)g_debug);
+	*/
+
+//	sprintf(g_debug, "c:%d-%d-%d-%d", p[0], p[1], p[2], p[3]);
+//	Serial.println((const char *)g_debug);
+//	sprintf(g_debug, "c:%d-%d-%d-%d", aa, bb, cc, dd);
+//	Serial.println((const char *)g_debug);
 	if ((p[0] == dst_addr) && (p[1] == dst_port) && \
 	    (p[2] == src_addr) && (p[3] == src_port)) {
+//	if ((p[0] == cc) && (p[1] == dd) && \
+//	    (p[2] == aa) && (p[3] == bb)) {
 		return 1;
 	} else {
 		return 0;
@@ -58,6 +70,7 @@ void COMM::read(unsigned char *buf, unsigned char len)
         ***********/
 	if (!is_mydata(rcv_buff)) {
 //	if (rcv_buff[2] != src_addr || (rcv_buff[3] != src_port)) {
+
 		return;	
 	}
 
@@ -68,7 +81,7 @@ void COMM::read(unsigned char *buf, unsigned char len)
 		//	if (status == STATUS_LISTEN) {
 				set_remote_addr(rcv_buff[0], rcv_buff[1]);
 				conect_ack(); //ack client
-				status = STATUS_CONNECTED;
+				status_bug = STATUS_CONNECTED;
 #if 0 
 				printf("connected:(%d:%d)<--server-client---> \
 				(%d:%d)\n", \
@@ -86,7 +99,7 @@ void COMM::read(unsigned char *buf, unsigned char len)
 
 		} else {
 			set_remote_addr(rcv_buff[0], rcv_buff[1]);
-			if (status == STATUS_LISTEN) {
+			if (status_bug == STATUS_LISTEN) {
 #if 0
 				printf("connected:(%d:%d)<--server-client---> \
 				(%d:%d)\n", \
@@ -96,16 +109,18 @@ void COMM::read(unsigned char *buf, unsigned char len)
 				rcv_buff[1]);
 #endif
 			}
-			status = STATUS_CONNECTED;
+			status_bug = STATUS_CONNECTED;
 		}
 	}
 
 /*client connect part*/
 	if (is_server == I_AM_CLIENT) {
-		if (status == CLIENT_STATUS_CONNECTING) {
+		if (status_bug == CLIENT_STATUS_CONNECTING) {
 			if (rcv_buff[4] == CONNECT_ACK) {
-				status = CLIENT_STATUS_CONNECTED;
+				status_bug = CLIENT_STATUS_CONNECTED;
 				
+//	sprintf(g_debug, "s9:%d", status_bug);
+//	Serial.println((const char *)g_debug);
 #if 0
 				printf("connected:(%d:%d)<--server-client--->(%d:%d)\n", rcv_buff[0], rcv_buff[1],rcv_buff[2], rcv_buff[3]);
 #endif
@@ -116,6 +131,8 @@ void COMM::read(unsigned char *buf, unsigned char len)
 		}
 	}
 	m_activity->receive_listener(rcv_buff, len); //交给对像去接收
+	//sprintf(g_debug, "s3:%s", rcv_buff);
+	//Serial.println((const char *)g_debug);
 }
 
 static unsigned char sendbuf[32];
@@ -150,9 +167,13 @@ int COMM::connect()
 	m_rfm->send(sendbuf, 5);
 	delay(10);
 
-	if (status == CLIENT_STATUS_CONNECTED) {
+	if (status_bug == CLIENT_STATUS_CONNECTED) {
+	//sprintf(g_debug, "s2:%d", status_bug);
+	//Serial.println((const char *)g_debug);
 		return 1; //connect ok
 	} else {
+	//sprintf(g_debug, "s1:%d", status_bug);
+	//Serial.println((const char *)g_debug);
 		return 0; //connect fail
 	}
 }
@@ -171,21 +192,35 @@ void COMM::set_local_addr(unsigned char addr, unsigned char port)
 
 void COMM::set_remote_addr(unsigned char addr, unsigned char port)
 {
-        dst_addr = addr;
+       dst_addr = addr;
         dst_port = port;
+		//sprintf(g_debug, "cug:%d-%d-%d-%d", dst_addr, dst_port, src_addr, src_port);
+		//Serial.println((const char *)g_debug);
 }
 
 void COMM::reset_listen_status(void)
 {
-	status = STATUS_LISTEN;
+	status_bug = STATUS_LISTEN;
 }
 
 void COMM::reset_client_status(void)
 {
-	status = CLIENT_STATUS_CONNECTING;
+//	status = CLIENT_STATUS_CONNECTING;
 }
 
 unsigned char COMM::get_status(void)
 {
-	return status;
+	return status_bug;
 }
+
+void COMM::attach_id(unsigned char id)
+{
+	is_server = id;
+	if (is_server == I_AM_SERVER) {
+		status_bug = STATUS_LISTEN;
+	} else {
+		status_bug = CLIENT_STATUS_CONNECTING;
+	}
+}
+COMM comm;
+COMM comm_uff;
