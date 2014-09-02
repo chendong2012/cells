@@ -91,7 +91,7 @@ and dispatch all comm objs*/
 void receiveEvent(void)
 {
 	char *p = (char *)RFM.getRcvBuffer();
-//	delay(10);
+	delay(10);
 #ifdef DEBUG
 //	sprintf(g_debug, "%d:%d->%d:%d >%s",p[0], p[1], p[2], p[3], &p[4]);
 //	Serial.println(g_debug);
