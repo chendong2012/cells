@@ -9,6 +9,5 @@ public:
 	u1();
 	void receive_listener(unsigned char *data, unsigned char len);
 	int init_ok();
-	int send_net_package(unsigned char *buf, unsigned char *len);
 };
 #endif

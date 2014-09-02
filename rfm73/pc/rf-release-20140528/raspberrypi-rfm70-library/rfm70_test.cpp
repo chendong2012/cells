@@ -70,7 +70,7 @@ void receiveEvent(void *rcvbuf, uint8_t len) {
 
 void setup_server()
 {
-        comm.set_local_addr(1, 0xff);
+        comm.set_local_addr(1, 0x0f);
         comm1.set_local_addr(1, 81);
 //	act->init_ok();
 }

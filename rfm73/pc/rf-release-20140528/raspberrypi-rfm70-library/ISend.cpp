@@ -110,11 +110,11 @@ unsigned char ISend::trigerSend(const char *s)
                 setindex();
                 setSendResult(RLT_INIT);
 
-                sendRfDatas();
 		if (_type == 1) {
 			setStatus(S_I);
 			setSendResult(RLT_OK);
 		}
+                sendRfDatas();
                 return 1;
         } else {
                 return 0;

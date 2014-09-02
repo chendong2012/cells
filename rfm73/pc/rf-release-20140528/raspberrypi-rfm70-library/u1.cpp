@@ -4,10 +4,16 @@
 #include <pthread.h>
 #include "u1.h"
 #include "user_activity.h"
+#include "ISend.h"
 #include <sys/time.h>
 #include <errno.h>
 
-ISend isender("brd", cb_sent_backmsg);
+static void cb_msg(unsigned char *dat, unsigned char len)
+{
+	printf("u1 cb_msg\n");
+}
+
+ISend isender_brd("brd", cb_msg);
 u1::u1(void)
 {
 	m_sended = 1;
@@ -31,7 +37,11 @@ static void *thread_main(void *ptr)
 	user_activity *p = (user_activity*)ptr;
 	for(;;) {
 		sleep(5);
-        isender.trigerSend("brd1200");
+		if (p->m_comm->get_status() == STATUS_LISTEN) {
+			printf("comm no client!!!\n");
+		}
+		printf("send...!!!\n");
+		isender_brd.trigerSend("brd1200");
 	}
 }
 
@@ -41,9 +51,8 @@ int u1::init_ok()
         int ret;
 	m_init = 1;
         pthread_t id;
-	isender.setUserObj((user_activity *)this);
-
-	isender.setSendType(1);
+	isender_brd.setUserObj((user_activity *)this);
+	isender_brd.setSendType(1);
 
         ret = pthread_create(&id, NULL, thread_main, this);
         if(ret) {
@@ -55,6 +64,7 @@ int u1::init_ok()
 
 void u1::receive_listener(unsigned char *data, unsigned char len)
 {
+	printf("u1::receive_listener\n");
         memset(rev_buff, 0, 255);
 	data[len] = 0;
 

@@ -56,6 +56,7 @@ public:
         void (*_cb)(unsigned char *dat, unsigned char len);
 	void setUserObj(user_activity *a);
 	unsigned char _type;
+	void setSendType(unsigned char type);
 
 };
 #endif
