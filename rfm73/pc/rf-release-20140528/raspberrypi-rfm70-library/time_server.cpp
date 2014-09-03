@@ -10,7 +10,11 @@
 #include <unistd.h>
 #include "public.h"
 
-extern user_activity *myu2;
+/*send:time[index]
+  send back:time2014,3,14,12,01,59
+
+*/
+extern user_activity *myu11;
 
 static int gettime(char *buf);
 static void cb_get_server_timer(unsigned char *dat, unsigned char len);
@@ -23,10 +27,12 @@ static void cb_get_server_timer(unsigned char *dat, unsigned char len)
 	/*第５个字节开始才是内容*/
         if(irec_time_server.isNewPackage(dat)) {
 		time_cnt = gettime(time_buf);
-                myu2->m_comm->send(time_buf, time_cnt);
+                myu11->m_comm->send(time_buf, time_cnt);
                 irec_time_server.saveAckBuf((unsigned char *)time_buf, time_cnt);
+		printf("send back time to remote\n");
         } else {
-                myu2->m_comm->send((const char *)irec_time_server.getAckBuf(), irec_time_server.getAckBufLen());
+                myu11->m_comm->send((const char *)irec_time_server.getAckBuf(), irec_time_server.getAckBufLen());
+		printf("send back time to remote-1\n");
         }
 }
 
@@ -44,5 +50,5 @@ static int gettime(char *buf)
 	h = ptm->tm_hour;       //时
 	n = ptm->tm_min;        //分
 	s = ptm->tm_sec;        //秒 
-	return sprintf(buf,"%s%04d,%02d,%02d,%02d,%02d,%02d","time:",y,m,d,h,n,s);
+	return sprintf(buf,"%s%04d,%02d,%02d,%02d,%02d,%02d","time",y,m,d,h,n,s);
 }

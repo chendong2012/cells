@@ -8,5 +8,13 @@
 #define TIME_REMOTE_KEYWORD "time"
 
 #endif 
+
+#define BRD_SEND_CONTROL
+#ifdef BRD_SEND_CONTROL
+
+#define BRD_SEND_KEYWORD "brd"
+
+#endif 
+
 /*******************************************************/
 #endif

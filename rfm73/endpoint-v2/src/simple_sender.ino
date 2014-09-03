@@ -48,7 +48,7 @@ static void setup_irq()
 void setup()
 {
 	byte i;
-	Serial.begin(9600);
+	Serial.begin(115200);
 	Serial.println("reset...ok!");
 	memset(g_debug,0,32);
 /*初始化comm的本地地址和远程地址*/

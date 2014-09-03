@@ -84,7 +84,6 @@ COMM::COMM(unsigned char id, RFM70 *rfm, user_activity *activity)
 	m_activity->set_comm(this);
 
 	m_activity->init_ok();
-	init_watchdog();
 #if 0
 	if (is_server == I_AM_CLIENT) {
 		m_activity->init_ok();
@@ -240,59 +239,3 @@ unsigned char COMM::get_status(void)
 {
 	return status;
 }
-
-/*=============================================================*/
-static void *thread_watchdog(void *ptr)
-{
-#if 0
-	static int timeout = 0;
-	COMM *p = (COMM *)ptr;
-	unsigned char temp_status;
-#endif
-}
-
-void COMM::init_watchdog(void)
-{
-#if 0
-	int ret;
-        pthread_t id;
-        ret = pthread_create(&id, NULL, thread_watchdog, this);
-        if(ret) {
-                printf("create thread_watchdog error\n");
-        }
-#endif
-}
-#if 0
-static void *thread_watchdog_client(void *ptr)
-{
-	COMM *p = (COMM *)ptr;
-	unsigned char temp_status;
-	int ret;
-	for(;;) {
-		sleep(60);
-		temp_status = p->get_status();
-		if (temp_status == CLIENT_STATUS_CONNECTED) {
-			if (p->watchdog_count > 2) {
-				p->reset_client_status();
-				printf("thread watchdog client timeout\n");
-				continue;
-			}
-			p->send("watchdog", 8);
-			p->watchdog_count++;
-		} else if (temp_status == CLIENT_STATUS_CONNECTING){
-			printf("thread watchdog client send connect msg\n");
-			p->connect("1", 1);
-		}
-	}
-}
-
-void COMM::init_watchdog_client(void)
-{
-	int ret;
-        pthread_t id;
-        ret = pthread_create(&id, NULL, thread_watchdog_client, this);
-        if(ret) {
-                printf("create thread_watchdog_client error\n");
-        }
-}
-#endif
