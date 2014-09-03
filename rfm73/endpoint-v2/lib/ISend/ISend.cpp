@@ -1,6 +1,7 @@
 #include <ISend.h>
 #include <comm.h>
 #include <user_activity.h>
+#include "Package.h"
 /*
 #define putstring(x) SerialPrint_P(PSTR(x))
 void SerialPrint_P(PGM_P str) {
@@ -133,19 +134,36 @@ void ISend::disableSend()
 //	cm->stop();
 }
 
+unsigned char ISend::compare_keyword()
+{
+	unsigned char ret;
+	char *d1 = getItemKeyword();
+	char *d2 = Package::get_pkg_datas();
+	unsigned char len = getItemDataLen();
+	
+        ret = strncmp(d1, (const char *)d2, len);
+	if (ret == 0) 
+		return 0;
+	else 
+		return 1;
+}
+
 void ISend::msg_handler(unsigned char *dat, unsigned char len)
 {
 	unsigned char ret;
-        ret = strncmp((char *)&item[1], (const char *)&dat[4], item_len-1);
+	unsigned char len;
+	unsigned char *p;
+
+	ret = compare_keyword(dat);
 	if (ret == 0) {
 		if (getStatus() == S_S) {
 			setStatus(S_A);
-			/*返回结果,打出来*/
-			/*处理所有接收回来的应答码*/
-
 			clearAckData();
-			strncpy((char *)strAck, (const char *)&dat[4+item_len], len-4-item_len);
-			strAckLen = len -4-item_len;
+
+			p = Package::get_user_datas(dat, getItemDataLen());
+			len = len - Package::get_addr_head_len();
+			len = len - getItemDataLen();
+			storeAckData(p, len);
 
 			if (_cb != NULL)
 				_cb(dat, len);
@@ -198,6 +216,12 @@ unsigned char ISend::clearAckData()
 	strAckLen = 0;
 }
 
+unsigned char ISend::storeAckData(unsigned char *dat, unsigned char len)
+{
+	memcpy(strAck, dat, len);
+	strAckLen = len;
+}
+
 //new interface
 unsigned char *ISend::getAckData(void)
 {
@@ -208,7 +232,7 @@ unsigned char ISend::getAckDataLen(void)
 {
 	return strAckLen;
 }
-unsigned char *ISend::getItemData(void)
+unsigned char *ISend::getItemKeyword(void)
 {
 	return (unsigned char *)&item[1];
 }
@@ -216,4 +240,9 @@ unsigned char *ISend::getItemData(void)
 unsigned char ISend::getItemDataLen(void)
 {
 	return item_len - 1;
+}
+
+unsigned char ISend::getItemLen(void)
+{
+	return item_len;
 }
