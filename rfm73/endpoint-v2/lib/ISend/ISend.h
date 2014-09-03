@@ -48,10 +48,10 @@ public:
 
 	unsigned char *getAckData();
 	unsigned char getAckDataLen();
-	unsigned char *getItemData(void);
-	unsigned char getItemDataLen(void);
+	unsigned char *getKeyword(void);
+	unsigned char getKeywordLen(void);
 	unsigned char getItemLen(void);
-	unsigned char compare_keyword();
+	unsigned char compare_keyword(unsigned char *dat);
 	unsigned char storeAckData(unsigned char *dat, unsigned char len);
 };
 #endif

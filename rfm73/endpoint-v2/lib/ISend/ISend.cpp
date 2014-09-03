@@ -1,7 +1,7 @@
 #include <ISend.h>
 #include <comm.h>
 #include <user_activity.h>
-#include "Package.h"
+#include "public.h"
 /*
 #define putstring(x) SerialPrint_P(PSTR(x))
 void SerialPrint_P(PGM_P str) {
@@ -134,14 +134,14 @@ void ISend::disableSend()
 //	cm->stop();
 }
 
-unsigned char ISend::compare_keyword()
+unsigned char ISend::compare_keyword(unsigned char *dat)
 {
 	unsigned char ret;
-	char *d1 = getItemKeyword();
-	char *d2 = Package::get_pkg_datas();
-	unsigned char len = getItemDataLen();
+	unsigned char *d1 = getKeyword();
+	unsigned char *d2 = Package::get_pkg_datas(dat);
+	unsigned char len = getKeywordLen();
 	
-        ret = strncmp(d1, (const char *)d2, len);
+        ret = strncmp((const char *)d1, (const char *)d2, len);
 	if (ret == 0) 
 		return 0;
 	else 
@@ -151,7 +151,7 @@ unsigned char ISend::compare_keyword()
 void ISend::msg_handler(unsigned char *dat, unsigned char len)
 {
 	unsigned char ret;
-	unsigned char len;
+	unsigned char l;
 	unsigned char *p;
 
 	ret = compare_keyword(dat);
@@ -160,11 +160,10 @@ void ISend::msg_handler(unsigned char *dat, unsigned char len)
 			setStatus(S_A);
 			clearAckData();
 
-			p = Package::get_user_datas(dat, getItemDataLen());
-			len = len - Package::get_addr_head_len();
-			len = len - getItemDataLen();
-			storeAckData(p, len);
+			l = Package::get_user_datas_len(dat, len, getKeywordLen());
+			p = Package::get_user_datas(dat, getKeywordLen());
 
+			storeAckData(p, l);
 			if (_cb != NULL)
 				_cb(dat, len);
 		}
@@ -232,12 +231,13 @@ unsigned char ISend::getAckDataLen(void)
 {
 	return strAckLen;
 }
-unsigned char *ISend::getItemKeyword(void)
+
+unsigned char *ISend::getKeyword(void)
 {
 	return (unsigned char *)&item[1];
 }
 
-unsigned char ISend::getItemDataLen(void)
+unsigned char ISend::getKeywordLen(void)
 {
 	return item_len - 1;
 }

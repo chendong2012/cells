@@ -1,5 +1,6 @@
 #ifndef __PUBLIC_H__
 #define __PUBLIC_H__
+#include "Package.h"
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
 #else

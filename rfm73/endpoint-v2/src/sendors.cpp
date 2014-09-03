@@ -17,10 +17,6 @@ static boolean timer_func(void)
 
 static void cb_sendors(unsigned char *dat, unsigned char len)
 {
-	if (strcmp(CMD_GET_SERVER_TIME,(const char *)sendors.getItemData())==0) {
-		sprintf(g_debug, "%s:", sendors.getItemData());
-		Serial.println(g_debug);
-		sprintf(g_debug, "%s", sendors.getAckData());
-		Serial.println(g_debug);
-	}
+	sprintf(g_debug, "%s", Package::get_pkg_datas(dat));
+	Serial.println(g_debug);
 }
