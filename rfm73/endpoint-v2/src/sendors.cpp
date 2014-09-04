@@ -17,6 +17,5 @@ static boolean timer_func(void)
 
 static void cb_sendors(unsigned char *dat, unsigned char len)
 {
-	sprintf(g_debug, "%s", Package::get_pkg_datas(dat));
-	Serial.println(g_debug);
+	dispinfo((const char *)Package::get_pkg_datas(INDEX_NONE, dat));
 }

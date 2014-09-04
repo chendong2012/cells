@@ -2,13 +2,14 @@
 #define __IRECEIVE__H
 #include <Arduino.h>
 #include <user_activity.h>
+#include "public.h"
 
 class IReceive
 {
 public:
         const char *item;
 	unsigned char index;
-	unsigned char ack_buf[32];
+	unsigned char ack_buf[PACKAGE_LEN];
 	unsigned char ack_len;
 
 	IReceive(const char *cmdstr,void (*cb)(unsigned char *dat, unsigned char len));
@@ -18,12 +19,16 @@ public:
 	void msg_handler(unsigned char *dat, unsigned char len);
 	boolean isNewPackage(unsigned char *dat);
 
-	void clearAckBuf();
+	void initAckBuf();
 	void saveAckBuf(unsigned char *buf, unsigned  char len);
+	void saveUserBufToAckBuf(unsigned char *buf, unsigned  char len);
 
 	unsigned char *getAckBuf();
 	unsigned char getAckBufLen();
 	unsigned char getCmdLen(void);
-	unsigned char cmpAction(unsigned char *dat, unsigned char len, unsigned char *var);
+	unsigned char is_contain_userdata(unsigned char *dat, unsigned char len, unsigned char *var);
+	unsigned char *getKeyword(void);
+	unsigned char getKeywordLen(void);
+	unsigned char compare_keyword(unsigned char *dat);
 };
 #endif

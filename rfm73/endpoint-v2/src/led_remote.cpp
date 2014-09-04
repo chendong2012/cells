@@ -24,20 +24,36 @@ static void led_on(void)
 **/
 static void cb_remote_control_led(unsigned char *dat, unsigned char len)
 {
+	unsigned char l;
+	unsigned char *ack_data;
 	if(irec_led.isNewPackage(dat)) {
-		if(irec_led.cmpAction(dat, len , (unsigned char *)LED_REMOTE_ON)) {
+		if(irec_led.is_contain_userdata(dat, len, (unsigned char *)LED_REMOTE_ON)) {
 			led_on();
 
-		} else if (irec_led.cmpAction(dat, len , (unsigned char *)LED_REMOTE_OFF)) {
+
+			l = strlen(LED_REMOTE_ACK_OK);
+			irec_led.saveUserBufToAckBuf((unsigned char *)LED_REMOTE_ACK_OK, l);
+
+			l = irec_led.getAckBufLen();
+			ack_data = irec_led.getAckBuf();
+			myu2->m_comm->send((const char *)ack_data, l);
+
+
+		} else if (irec_led.is_contain_userdata(dat, len, (unsigned char *)LED_REMOTE_OFF)) {
 			led_off();
 
+			l = strlen(LED_REMOTE_ACK_OK);
+			irec_led.saveUserBufToAckBuf((unsigned char *)LED_REMOTE_ACK_OK, l);
+
+			l = irec_led.getAckBufLen();
+			ack_data = irec_led.getAckBuf();
+			myu2->m_comm->send((const char *)ack_data, l);
 		} else {
 		}
 
-		myu2->m_comm->send(LED_REMOTE_ACK_OK, strlen(LED_REMOTE_ACK_OK));
-		irec_led.saveAckBuf((unsigned char *)LED_REMOTE_ACK_OK, strlen(LED_REMOTE_ACK_OK));
-
 	} else {
-		myu2->m_comm->send((const char *)irec_led.getAckBuf(), irec_led.getAckBufLen());	
+		l = irec_led.getAckBufLen();
+		ack_data = irec_led.getAckBuf();
+		myu2->m_comm->send((const char *)ack_data, l);
 	}
 }

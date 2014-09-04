@@ -7,9 +7,15 @@
 #include "WProgram.h"
 #endif
 
+#define PACKAGE_LEN	32
+#define PACKAGE_LEN_INDEX	31
+
+#define INDEX_EXIST	1
+#define INDEX_NONE	0
+
 //#define DEBUG
 
-extern char g_debug[32];
+extern char g_debug[PACKAGE_LEN];
 /*comm dir*/
 #define I_AM_CLIENT	0
 #define I_AM_SERVER	1
@@ -45,8 +51,8 @@ extern char g_debug[32];
 #define LED_REMOTE_ON "on"
 #define LED_REMOTE_OFF "off"
 
-#define LED_REMOTE_ACK_OK "led:ok"
-#define LED_REMOTE_ACK_FAIL "led:fail"
+#define LED_REMOTE_ACK_OK "ok"
+#define LED_REMOTE_ACK_FAIL "fail"
 
 
 #define LED_SWITCH_GPIO 7
@@ -59,11 +65,11 @@ extern char g_debug[32];
 #define FAN_REMOTE_SPEED "speed"
 #define FAN_REMOTE_OFF "off"
 
-#define FAN_REMOTE_ACK_SPEED_OK "fanspeed:ok"
-#define FAN_REMOTE_ACK_SPEED_FAIL "fanspeed:fail"
+#define FAN_REMOTE_ACK_SPEED_OK "speed:ok"
+#define FAN_REMOTE_ACK_SPEED_FAIL "speed:fail"
 
-#define FAN_REMOTE_ACK_OFF_OK "fanoff:ok"
-#define FAN_REMOTE_ACK_OFF_FAIL "fanoff:fail"
+#define FAN_REMOTE_ACK_OFF_OK "off:ok"
+#define FAN_REMOTE_ACK_OFF_FAIL "off:fail"
 
 #define FAN_SPEED_KEY 5
 #define FAN_STOP_KEY 6
@@ -104,6 +110,10 @@ extern char g_debug[32];
 /*====================sendors==========================*/
 #define CMD_GET_SERVER_TIME		"time"
 
+
+
+
+extern void dispinfo(const char *dat);
 #endif
 
 

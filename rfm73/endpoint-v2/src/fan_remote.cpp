@@ -4,7 +4,7 @@
 #include "comm.h"
 #include <DelayRun.h>
 #include <Task.h>
-
+#include "public.h"
 extern user_activity *myu2;
 
 static void cb_fan(unsigned char *dat, unsigned char len);
@@ -56,27 +56,40 @@ static boolean release_off_key(Task* task)
 static void cb_fan(unsigned char *dat, unsigned char len)
 {
 	unsigned char l;
+	unsigned char *ack_data;
 	if(irec_fan.isNewPackage(dat)) {
-		if(irec_fan.cmpAction(dat, len , (unsigned char *)FAN_REMOTE_SPEED)) {
-			speed_press_task.startDelayed();
-			l = strlen(FAN_REMOTE_ACK_SPEED_OK);
-			myu2->m_comm->send(FAN_REMOTE_ACK_SPEED_OK, l);
-			irec_fan.saveAckBuf((unsigned char *)FAN_REMOTE_ACK_SPEED_OK, l);
-			sprintf(g_debug, "%s", (const char *)&dat[5]);
-			Serial.println((const char *)g_debug);
+		if(irec_fan.is_contain_userdata(dat, len, (unsigned char *)FAN_REMOTE_SPEED)) {
 
-		} else if (irec_fan.cmpAction(dat, len , (unsigned char *)FAN_REMOTE_OFF)) {
+			speed_press_task.startDelayed();
+
+			l = strlen(FAN_REMOTE_ACK_SPEED_OK);
+			irec_fan.saveUserBufToAckBuf((unsigned char *)FAN_REMOTE_ACK_SPEED_OK, l);
+
+			l = irec_fan.getAckBufLen();
+			ack_data = irec_fan.getAckBuf();
+			myu2->m_comm->send((const char *)ack_data, l);
+
+			dispinfo((const char *)Package::get_pkg_datas(INDEX_EXIST, dat));
+
+		} else if (irec_fan.is_contain_userdata(dat, len , (unsigned char *)FAN_REMOTE_OFF)) {
 
 			off_press_task.startDelayed();
 
 			l = strlen(FAN_REMOTE_ACK_OFF_OK);
-			myu2->m_comm->send(FAN_REMOTE_ACK_OFF_OK, l);
-			irec_fan.saveAckBuf((unsigned char *)FAN_REMOTE_ACK_OFF_OK, l);
+			irec_fan.saveUserBufToAckBuf((unsigned char *)FAN_REMOTE_ACK_OFF_OK, l);
+
+			l = irec_fan.getAckBufLen();
+			ack_data = irec_fan.getAckBuf();
+			myu2->m_comm->send((const char *)ack_data, l);
+
+			dispinfo((const char *)Package::get_pkg_datas(INDEX_EXIST, dat));
 
 		} else {
 				
 		}
 	} else {
-		myu2->m_comm->send((const char *)irec_fan.getAckBuf(), irec_fan.getAckBufLen());	
+		l = irec_fan.getAckBufLen();
+		ack_data = irec_fan.getAckBuf();
+		myu2->m_comm->send((const char *)ack_data, l);	
 	}
 }

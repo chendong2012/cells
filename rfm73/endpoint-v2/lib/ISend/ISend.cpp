@@ -138,7 +138,7 @@ unsigned char ISend::compare_keyword(unsigned char *dat)
 {
 	unsigned char ret;
 	unsigned char *d1 = getKeyword();
-	unsigned char *d2 = Package::get_pkg_datas(dat);
+	unsigned char *d2 = Package::get_pkg_datas(INDEX_NONE, dat);
 	unsigned char len = getKeywordLen();
 	
         ret = strncmp((const char *)d1, (const char *)d2, len);
@@ -160,8 +160,8 @@ void ISend::msg_handler(unsigned char *dat, unsigned char len)
 			setStatus(S_A);
 			clearAckData();
 
-			l = Package::get_user_datas_len(dat, len, getKeywordLen());
-			p = Package::get_user_datas(dat, getKeywordLen());
+			l = Package::get_user_datas_len(INDEX_NONE, len, getKeywordLen());
+			p = Package::get_user_datas(INDEX_NONE, dat, getKeywordLen());
 
 			storeAckData(p, l);
 			if (_cb != NULL)
