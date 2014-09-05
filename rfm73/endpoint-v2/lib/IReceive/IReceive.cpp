@@ -114,9 +114,10 @@ void IReceive::saveUserBufToAckBuf(unsigned char *buf, unsigned  char len)
 {
 	unsigned char l;
 	unsigned char user_offset = getKeywordLen(); 
-	memset((void *)&ack_buf[user_offset], 0x00, PACKAGE_LEN - ack_len);
+	l = PACKAGE_LEN - user_offset;
+	memset((void *)&ack_buf[user_offset], 0x00, l);
 	memcpy((void *)&ack_buf[user_offset], (const void *)buf, len);
-	ack_len += len;
+	ack_len = user_offset + len;
 }
 
 void IReceive::saveAckBuf(unsigned char *buf, unsigned  char len)

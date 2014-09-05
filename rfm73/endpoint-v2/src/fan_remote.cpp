@@ -68,6 +68,7 @@ static void cb_fan(unsigned char *dat, unsigned char len)
 			l = irec_fan.getAckBufLen();
 			ack_data = irec_fan.getAckBuf();
 			myu2->m_comm->send((const char *)ack_data, l);
+			//myu2->m_comm->send("fanspeed:ok", 11);
 
 			dispinfo((const char *)Package::get_pkg_datas(INDEX_EXIST, dat));
 
@@ -81,6 +82,7 @@ static void cb_fan(unsigned char *dat, unsigned char len)
 			l = irec_fan.getAckBufLen();
 			ack_data = irec_fan.getAckBuf();
 			myu2->m_comm->send((const char *)ack_data, l);
+			//myu2->m_comm->send("fanoff:ok", 9);
 
 			dispinfo((const char *)Package::get_pkg_datas(INDEX_EXIST, dat));
 
@@ -90,6 +92,7 @@ static void cb_fan(unsigned char *dat, unsigned char len)
 	} else {
 		l = irec_fan.getAckBufLen();
 		ack_data = irec_fan.getAckBuf();
+		//myu2->m_comm->send("fanspeed:ok", 11);
 		myu2->m_comm->send((const char *)ack_data, l);	
 	}
 }
