@@ -14,12 +14,16 @@ void init_rgb_datas(void);
 
 void setup()
 {
+
+	Serial.begin(115200);
+	Serial.print("1");
 	init_gpio();
 	init_rgb_datas();
 }
 void loop()
 {
 	update_32x16();
+	Serial.print("1");
 }
 
 static void init_gpio(void)
@@ -39,9 +43,9 @@ static void init_rgb_datas(void)
 {
 	unsigned char i;
 	for(i=0;i<4;i++) {
-		r[i] = 0x55;
-		g[i] = 0x65;
-		b[i] = 0x78;
+		r[i] = 0xff;
+		g[i] = 0xff;
+		b[i] = 0xff;
 	}
 }
 static void shift_1bits(unsigned char r, unsigned char g, unsigned char b)
@@ -51,6 +55,7 @@ static void shift_1bits(unsigned char r, unsigned char g, unsigned char b)
         digitalWrite(R, r&0x01);
         digitalWrite(G, g&0x01);
         digitalWrite(B, b&0x01);
+
 
         digitalWrite(SHCP, HIGH);
 }
@@ -89,9 +94,9 @@ static void lock_data(void)
 static void output_data(void)
 {
         digitalWrite(OE, 0);
-	delay(1);
+	delayMicroseconds(500);
         digitalWrite(OE, 1);
-	delay(1);
+	delayMicroseconds(500);
 }
 
 static void update_32x16(void)
