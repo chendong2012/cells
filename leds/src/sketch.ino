@@ -12,18 +12,39 @@ void update_32x16(void);
 void init_gpio(void);
 void init_rgb_datas(void);
 
+typedef struct
+{ 
+  unsigned char bit0:1; 
+  unsigned char bit1:1; 
+  unsigned char bit2:1; 
+  unsigned char bit3:1; 
+  unsigned char bit4:1; 
+  unsigned char bit5:1; 
+  unsigned char bit6:1; 
+  unsigned char bit7:1; 
+} _io_reg;
+
+
+typedef struct {
+  byte pin : 6;
+  byte mode : 1;
+  byte state : 1;
+} DigitalPin;
+
+void init_serial(void)
+{
+	Serial.begin(115200);
+	Serial.print("begin!");
+}
 void setup()
 {
-
-	Serial.begin(115200);
-	Serial.print("1");
+	init_serial();
 	init_gpio();
 	init_rgb_datas();
 }
 void loop()
 {
 	update_32x16();
-	Serial.print("1");
 }
 
 static void init_gpio(void)
@@ -85,6 +106,13 @@ static void shift_32bits(unsigned char *r, unsigned char *g, unsigned char *b)
 		shift_8bits(r[i], g[i], b[i]);
 }
 
+static void shift_16bits(unsigned char *r, unsigned char *g, unsigned char *b)
+{
+	unsigned char i;
+	for(i=0;i<2;i++)
+		shift_8bits(r[i], g[i], b[i]);
+}
+
 static void lock_data(void)
 {
         digitalWrite(LOCK, 1);
@@ -100,6 +128,16 @@ static void output_data(void)
 }
 
 static void update_32x16(void)
+{
+	unsigned char line;
+	for(line=0; line<SCREEN_HEIGHT; line++) {
+		shift_32bits(r,g,b);
+		select_row(line);
+		lock_data();
+		output_data();
+	}
+}
+static void update_16x16(void)
 {
 	unsigned char line;
 	for(line=0; line<SCREEN_HEIGHT; line++) {
