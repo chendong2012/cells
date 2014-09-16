@@ -13,6 +13,11 @@
 #define G 5
 #define B 6
 
+#define R2 13
+#define G2 14
+#define B2 15
+
+
 #define SHCP 7
 #define OE 8
 #define	LOCK 9

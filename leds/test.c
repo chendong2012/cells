@@ -34,11 +34,25 @@ typedef struct {
  *
  * */
 #define H	16
-#define W	16
+#define W	32
 
 static unsigned char r_datas[H*W/8];
 static unsigned char g_datas[H*W/8];
 static unsigned char b_datas[H*W/8];
+
+void printbyline(void)
+{
+	int i=0;
+
+	printf("static struct _rgb_line rgb_datas[H] = {\n");
+	for (i=0;i<H*W/8;i+=4) {
+		printf("{0x%02x,0x%02x,0x%02x,0x%02x,\n",r_datas[i],r_datas[i+1],r_datas[i+2],r_datas[i+3]);
+		printf("0x%02x,0x%02x,0x%02x,0x%02x,\n",g_datas[i],g_datas[i+1],g_datas[i+2],g_datas[i+3]);
+		printf("0x%02x,0x%02x,0x%02x,0x%02x},",b_datas[i],b_datas[i+1],b_datas[i+2],b_datas[i+3]);
+		printf("\n");
+	}
+	printf("};\n");
+}
 
 
 void print_datas(PPMImage *img, unsigned char *data)
@@ -76,7 +90,7 @@ void output_red_datas(PPMImage *img)
 		r_datas[byte_ofst(i)] |= (dat << bit_ofst(i));
 	}
 
-	printf("rdata[%d] = {\n", w*h/8);
+	printf("unsigned char rdata[%d] = {\n", w*h/8);
 	print_datas(img, r_datas);
 }
 
@@ -92,7 +106,7 @@ void output_green_datas(PPMImage *img)
 		g_datas[byte_ofst(i)] |= (dat << bit_ofst(i));
 	}
 
-	printf("gdata[%d] = {\n", w*h/8);
+	printf("unsigned char gdata[%d] = {\n", w*h/8);
 	print_datas(img, g_datas);
 }
 
@@ -108,7 +122,7 @@ void output_blue_datas(PPMImage *img)
 		b_datas[byte_ofst(i)] |= (dat << bit_ofst(i));
 	}
 
-	printf("bdata[%d] = {\n", w*h/8);
+	printf("unsigned char bdata[%d] = {\n", w*h/8);
 	print_datas(img, b_datas);
 }
 
@@ -117,6 +131,8 @@ void output_rgb_datas(PPMImage *img)
 	output_blue_datas(img);
 	output_green_datas(img);
 	output_red_datas(img);
+	printf("=========================\n");
+	printbyline();
 }
 
 
@@ -272,7 +288,7 @@ void changeColorPPM(PPMImage *img)
 
 int main(){
 	PPMImage *image;
-	image = readPPM("1.ppm");
+	image = readPPM("111.ppm");
 	changeColorPPM(image);
 	writePPM("can_bottom2.ppm",image);
 //	printf("Press any key...");

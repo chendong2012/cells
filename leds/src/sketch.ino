@@ -1,17 +1,20 @@
 #include "public.h"
-
 struct line {
         unsigned char f0;
         unsigned char f1;
         unsigned char f2;
         unsigned char f3;
 };
-struct rgb_line {
+
+struct _rgb_line { 
         unsigned char r[4];
         unsigned char g[4];
         unsigned char b[4];
 };
-static struct rgb_line rgb_datas[H] = {
+
+static void update_32x16_1(void);
+#if 0
+static struct _rgb_line rgb_datas[H] = {
 /*1line*/
 {0xff,0xff,0xff,0xff,
 0x00,0x00,0x00,0x00,
@@ -44,58 +47,110 @@ static struct rgb_line rgb_datas[H] = {
 {0xff,0xff,0xff,0xff,
 0xff,0xff,0xff,0xff,
 0xff,0xff,0xff,0xff},
-
-/*9 line*/
+/************************************/
+/************************************/
+/*9line*/
 {0x0f,0x0f,0x0f,0x0f,
-0x0f,0x0f,0x0f,0x0f,
+0xff,0xff,0xff,0x0f,
 0x0f,0x0f,0x0f,0x0f},
-
 /*10 line*/
-{0xf0,0xf0,0xf0,0xf0,
-0xf0,0xf0,0xf0,0xf0,
-0xf0,0xf0,0xf0,0xf0},
-
-/*11 line*/
-{0xff,0x00,0xf0,0x00,
-0xff,0x00,0xf0,0x00,
-0xff,0x00,0xf0,0x00},
-
-/*12 line*/
-{0x55,0x55,0x55,0x55,
-0x55,0x55,0x55,0x55,
-0x55,0x55,0x55,0x55},
-
-/*13 line*/
-{0x55,0x55,0x55,0x55,
-0x55,0x55,0x55,0x55,
-0x55,0x55,0x55,0x55},
-
-/*14 line*/
-{0x55,0x55,0xAA,0xAA,
-0x55,0x55,0xAA,0xAA,
-0x55,0x55,0xAA,0xAA},
-
-/*15 line*/
-{0xAA,0xAA,0x55,0x55,
-0xAA,0xAA,0x55,0x55,
-0xAA,0xAA,0x55,0x55},
-/*16 line*/
+{0x00,0x00,0x00,0x00,
+0xf5,0xf5,0xf5,0xf5,
+0x00,0x00,0x00,0x00},
+/*11 line blue*/
 {0x00,0x00,0x00,0x00,
 0x00,0x00,0x00,0x00,
-0x00,0x00,0x00,0x00}
+0xff,0xff,0xff,0xff},
+/*12 line*/
+{0x00,0x00,0x00,0x00,
+0xff,0xff,0xff,0xff,
+0xff,0xff,0xff,0xff},
+/*13 line*/
+{0xff,0xff,0xff,0xff,
+0x00,0x00,0x00,0x00,
+0xff,0xff,0xff,0xff},
+/*14 line*/
+{0xff,0xff,0xff,0xff,
+0xff,0xff,0xff,0xff,
+0x00,0x00,0x00,0x00},
+/*15 line*/
+{0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00},
+/*16 line*/
+{0xff,0xff,0xff,0xff,
+0xff,0xff,0xff,0xff,
+0xff,0xff,0xff,0xff}
+};
+#endif
+const struct _rgb_line PROGMEM rgb_datas[H] = {
+{0xff,0xff,0x03,0x00,
+0x00,0x00,0xfc,0xff,
+0x00,0x00,0x00,0x00},
+{0xff,0xff,0x03,0x00,
+0x00,0x00,0xfc,0xff,
+0x00,0x00,0x00,0x00},
+{0xff,0xff,0x03,0x00,
+0x00,0x00,0xfc,0xff,
+0x00,0x00,0x00,0x00},
+{0xff,0xff,0x03,0x00,
+0x00,0x00,0xfc,0xff,
+0x00,0x00,0x00,0x00},
+{0xff,0xff,0x03,0x00,
+0x00,0x00,0xfc,0xff,
+0x00,0x00,0x00,0x00},
+{0xff,0xff,0x03,0x00,
+0x00,0x00,0xfc,0xff,
+0x00,0x00,0x00,0x00},
+{0xff,0xff,0x03,0x00,
+0x00,0x00,0xfc,0xff,
+0x00,0x00,0x00,0x00},
+{0xff,0xff,0x03,0x00,
+0x00,0x00,0xfc,0xff,
+0x00,0x00,0xfc,0xff},
+{0xff,0xff,0x03,0x00,
+0xff,0xff,0xff,0xff,
+0x00,0x00,0xfc,0xff},
+{0xff,0xff,0x03,0x00,
+0xff,0xff,0xff,0xff,
+0x00,0x00,0xfc,0xff},
+{0xff,0xff,0x03,0x00,
+0xff,0xff,0xff,0xff,
+0x00,0x00,0xfc,0xff},
+{0xff,0xff,0x03,0x00,
+0xff,0xff,0xff,0xff,
+0x00,0x00,0xfc,0xff},
+{0xff,0xff,0x03,0x00,
+0xff,0xff,0xff,0xff,
+0x00,0x00,0xfc,0xff},
+{0xff,0xff,0x03,0x00,
+0xff,0xff,0xff,0xff,
+0x00,0x00,0xfc,0xff},
+{0xff,0xff,0x03,0x00,
+0xff,0xff,0xff,0xff,
+0x00,0x00,0xfc,0xff},
+{0xff,0xff,0x03,0x00,
+0xff,0xff,0xff,0xff,
+0x00,0x00,0xfc,0xff}
 };
 
-void shift_1bits(unsigned char r, unsigned char g, unsigned char b);
-void shift_8bits(unsigned char r, unsigned char g, unsigned char b);
 
-static void update_32x16_1(void);
-static void update_32x16_2(void);
-static void update_32x16_3(void);
-static void update_32x16_4(void);
+static void shift_1bits(unsigned char r1,\
+		unsigned char g1,\
+		unsigned char b1,\
+		unsigned char r2,\
+		unsigned char g2,\
+		unsigned char b2);
+static void shift_8bits(unsigned char r1,\
+		unsigned char g1,\
+		unsigned char b1,\
+		unsigned char r2,\
+		unsigned char g2,\
+		unsigned char b2);
+
 
 void select_row(void);
 void lock_data(void);
-void update_32x16(void);
 void init_gpio(void);
 void init_rgb_datas(void);
 
@@ -112,6 +167,8 @@ typedef struct
 } _io_reg;
 
 
+static void shift_32bits(struct _rgb_line *rgb1,struct _rgb_line *rgb2);
+static void update_32x16(void);
 typedef struct {
   byte pin : 6;
   byte mode : 1;
@@ -132,21 +189,26 @@ void setup()
 void loop()
 {
 	unsigned short i=0;
-	for(i=0;i<500;i++) {
+	Serial.print("pic1!");
+	for(i=0;i<50;i++) {
+		update_32x16();
+	}
+/*
+	Serial.print("pic2!");
+	delay(1);
+	for(i=0;i<50;i++) {
 		update_32x16_1();
 	}
-
-	for(i=0;i<500;i++) {
-		update_32x16_2();
-	}
-
+	Serial.print("pic3!");
 	for(i=0;i<500;i++) {
 		update_32x16_3();
 	}
 
+	Serial.print("pic4!");
 	for(i=0;i<500;i++) {
 		update_32x16_4();
 	}
+*/
 }
 
 static void init_gpio(void)
@@ -154,6 +216,9 @@ static void init_gpio(void)
 	pinMode(R, OUTPUT);
 	pinMode(G, OUTPUT);
 	pinMode(B, OUTPUT);
+	pinMode(R2, OUTPUT);
+	pinMode(G2, OUTPUT);
+	pinMode(B2, OUTPUT);
 	pinMode(SHCP, OUTPUT);
 	pinMode(OE, OUTPUT);
 	pinMode(LOCK, OUTPUT);
@@ -166,48 +231,67 @@ static void init_rgb_datas(void)
 {
 	unsigned char i;
 }
-static void shift_1bits(unsigned char r, unsigned char g, unsigned char b)
+
+static void shift_1bits(unsigned char r1,\
+		unsigned char g1,\
+		unsigned char b1,\
+		unsigned char r2,\
+		unsigned char g2,\
+		unsigned char b2)
 {
+
         digitalWrite(SHCP, LOW);
 
-        digitalWrite(R, r&0x01);
-        digitalWrite(G, g&0x01);
-        digitalWrite(B, b&0x01);
+        digitalWrite(R, r1&0x01);
+        digitalWrite(G, g1&0x01);
+        digitalWrite(B, b1&0x01);
 
+        digitalWrite(R2, r2&0x01);
+        digitalWrite(G2, g2&0x01);
+        digitalWrite(B2, b2&0x01);
 
         digitalWrite(SHCP, HIGH);
 }
 
-static void shift_8bits(unsigned char r, unsigned char g, unsigned char b)
+static void shift_8bits(unsigned char r1,\
+		unsigned char g1,\
+		unsigned char b1,\
+		unsigned char r2,\
+		unsigned char g2,\
+		unsigned char b2)
 {
-	unsigned char k;
-	for(k=0; k<8; k++) {
-		shift_1bits(r,g,b);
-		r>>=1;
-		g>>=1;
-		b>>=1;
+	unsigned char i;
+
+	for(i=0; i<8; i++) {
+		shift_1bits(r1,g1,b1,r2,g2,b2);
+		r1>>=1;
+		g1>>=1;
+		b1>>=1;
+
+		r2>>=1;
+		g2>>=1;
+		b2>>=1;
 	}
 }
 
 static void select_row(unsigned char line)
 {
         digitalWrite(ROW0, line&0x01);
-        digitalWrite(ROW1, line&0x02);
-        digitalWrite(ROW2, line&0x04);
+        digitalWrite(ROW1, (line&0x02)>>1);
+        digitalWrite(ROW2, (line&0x04)>>2);
 }
 
-static void shift_32bits(unsigned char *r, unsigned char *g, unsigned char *b)
+static void shift_32bits(struct _rgb_line *rgb1, struct _rgb_line *rgb2)
 {
 	unsigned char i;
-	for(i=0;i<4;i++)
-		shift_8bits(r[i], g[i], b[i]);
-}
-
-static void shift_16bits(unsigned char *r, unsigned char *g, unsigned char *b)
-{
-	unsigned char i;
-	for(i=0;i<2;i++)
-		shift_8bits(r[i], g[i], b[i]);
+	for(i=0;i<4;i++) {
+		shift_8bits(rgb1->r[i],\
+			rgb1->g[i],\
+			rgb1->b[i],\
+			rgb2->r[i],\
+			rgb2->g[i],\
+			rgb2->b[i]);
+	}
 }
 
 static void lock_data(void)
@@ -219,49 +303,36 @@ static void lock_data(void)
 static void output_data(void)
 {
         digitalWrite(OE, 0);
-	delayMicroseconds(500);
+	delayMicroseconds(200);
         digitalWrite(OE, 1);
 //	delayMicroseconds(500);
+}
+
+static struct _rgb_line rgb, rgb1;
+static void update_32x16(void)
+{
+	unsigned char line;
+	for(line=0; line<8; line++) {
+		memcpy(rgb.r, (const void *)rgb_datas[line].r, 4);
+		memcpy(rgb.g, (const void *)rgb_datas[line].g, 4);
+		memcpy(rgb.b, (const void *)rgb_datas[line].b, 4);
+
+		memcpy(rgb1.r, (const void *)rgb_datas[line+8].r, 4);
+		memcpy(rgb1.g, (const void *)rgb_datas[line+8].g, 4);
+		memcpy(rgb1.b, (const void *)rgb_datas[line+8].b, 4);
+		//shift_32bits((struct _rgb_line *)&rgb_datas[line],(struct _rgb_line *)&rgb_datas[line+8]);
+		shift_32bits(&rgb,&rgb1);
+		select_row(line);
+		lock_data();
+		output_data();
+	}
 }
 
 static void update_32x16_1(void)
 {
 	unsigned char line;
-	for(line=0; line<H; line++) {
-		shift_32bits(rgb_datas[line].r, rgb_datas[line].g, rgb_datas[line].b);
-		select_row(line);
-		lock_data();
-		output_data();
-	}
-}
-
-static void update_32x16_2(void)
-{
-	unsigned char line;
-	for(line=0; line<H; line++) {
-		shift_32bits(rgb_datas[15-line].r, rgb_datas[15-line].g, rgb_datas[15-line].b);
-		select_row(line);
-		lock_data();
-		output_data();
-	}
-}
-
-static void update_32x16_3(void)
-{
-	unsigned char line;
-	for(line=0; line<H; line++) {
-		shift_32bits(rgb_datas[line].g, rgb_datas[line].r, rgb_datas[line].b);
-		select_row(line);
-		lock_data();
-		output_data();
-	}
-}
-
-static void update_32x16_4(void)
-{
-	unsigned char line;
-	for(line=0; line<H; line++) {
-		shift_32bits(rgb_datas[line].b, rgb_datas[line].g, rgb_datas[line].r);
+	for(line=0; line<8; line++) {
+		shift_32bits((struct _rgb_line *)&rgb_datas[line+8],(struct _rgb_line *)&rgb_datas[line]);
 		select_row(line);
 		lock_data();
 		output_data();
