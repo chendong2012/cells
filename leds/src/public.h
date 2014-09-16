@@ -21,5 +21,9 @@
 #define ROW1	11	
 #define	ROW2	12
 
-#define SCREEN_HEIGHT	16
+#define H 16
+#define W 32
+#define DIV_W W/8
+
+
 #endif

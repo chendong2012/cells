@@ -1,11 +1,98 @@
 #include "public.h"
-static unsigned char r[4];
-static unsigned char g[4];
-static unsigned char b[4];
+
+struct line {
+        unsigned char f0;
+        unsigned char f1;
+        unsigned char f2;
+        unsigned char f3;
+};
+struct rgb_line {
+        unsigned char r[4];
+        unsigned char g[4];
+        unsigned char b[4];
+};
+static struct rgb_line rgb_datas[H] = {
+/*1line*/
+{0xff,0xff,0xff,0xff,
+0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00},
+/*2 line*/
+{0x00,0x00,0x00,0x00,
+0xff,0xff,0xff,0xff,
+0x00,0x00,0x00,0x00},
+/*3 line blue*/
+{0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00,
+0xff,0xff,0xff,0xff},
+/*4 line*/
+{0x00,0x00,0x00,0x00,
+0xff,0xff,0xff,0xff,
+0xff,0xff,0xff,0xff},
+/*5 line*/
+{0xff,0xff,0xff,0xff,
+0x00,0x00,0x00,0x00,
+0xff,0xff,0xff,0xff},
+/*6 line*/
+{0xff,0xff,0xff,0xff,
+0xff,0xff,0xff,0xff,
+0x00,0x00,0x00,0x00},
+/*7 line*/
+{0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00},
+/*8 line*/
+{0xff,0xff,0xff,0xff,
+0xff,0xff,0xff,0xff,
+0xff,0xff,0xff,0xff},
+
+/*9 line*/
+{0x0f,0x0f,0x0f,0x0f,
+0x0f,0x0f,0x0f,0x0f,
+0x0f,0x0f,0x0f,0x0f},
+
+/*10 line*/
+{0xf0,0xf0,0xf0,0xf0,
+0xf0,0xf0,0xf0,0xf0,
+0xf0,0xf0,0xf0,0xf0},
+
+/*11 line*/
+{0xff,0x00,0xf0,0x00,
+0xff,0x00,0xf0,0x00,
+0xff,0x00,0xf0,0x00},
+
+/*12 line*/
+{0x55,0x55,0x55,0x55,
+0x55,0x55,0x55,0x55,
+0x55,0x55,0x55,0x55},
+
+/*13 line*/
+{0x55,0x55,0x55,0x55,
+0x55,0x55,0x55,0x55,
+0x55,0x55,0x55,0x55},
+
+/*14 line*/
+{0x55,0x55,0xAA,0xAA,
+0x55,0x55,0xAA,0xAA,
+0x55,0x55,0xAA,0xAA},
+
+/*15 line*/
+{0xAA,0xAA,0x55,0x55,
+0xAA,0xAA,0x55,0x55,
+0xAA,0xAA,0x55,0x55},
+/*16 line*/
+{0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00,
+0x00,0x00,0x00,0x00}
+};
 
 void shift_1bits(unsigned char r, unsigned char g, unsigned char b);
 void shift_8bits(unsigned char r, unsigned char g, unsigned char b);
-void shift_32bits(unsigned char *r, unsigned char *g, unsigned char *b);
+
+static void update_32x16_1(void);
+static void update_32x16_2(void);
+static void update_32x16_3(void);
+static void update_32x16_4(void);
+
 void select_row(void);
 void lock_data(void);
 void update_32x16(void);
@@ -44,7 +131,22 @@ void setup()
 }
 void loop()
 {
-	update_32x16();
+	unsigned short i=0;
+	for(i=0;i<500;i++) {
+		update_32x16_1();
+	}
+
+	for(i=0;i<500;i++) {
+		update_32x16_2();
+	}
+
+	for(i=0;i<500;i++) {
+		update_32x16_3();
+	}
+
+	for(i=0;i<500;i++) {
+		update_32x16_4();
+	}
 }
 
 static void init_gpio(void)
@@ -63,11 +165,6 @@ static void init_gpio(void)
 static void init_rgb_datas(void)
 {
 	unsigned char i;
-	for(i=0;i<4;i++) {
-		r[i] = 0xff;
-		g[i] = 0xff;
-		b[i] = 0xff;
-	}
 }
 static void shift_1bits(unsigned char r, unsigned char g, unsigned char b)
 {
@@ -124,24 +221,47 @@ static void output_data(void)
         digitalWrite(OE, 0);
 	delayMicroseconds(500);
         digitalWrite(OE, 1);
-	delayMicroseconds(500);
+//	delayMicroseconds(500);
 }
 
-static void update_32x16(void)
+static void update_32x16_1(void)
 {
 	unsigned char line;
-	for(line=0; line<SCREEN_HEIGHT; line++) {
-		shift_32bits(r,g,b);
+	for(line=0; line<H; line++) {
+		shift_32bits(rgb_datas[line].r, rgb_datas[line].g, rgb_datas[line].b);
 		select_row(line);
 		lock_data();
 		output_data();
 	}
 }
-static void update_16x16(void)
+
+static void update_32x16_2(void)
 {
 	unsigned char line;
-	for(line=0; line<SCREEN_HEIGHT; line++) {
-		shift_32bits(r,g,b);
+	for(line=0; line<H; line++) {
+		shift_32bits(rgb_datas[15-line].r, rgb_datas[15-line].g, rgb_datas[15-line].b);
+		select_row(line);
+		lock_data();
+		output_data();
+	}
+}
+
+static void update_32x16_3(void)
+{
+	unsigned char line;
+	for(line=0; line<H; line++) {
+		shift_32bits(rgb_datas[line].g, rgb_datas[line].r, rgb_datas[line].b);
+		select_row(line);
+		lock_data();
+		output_data();
+	}
+}
+
+static void update_32x16_4(void)
+{
+	unsigned char line;
+	for(line=0; line<H; line++) {
+		shift_32bits(rgb_datas[line].b, rgb_datas[line].g, rgb_datas[line].r);
 		select_row(line);
 		lock_data();
 		output_data();
