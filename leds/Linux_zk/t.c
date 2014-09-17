@@ -8,7 +8,19 @@
 //#define DISP_MODE1
 #define DISP_MODE2
  
-static char HZ_16x16[16][2];
+static unsigned short _r[16];
+static unsigned short _g[16];
+static unsigned short _b[16];
+
+void set_bg(unsigned char type);
+void set_fg(unsigned char line, unsigned char type, unsigned char focus);
+void hz_to_rgb(unsigned char fg, unsigned bg);
+void print_result(void);
+void disp_mode1(void);
+void disp_mode2(void);
+
+
+static unsigned char HZ_16x16[16][2];
 int display(char *incode, int len);
 int main(int argc, char **argv)
 {
@@ -54,7 +66,7 @@ int main(int argc, char **argv)
         return EXIT_SUCCESS;
 }
  
-void disp_mode1()
+void disp_mode1(void)
 {
 	unsigned char i,j,k;
         for(i = 0; i < 16; i++)  //显示点阵
@@ -71,14 +83,17 @@ void disp_mode1()
         }
 }
 
-void disp_mode2()
+void disp_mode2(void)
 {
+	hz_to_rgb(4, 0);
+	/*
 	unsigned char i,j;
         for(i = 0; i < 16; i++) {
                 for(j = 0; j < 2; j+=2)
                         printf("0x%02x,0x%02x", (unsigned char)HZ_16x16[i][j], (unsigned char)HZ_16x16[i][j+1]);
                 printf("\n");
         }
+	*/
 }
 
 int display(char *incode, int len)
@@ -114,26 +129,113 @@ int display(char *incode, int len)
         return EXIT_SUCCESS;
 }
 
-void hz_to_rgb(unsigned bg)
+void hz_to_rgb(unsigned char fg, unsigned bg)
 {
 	unsigned char i,j;
-	unsigned short temp;
-	unsigned short r;
-	unsigned short g;
-	unsigned short b;
-	r=0xffff;
-	g=0xffff;
-	b=0xffff;
-	//12345678-12345678
+	unsigned short temp=0;
+	set_bg(bg);
 	for(i=0;i<16;i++) {
-		temp = (HZ_16x16[i]<<8)|HZ_16x16[i+1];
-		r= temp;
+		temp=0;
+		temp = HZ_16x16[i];
+		temp<<=8;
+		temp|=(unsigned short)HZ_16x16[i+1];
 		for(j=0;j<16;j++) {
-			if(((temp<<j)&0x8000)==1) {
-				r&=~(1<<(15-j)); //前景色
-			} else {
-				r|=(1<<(15-j));  //背景色
-			}
+			if(((temp<<j)&0x8000)==0x8000)
+				set_fg(i, fg, (15-j));
+		}
+	}
+
+	print_result();
+}
+
+void print_result(void)
+{
+	unsigned char i,j;
+        printf("static struct _rgb_line rgb_datas[H] = {\n");
+	for(i=0;i<16;i++) {
+		printf("{0x%02x,0x%02x,0x%02x,0x%02x,\n",_r[i]>>8,_r[i]&0x00ff, _r[i]>>8,_r[i]&0x00ff);
+		printf("0x%02x,0x%02x,0x%02x,0x%02x,\n",_g[i]>>8,_g[i]&0x00ff, _g[i]>>8,_g[i]&0x00ff);
+		printf("0x%02x,0x%02x,0x%02x,0x%02x},\n",_b[i]>>8,_b[i]&0x00ff, _b[i]>>8,_b[i]&0x00ff);
+	}
+        printf("};\n");
+}
+void set_fg(unsigned char line, unsigned char type, unsigned char focus)
+{
+	switch (type) {
+	case 0://000
+		_r[line]&=~(1<<focus);
+		_g[line]&=~(1<<focus);
+		_b[line]&=~(1<<focus);
+		break;
+	case 1://001
+		_r[line]&=~(1<<focus);
+		_g[line]&=~(1<<focus);
+		_b[line]|=(1<<focus);
+		break;
+	case 2://010
+		_r[line]&=~(1<<focus);
+		_g[line]|=(1<<focus);
+		_b[line]&=~(1<<focus);
+		break;
+	case 3://011
+		_r[line]&=~(1<<focus);
+		_g[line]|=(1<<focus);
+		_b[line]|=(1<<focus);
+		break;
+	case 4://100
+		_r[line]|=(1<<focus);
+		_g[line]&=~(1<<focus);
+		_b[line]&=~(1<<focus);
+		break;
+	case 5://101
+		_r[line]|=(1<<focus);
+		_g[line]&=~(1<<focus);
+		_b[line]|=(1<<focus);
+		break;
+	case 6://110
+		_r[line]|=(1<<focus);
+		_g[line]|=(1<<focus);
+		_b[line]&=~(1<<focus);
+		break;
+	case 7://111
+		_r[line]|=(1<<focus);
+		_g[line]|=(1<<focus);
+		_b[line]|=(1<<focus);
+		break;
+	}
+}
+void set_bg(unsigned char type)
+{
+	unsigned char line;
+	for(line=0;line<16;line++) {
+		switch (type) {
+		case 0://000
+			_r[line]=0x0000; _g[line]=0x0000; _b[line]=0x0000;
+			break;
+		case 1://001
+			_r[line]=0x0000; _g[line]=0x0000; _b[line]=0xffff;
+			break;
+		case 2://010
+			_r[line]=0x0000; _g[line]=0xffff; _b[line]=0x0000;
+			break;
+		case 3://011
+			_r[line]=0x0000; _g[line]=0xffff; _b[line]=0xffff;
+			break;
+		case 4://100
+			_r[line]=0xffff; _g[line]=0x0000; _b[line]=0x0000;
+			break;
+		case 5://101
+			_r[line]=0xffff; _g[line]=0x0000; _b[line]=0xffff;
+			break;
+		case 6://110
+			_r[line]=0xffff; _g[line]=0xffff; _b[line]=0x0000;
+			break;
+		case 7://111
+			_r[line]=0xffff; _g[line]=0xffff; _b[line]=0xffff;
+			break;
+		default:
+			break;
 		}
 	}
 }
+
