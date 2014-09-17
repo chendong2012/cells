@@ -12,78 +12,15 @@ struct _rgb_line {
         unsigned char b[4];
 };
 
-static void update_32x16_1(void);
-#if 0
-static struct _rgb_line rgb_datas[H] = {
-/*1line*/
-{0xff,0xff,0xff,0xff,
-0x00,0x00,0x00,0x00,
-0x00,0x00,0x00,0x00},
-/*2 line*/
-{0x00,0x00,0x00,0x00,
-0xff,0xff,0xff,0xff,
-0x00,0x00,0x00,0x00},
-/*3 line blue*/
-{0x00,0x00,0x00,0x00,
-0x00,0x00,0x00,0x00,
-0xff,0xff,0xff,0xff},
-/*4 line*/
-{0x00,0x00,0x00,0x00,
-0xff,0xff,0xff,0xff,
-0xff,0xff,0xff,0xff},
-/*5 line*/
-{0xff,0xff,0xff,0xff,
-0x00,0x00,0x00,0x00,
-0xff,0xff,0xff,0xff},
-/*6 line*/
-{0xff,0xff,0xff,0xff,
-0xff,0xff,0xff,0xff,
-0x00,0x00,0x00,0x00},
-/*7 line*/
-{0x00,0x00,0x00,0x00,
-0x00,0x00,0x00,0x00,
-0x00,0x00,0x00,0x00},
-/*8 line*/
-{0xff,0xff,0xff,0xff,
-0xff,0xff,0xff,0xff,
-0xff,0xff,0xff,0xff},
-/************************************/
-/************************************/
-/*9line*/
-{0x0f,0x0f,0x0f,0x0f,
-0xff,0xff,0xff,0x0f,
-0x0f,0x0f,0x0f,0x0f},
-/*10 line*/
-{0x00,0x00,0x00,0x00,
-0xf5,0xf5,0xf5,0xf5,
-0x00,0x00,0x00,0x00},
-/*11 line blue*/
-{0x00,0x00,0x00,0x00,
-0x00,0x00,0x00,0x00,
-0xff,0xff,0xff,0xff},
-/*12 line*/
-{0x00,0x00,0x00,0x00,
-0xff,0xff,0xff,0xff,
-0xff,0xff,0xff,0xff},
-/*13 line*/
-{0xff,0xff,0xff,0xff,
-0x00,0x00,0x00,0x00,
-0xff,0xff,0xff,0xff},
-/*14 line*/
-{0xff,0xff,0xff,0xff,
-0xff,0xff,0xff,0xff,
-0x00,0x00,0x00,0x00},
-/*15 line*/
-{0x00,0x00,0x00,0x00,
-0x00,0x00,0x00,0x00,
-0x00,0x00,0x00,0x00},
-/*16 line*/
-{0xff,0xff,0xff,0xff,
-0xff,0xff,0xff,0xff,
-0xff,0xff,0xff,0xff}
+struct pixel { 
+        unsigned char r;
+        unsigned char g;
+        unsigned char b;
 };
-#endif
-const struct _rgb_line PROGMEM rgb_datas[H] = {
+
+struct _rgb_line rgb_backup[H];
+
+struct _rgb_line rgb_datas[H] = {
 {0xff,0xff,0x03,0x00,
 0x00,0x00,0xfc,0xff,
 0x00,0x00,0x00,0x00},
@@ -148,23 +85,11 @@ static void shift_8bits(unsigned char r1,\
 		unsigned char g2,\
 		unsigned char b2);
 
-
 void select_row(void);
 void lock_data(void);
 void init_gpio(void);
 void init_rgb_datas(void);
 
-typedef struct
-{ 
-  unsigned char bit0:1; 
-  unsigned char bit1:1; 
-  unsigned char bit2:1; 
-  unsigned char bit3:1; 
-  unsigned char bit4:1; 
-  unsigned char bit5:1; 
-  unsigned char bit6:1; 
-  unsigned char bit7:1; 
-} _io_reg;
 
 
 static void shift_32bits(struct _rgb_line *rgb1,struct _rgb_line *rgb2);
@@ -193,22 +118,6 @@ void loop()
 	for(i=0;i<50;i++) {
 		update_32x16();
 	}
-/*
-	Serial.print("pic2!");
-	delay(1);
-	for(i=0;i<50;i++) {
-		update_32x16_1();
-	}
-	Serial.print("pic3!");
-	for(i=0;i<500;i++) {
-		update_32x16_3();
-	}
-
-	Serial.print("pic4!");
-	for(i=0;i<500;i++) {
-		update_32x16_4();
-	}
-*/
 }
 
 static void init_gpio(void)
@@ -320,7 +229,6 @@ static void update_32x16(void)
 		memcpy(rgb1.r, (const void *)rgb_datas[line+8].r, 4);
 		memcpy(rgb1.g, (const void *)rgb_datas[line+8].g, 4);
 		memcpy(rgb1.b, (const void *)rgb_datas[line+8].b, 4);
-		//shift_32bits((struct _rgb_line *)&rgb_datas[line],(struct _rgb_line *)&rgb_datas[line+8]);
 		shift_32bits(&rgb,&rgb1);
 		select_row(line);
 		lock_data();
@@ -328,13 +236,62 @@ static void update_32x16(void)
 	}
 }
 
-static void update_32x16_1(void)
+unsigned char byte_ofst(unsigned short pixel_index)
 {
-	unsigned char line;
-	for(line=0; line<8; line++) {
-		shift_32bits((struct _rgb_line *)&rgb_datas[line+8],(struct _rgb_line *)&rgb_datas[line]);
-		select_row(line);
-		lock_data();
-		output_data();
+	return pixel_index/8;
+}
+
+static void setpixel(unsigned char x, unsigned char y, struct pixel p)
+{
+	unsigned char byteofst;
+	unsigned char bitofst;
+	unsigned char dat;
+
+	if(x>(H-1) || y>(W-1)) return;
+	byteofst = x/8;
+	bitofst = x%8;
+
+	dat = rgb_datas[y].r[byteofst];
+	if (p.r==0)
+		dat &=~(0x01<<bitofst);
+	else
+		dat |=(0x01<<bitofst);
+
+	dat = rgb_datas[y].g[byteofst];
+	if (p.g==0)
+		dat &=~(0x01<<bitofst);
+	else
+		dat |=(0x01<<bitofst);
+
+	dat = rgb_datas[y].b[byteofst];
+	if (p.b==0)
+		dat &=~(0x01<<bitofst);
+	else
+		dat |=(0x01<<bitofst);
+}
+
+static void draw_a_color_screen(struct pixel p)
+{
+	unsigned char x=0;
+	unsigned char y=0;
+	for (y=0;y<H;y++)
+	for (x=0;x<W;x++)
+		setpixel(x, y, p);
+}
+
+static void clear_screen(void)
+{
+	unsigned char i=0;
+	for (i=0;i<H;i++) {
+		memset(rgb_datas[i].r, 0x00, W/8);
+		memset(rgb_datas[i].g, 0x00, W/8);
+		memset(rgb_datas[i].b, 0x00, W/8);
 	}
+}
+
+static void draw_a_line(unsigned char line, struct _rgb_line rgbline)
+{
+	memcpy(rgb_datas[line].r, rgbline.r, W/8);
+	memcpy(rgb_datas[line].g, rgbline.g, W/8);
+	memcpy(rgb_datas[line].b, rgbline.b, W/8);
 }
