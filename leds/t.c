@@ -16,6 +16,7 @@ void set_bg(unsigned char type);
 void set_fg(unsigned char line, unsigned char type, unsigned short focus);
 void hz_to_rgb(unsigned char fg, unsigned bg);
 void print_result(void);
+void print_result1(void);
 void disp_mode1(void);
 void disp_mode2(void);
 
@@ -65,7 +66,25 @@ int main(int argc, char **argv)
  
         return EXIT_SUCCESS;
 }
- 
+
+void disp_mode0(void)
+{
+	unsigned char i,j,k;
+		printf("{");
+	for(i = 0; i < 15; i++) {
+		printf("0x%02x,",HZ_16x16[i][0]);
+	}
+	printf("0x%02x",HZ_16x16[i][0]);
+	printf("},\n");
+
+	printf("{");
+	for(i = 0; i < 15; i++) {
+		printf("0x%02x,",HZ_16x16[i][0]);
+	}
+	printf("0x%02x",HZ_16x16[i][0]);
+	printf("},\n");
+}
+
 void disp_mode1(void)
 {
 	unsigned char i,j,k;
@@ -118,7 +137,7 @@ int display(char *incode, int len)
         fseek(HZK,offset,SEEK_SET);
         fread(HZ_16x16,32,1,HZK);//读取汉字的16*16点阵字模
         fclose(HZK);
-
+	disp_mode0();
 #ifdef DISP_MODE1
 	disp_mode1();
 #endif
@@ -150,6 +169,7 @@ void hz_to_rgb(unsigned char fg, unsigned bg)
 	}
 
 	print_result();
+	print_result1();
 }
 
 void print_result(void)
@@ -163,6 +183,23 @@ void print_result(void)
 	}
         printf("};\n");
 }
+
+void print_result1(void)
+{
+	unsigned char i,j;
+        printf("static struct _rgb_half_line rgb_datas[H] = {\n");
+	for(i=0;i<16;i++) {
+		printf("{0x%02x,0x%02x,0x%02x},\n",_r[i]>>8, _g[i]>>8, _b[i]>>8);
+	}
+
+
+
+	for(i=0;i<16;i++) {
+		printf("{0x%02x,0x%02x,0x%02x},\n", _r[i]&0x00ff, _g[i]&0x00ff, _b[i]&0x00ff);
+	}
+        printf("};\n");
+}
+
 void set_fg(unsigned char line, unsigned char type, unsigned short focus)
 {
 	switch (type) {
