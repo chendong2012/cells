@@ -1,0 +1,221 @@
+http://my.oschina.net/shelllife/blog/110971
+嵌入式开发中中文的识别、显示一直是一个比较让人头疼的问题，这是由于嵌入式系统的精简要求所导致的。我在前一个项目中用Qt做终端的显示界面时，就被中文字符的显示搞得焦头烂额，最后还是在网上下了一个文泉驿的中文字体库才解决问题，不过并不令人满意，主要是字体库太大了，影响了性能。今天在项目中又遇到了中文字符的编码转换和显示问题，趁机学习总结一下。
+中文编码与点阵字库
+
+国际标准有UTF-8、UTF-16等，国家标准有GB2312、GB18030、GBK等，至于这些标准的编码实现就不在这里介绍了。编码标准实现中文字符在计算机内部的机器表示，但是怎么将这些内部表示在显示设备上显示出来，则不是编码标准的范畴了，这就需要中文字库的作用。中文字库包含已经做好的显示“模板”(字模)，通过中文的编码值来映射汉字在字库中的字模索引，从而使用字模来实现中文显示。
+
+但是大部分的中文字库都是映射国家标准的，如GB2312的HZK16点阵字库。不知道文泉驿字体库是否是直接映射UTF-8，还是也是GB2312。因此，当在程序中涉及两种不同的中文编码方式时，就需要进行编码方式的转换，今天我遇到的就是要实现中文字符UTF-8到GB2312的编码转换。
+
+HZK16是符合GB2312标准16*16的点阵宋体字库，支持的汉字有6763个，符号682个。其中一级汉字有 3755个，按声序排列，二级汉字有3008个，按偏旁部首排列。
+
+有关点阵汉字显示的更多了解，可以阅读：点阵汉字显示
+iconv命令实现文件编码转换
+
+Linux系统中的iconv命令可以实现一个文件的整体编码转换，详细帮助可以通过man iconv查看。iconv命令的基本格式为：
+?
+1
+	
+iconv -f from-encoding -t to-encoding  input-file -o output-file
+
+至于from-encoding和to-encoding的可用值可以通过选项-l进行查看：
+?
+1
+	
+iconv -l
+
+可以在输出结果中找到GB2312、UTF-8、GB18030、UTF16。上述的中文编码文件转换：
+?
+1
+	
+iconv -f GB2312 -t UTF8 display_utf8.c -o display_gb2312.c
+iconv编码转换函数
+
+POSIX.1-2001标准和UNIX 98规范中均包含了iconv编码转换函数族，它们分别是：
+?
+1
+2
+3
+4
+5
+6
+7
+	
+#include <iconv.h>
+//成功返回转换句柄，失败返回-1；字符集参考iconv -l命令结果
+iconv_t iconv_open(const char *tocode, const char *fromcode);
+//成功返回不可逆编码转换的字符数，失败返回-1；查看帮助：man 3 iconv
+size_t iconv(iconv_t cd,char **inbuf,size_t *inbytesleft,char **outbuf,size_t *outbytesleft);
+//成功返回0，失败返回-1
+int iconv_close(iconv_t cd);
+
+这三个函数均是从glibc2.1版本开始被引入的，因此使用它们需要有glibc库的支持。这次我们的项目中因为不是用的glibc库，所以没法用它们。不过我还是顺便学习了，下面是我编写的一个简单的实例程序，在这里面还是有一些注意点的，看程序：
+?
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+	
+#include <stdio.h>
+#include <stdlib.h>
+#include <iconv.h>
+#include <string.h>
+ 
+#define OUTLEN 128
+ 
+int display(char *incode, int len);
+ 
+int main()
+{
+        char *string = "开源中国";
+        iconv_t cd;
+        int inbuf_len = strlen(string);
+        char outbuf[OUTLEN];
+        char *pin = string;
+        char *pout = &outbuf[0];  //用"pout=&outbuf" 会引发SIGSERV信号，导致段错误
+        int outbuf_len = OUTLEN;
+ 
+        memset(outbuf, 0, OUTLEN); //清空输出缓存，否则会有意外结果的
+        printf("Originial Data:\n"); //打印转换前的一些参数和信息，以进行比较
+        printf("\tpin str: %s, outbuf str:%s\n", pin, outbuf);
+        printf("\tinbuf_len=%d, outbuf_len=%d\n", inbuf_len, outbuf_len);
+        printf("\tstrlen(outbuf)= %d\n", strlen(outbuf));
+ 
+        cd = iconv_open("GB2312", "UTF8");
+        if(cd == 0)
+                return EXIT_FAILURE;
+        int count = iconv(cd, &pin, &inbuf_len, &pout, &outbuf_len);
+        printf("iconv count : %d\n", count);//观察iconv返回值，理解不可逆转换含义
+        iconv_close(cd);
+ 
+        printf("After Converted Data:\n"); //注意发生变化的变量
+        printf("\tpin str: %s, gb2312 str:%s\n", pin, outbuf );
+        printf("\tinbuf_len=%d, outbuf_len=%d\n", inbuf_len, outbuf_len);
+        printf("\tstrlen(outbuf)= %d\n", strlen(outbuf));
+ 
+        int i,j;
+        for(i = 0; i < strlen(outbuf); i += 2)
+        {
+                display (outbuf+i, 2); //使用HZK16字库显示GB2312编码的中文点阵
+        }
+ 
+        return EXIT_SUCCESS;
+}
+ 
+int display(char *incode, int len)
+{
+        int i, j, k;
+        char mat[16][2];
+        FILE    *HZK=NULL;
+        unsigned    char    qh,wh;
+        unsigned    long    offset;
+ 
+        qh=incode[0]-0xa0;//获得区码，中文编码从0xA1开始
+        wh=incode[1]-0xa0;   //获得位码，中文编码从0xA1开始
+        offset=(94*(qh-1)+(wh-1))*32; //得到汉字在HZK16字库中的字节偏移位置
+        printf("区码：%d,位码：%d\n",qh,wh);
+ 
+        if((HZK=fopen("HZK16","rb")) ==NULL)
+        {
+           perror("Can't Open hzk16");
+           return (EXIT_FAILURE);
+        }
+        fseek(HZK,offset,SEEK_SET);
+        fread(mat,32,1,HZK);//读取汉字的16*16点阵字模
+        fclose(HZK);
+ 
+        for(i = 0; i < 16; i++)  //显示点阵
+        {
+                for(j = 0; j < 2; j++)
+                        for(k = 0; k < 8; k++)
+                        {
+                                if(mat[i][j] & (0x80>>k))
+                                        printf("*");
+                                else
+                                        printf(" ");
+                        }
+                printf("\n");
+        }
+ 
+        return EXIT_SUCCESS;
+}
+
+运行程序，观察一下输出，能让我们更好地理解iconv函数： 
