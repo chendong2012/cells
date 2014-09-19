@@ -35,6 +35,7 @@ struct pixel {
 struct _rgb_quarter_line hz_mem[64];
 /*zi ku*/
 const struct _rgb_quarter_line PROGMEM hz[]={
+//struct _rgb_quarter_line hz[]={
 /*止*/
 {0x00,0x01,0x00},
 {0x00,0x01,0x00},
@@ -52,6 +53,7 @@ const struct _rgb_quarter_line PROGMEM hz[]={
 {0x00,0x11,0x00},
 {0x00,0xff,0x00},
 {0x00,0x00,0x00},
+/**************/
 {0x00,0x00,0x00},
 {0x00,0x00,0x00},
 {0x00,0x00,0x00},
@@ -101,6 +103,72 @@ const struct _rgb_quarter_line PROGMEM hz[]={
 {0x00,0x20,0x00},
 {0x00,0xa0,0x00},
 {0x00,0x40,0x00},
+/*********/
+{0x00,0x00,0x00},
+{0x00,0x78,0x00},
+{0x00,0x48,0x00},
+{0x00,0x57,0x00},
+{0x00,0x50,0x00},
+{0x00,0x60,0x00},
+{0x00,0x51,0x00},
+{0x00,0x4a,0x00},
+{0x00,0x4b,0x00},
+{0x00,0x48,0x00},
+{0x00,0x69,0x00},
+{0x00,0x51,0x00},
+{0x00,0x42,0x00},
+{0x00,0x44,0x00},
+{0x00,0x40,0x00},
+{0x00,0x40,0x00},
+{0x00,0x40,0x00},
+{0x00,0x40,0x00},
+{0x00,0x44,0x00},
+{0x00,0xfe,0x00},
+{0x00,0x80,0x00},
+{0x00,0xa0,0x00},
+{0x00,0x20,0x00},
+{0x00,0x28,0x00},
+{0x00,0xfc,0x00},
+{0x00,0x20,0x00},
+{0x00,0x28,0x00},
+{0x00,0x24,0x00},
+{0x00,0x26,0x00},
+{0x00,0x22,0x00},
+{0x00,0xa0,0x00},
+{0x00,0x40,0x00},
+/*东***/
+{0x00,0x02,0x00},
+{0x00,0x02,0x00},
+{0x00,0x02,0x00},
+{0x00,0xff,0x00},
+{0x00,0x04,0x00},
+{0x00,0x09,0x00},
+{0x00,0x09,0x00},
+{0x00,0x11,0x00},
+{0x00,0x3f,0x00},
+{0x00,0x01,0x00},
+{0x00,0x09,0x00},
+{0x00,0x09,0x00},
+{0x00,0x11,0x00},
+{0x00,0x21,0x00},
+{0x00,0x45,0x00},
+{0x00,0x02,0x00},
+{0x00,0x00,0x00},
+{0x00,0x00,0x00},
+{0x00,0x04,0x00},
+{0x00,0xfe,0x00},
+{0x00,0x00,0x00},
+{0x00,0x00,0x00},
+{0x00,0x00,0x00},
+{0x00,0x10,0x00},
+{0x00,0xf8,0x00},
+{0x00,0x00,0x00},
+{0x00,0x40,0x00},
+{0x00,0x20,0x00},
+{0x00,0x10,0x00},
+{0x00,0x18,0x00},
+{0x00,0x08,0x00},
+{0x00,0x00,0x00}
 };
 
 struct _rgb_line rgb_backup[H];
@@ -243,23 +311,51 @@ void init_serial(void)
 	Serial.begin(115200);
 	Serial.print("begin!");
 }
+
+void read_flash(void)
+{
+	unsigned char i;
+	for (i=0;i<64;i++) {
+		hz_mem[i].r = pgm_read_byte(&hz[i].r);
+		hz_mem[i].g = pgm_read_byte(&hz[i].g);
+		hz_mem[i].b = pgm_read_byte(&hz[i].b);
+	}
+}
+void read1_flash(void)
+{
+	unsigned char i;
+	for (i=0;i<64;i++) {
+		hz_mem[i].r = pgm_read_byte(&hz[i+64].r);
+		hz_mem[i].g = pgm_read_byte(&hz[i+64].g);
+		hz_mem[i].b = pgm_read_byte(&hz[i+64].b);
+	}
+}
 void setup()
 {
-	strncpy_P((char *)&hz_mem[0], (const char*)pgm_read_word(&hz[0]), 192);
+//	clear_screen();
+	//read_flash();
+	//strncpy_P((char *)&hz_mem[0], (const char*)pgm_read_word(&hz[0]), 96);
+
 	init_serial();
 	init_gpio();
 	init_rgb_datas();
+	fill_32x16(0, 0);
+
 }
 void loop()
 {
 	unsigned short i=0;
-	Serial.print("pic1!");
+	//Serial.print("pic1!");
+
+
+	read_flash();
 	fill_32x16(0, 0);
-
-
-	for(i=0;i<50;i++) {
+	for(i=0;i<50;i++)
 		update_32x16();
-	}
+	read1_flash();
+	fill_32x16(0, 0);
+	for(i=0;i<50;i++)
+		update_32x16();
 }
 
 static void init_gpio(void)
@@ -276,6 +372,7 @@ static void init_gpio(void)
 	pinMode(ROW0, OUTPUT);
 	pinMode(ROW1, OUTPUT);
 	pinMode(ROW2, OUTPUT);
+	pinMode(16, OUTPUT);
 }
 
 static void init_rgb_datas(void)
@@ -301,6 +398,14 @@ static void shift_1bits(unsigned char r1,\
 	digitalWrite(G2, g2>>7);
 	digitalWrite(B2, b2>>7);
 
+	digitalWrite(16, r1>>7);
+	digitalWrite(16, g1>>7);
+	digitalWrite(16, b1>>7);
+
+
+	digitalWrite(16, r2>>7);
+	digitalWrite(16, g2>>7);
+	digitalWrite(16, b2>>7);
 #if 0
 
 	digitalWrite(R, r1&0x01);
@@ -445,9 +550,9 @@ static void clear_screen(void)
 {
 	unsigned char i=0;
 	for (i=0;i<H;i++) {
-		memset(rgb_datas[i].r, 0x00, W/8);
-		memset(rgb_datas[i].g, 0x00, W/8);
-		memset(rgb_datas[i].b, 0x00, W/8);
+		memset(rgb_datas[i].r, 0xff, W/8);
+		memset(rgb_datas[i].g, 0xff, W/8);
+		memset(rgb_datas[i].b, 0xff, W/8);
 	}
 }
 
@@ -466,8 +571,13 @@ offset_8x16_fb:只能取如下值：0和4
 ****************************/
 static void fill_32x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk)
 {
-	if ((offset_8x16_fb != 0)||(offset_8x16_fb != 4))
-		return;
+
+	if (offset_8x16_fb == 1) return;
+	if (offset_8x16_fb == 2) return;
+	if (offset_8x16_fb == 3) return;
+	if (offset_8x16_fb == 5) return;
+	if (offset_8x16_fb == 6) return;
+	if (offset_8x16_fb == 7) return;
 
 	fill_8x16(offset_8x16_fb, count_8x16_zk);
 	fill_8x16(offset_8x16_fb+1, count_8x16_zk+1);
@@ -497,22 +607,21 @@ count_8x16_zk:from 0,1,2,...7
 static void fill_8x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk)
 {
 	unsigned char i,j;
-	unsigned short offset = count_8x16_zk*16;
+	unsigned char offset = count_8x16_zk*16;
 	struct _rgb_line  *line;
+	char buf[16];
 	if (offset_8x16_fb < 4) {
 		line = rgb_datas;
 	} else {
 		line = rgb_backup;
 		offset_8x16_fb -= 4;
 	}
-	
 	/*i表示第几行*/
 	for(i=0; i<16; i++) {
 		/*j表示第几个８列*/
-		offset = offset+i;
-		line[i].r[offset_8x16_fb] = hz[offset].r;
-		line[i].g[offset_8x16_fb] = hz[offset].g;
-		line[i].b[offset_8x16_fb] = hz[offset].b;
+		line[i].r[offset_8x16_fb] = hz_mem[offset+i].r;
+		line[i].g[offset_8x16_fb] = hz_mem[offset+i].g;
+		line[i].b[offset_8x16_fb] = hz_mem[offset+i].b;
 	}
 }
 
