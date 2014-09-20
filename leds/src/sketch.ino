@@ -1,4 +1,11 @@
 #include "public.h"
+/*有三大块显存：
+ * 1\rgb_datas 32x16
+ * 2\rgb_backup 32x16
+ * 3\hz_mem     64x16
+ * 4\hz
+ * */
+
 static void fill_8x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk);
 static void fill_32x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk);
 static void fill_16x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk);
@@ -312,24 +319,47 @@ void init_serial(void)
 	Serial.print("begin!");
 }
 
-void read_flash(void)
+/*
+ * begin 是以8x16为单位的，begin 是偏移值:0,1,2
+ *0:表示从hz开始，１表示从8x16开始，类推
+ *count 要读几块16*8数据
+ * */
+void read_flash_to_hz_mem(unsigned char begin,unsigned unsigned count)
 {
 	unsigned char i;
-	for (i=0;i<64;i++) {
-		hz_mem[i].r = pgm_read_byte(&hz[i].r);
-		hz_mem[i].g = pgm_read_byte(&hz[i].g);
-		hz_mem[i].b = pgm_read_byte(&hz[i].b);
+	unsigned char offset = begin*16;
+
+	for (i=0;i<count*16;i++) {
+		hz_mem[i].r = pgm_read_byte(&hz[i+offset].r);
+		hz_mem[i].g = pgm_read_byte(&hz[i+offset].g);
+		hz_mem[i].b = pgm_read_byte(&hz[i+offset].b);
 	}
 }
-void read1_flash(void)
+void shift_init(void)
 {
-	unsigned char i;
-	for (i=0;i<64;i++) {
-		hz_mem[i].r = pgm_read_byte(&hz[i+64].r);
-		hz_mem[i].g = pgm_read_byte(&hz[i+64].g);
-		hz_mem[i].b = pgm_read_byte(&hz[i+64].b);
-	}
+	read_flash(0,4);
+	fill_32x16(0,0);
+	read_flash(4,4);
+	fill_32x16(4,0);
 }
+
+void shift_begin(void)
+{
+	for(i=0;i<32) {
+		shift_a_bit();
+	}
+	hz_locate++;
+
+}
+
+void shift_loop(void)
+{
+}
+
+void shift_end(void)
+{
+}
+
 void setup()
 {
 //	clear_screen();
@@ -625,6 +655,22 @@ static void fill_8x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk)
 	}
 }
 
+/*
+ *参数包括有：
+ *１、移动资源定位
+ *２、装载数据时机
+ *3、真正移位　
+ * */
+
+static void locate_resource(void)
+{
+
+}
+
+static void locate_resource(void)
+{
+}
+
 static void shift_a_bit(void)
 {
 	/*
@@ -633,12 +679,23 @@ static void shift_a_bit(void)
 	unsigned char i;
 	unsigned long temp;
 	unsigned long temp1;
-	for (i=0;i<16;i++) {
+	for (i=0;i<16;i++) {//全部移完1次,什么时候要补充rgb_backup的数据呢，只能是以最小单行8x16,所以移完
 		temp = *(unsigned long *)&rgb_datas[i].r[0];
 		temp1 = *(unsigned long *)&rgb_backup[i].r[0];
-		temp<<1;
+		temp=temp<<1;
 		temp |= temp1>>31;
+		temp1=temp1<<1;
 
-		temp1<<1;
+		temp = *(unsigned long *)&rgb_datas[i].g[0];
+		temp1 = *(unsigned long *)&rgb_backup[i].g[0];
+		temp=temp<<1;
+		temp |= temp1>>31;
+		temp1=temp1<<1;
+
+		temp = *(unsigned long *)&rgb_datas[i].b[0];
+		temp1 = *(unsigned long *)&rgb_backup[i].b[0];
+		temp=temp<<1;
+		temp |= temp1>>31;
+		temp1=temp1<<1;
 	}
 }
