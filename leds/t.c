@@ -104,7 +104,7 @@ void disp_mode1(void)
 
 void disp_mode2(void)
 {
-	hz_to_rgb(2, 0);
+	hz_to_rgb(4, 7);
 	/*
 	unsigned char i,j;
         for(i = 0; i < 16; i++) {
