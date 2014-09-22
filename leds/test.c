@@ -54,6 +54,37 @@ void printbyline(void)
 	printf("};\n");
 }
 
+void print_by_8x16(void)
+{
+	int i=0;
+
+	printf("static struct _rgb_line rgb_datas[H] = {\n");
+	for (i=0;i<H*W/8;i+=4) {
+		printf("{0x%02x,",r_datas[i]);
+		printf("0x%02x,",g_datas[i]);
+		printf("0x%02x},\n",b_datas[i]);
+	}
+
+	for (i=0;i<H*W/8;i+=4) {
+		printf("{0x%02x,",r_datas[i+1]);
+		printf("0x%02x,",g_datas[i+1]);
+		printf("0x%02x},\n",b_datas[i+1]);
+	}
+
+	for (i=0;i<H*W/8;i+=4) {
+		printf("{0x%02x,",r_datas[i+2]);
+		printf("0x%02x,",g_datas[i+2]);
+		printf("0x%02x,},\n",b_datas[i+2]);
+	}
+
+	for (i=0;i<H*W/8;i+=4) {
+		printf("{0x%02x,",r_datas[i+3]);
+		printf("0x%02x,",g_datas[i+3]);
+		printf("0x%02x,},\n",b_datas[i+3]);
+		printf("\n");
+	}
+	printf("};\n");
+}
 
 void print_datas(PPMImage *img, unsigned char *data)
 {
