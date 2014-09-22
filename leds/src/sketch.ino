@@ -1,4 +1,6 @@
 #include "public.h"
+#include "a.h"
+
 /*有三大块显存：
  * 1\rgb_datas 32x16
  * 2\rgb_backup 32x16
@@ -16,37 +18,9 @@ void read_flash_to_hz_mem(unsigned char begin,unsigned char count);
 void shift_init(void);
 void shift_loop(void);
 
-struct line123 {
-	unsigned char f0;
-	unsigned char f1;
-	unsigned char f2;
-	unsigned char f3;
-};
-
-struct _rgb_line { 
-	unsigned char r[4];
-	unsigned char g[4];
-	unsigned char b[4];
-};
-
-struct _rgb_half_line { 
-	unsigned char r[2];
-	unsigned char g[2];
-	unsigned char b[2];
-};
-
-struct _rgb_quarter_line { 
-	unsigned char r;
-	unsigned char g;
-	unsigned char b;
-};
-struct pixel { 
-	unsigned char r;
-	unsigned char g;
-	unsigned char b;
-};
 /*一个字16*16*/
 struct _rgb_quarter_line hz_mem[64];
+#if 0
 /*zi ku*/
 const struct _rgb_quarter_line PROGMEM hz[]={/**8x16/
 /*天*/
@@ -182,6 +156,7 @@ const struct _rgb_quarter_line PROGMEM hz[]={/**8x16/
 {0xff,0xe1,0xe1},
 {0xff,0xff,0xff},
 };
+#endif
 
 
 struct _rgb_line rgb_backup[H];
@@ -363,6 +338,9 @@ void shift_loop(void)
 			update_32x16();
 		fb64x16_shift_left_abit();
 	}
+	//for (;;)
+	//	update_32x16();
+
 	hz_offset+=4;
 	if(hz_offset>hz_length) {
 		hz_offset=0;
@@ -522,7 +500,7 @@ static void lock_data(void)
 static void output_data(void)
 {
 	digitalWrite(OE, 0);
-	delayMicroseconds(200);
+	delayMicroseconds(300);
 	digitalWrite(OE, 1);
 	//	delayMicroseconds(500);
 }
@@ -668,23 +646,71 @@ static void fill_8x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk)
 	}
 }
 
-inline void fb64x1_shift_left_abit(unsigned char *l, unsigned char *l2)
+void fb64x1_shift_left_abit(unsigned char *l, unsigned char *l2)
 {
+
 	unsigned long t;
-	t = (l[0]<<23)|(l[1]<<15)|(l[2]<<7)|l[3];
+	unsigned char *tp;
+	char buf[64];
+
+	tp = (unsigned char *)&t;
+
+	//sprintf(buf, "0x%02x 0x%02x 0x%02x 0x%02x",l[0],l[1],l[2],l[3]);
+	//Serial.println(buf);
+
+//	t = (l[0]<<24)|(l[1]<<16)|(l[2]<<8)|l[3];
+	tp[0] = l[3];
+	tp[1] = l[2];
+	tp[2] = l[1];
+	tp[3] = l[0];
+
+	//sprintf(buf, "0x%02x 0x%02x 0x%02x 0x%02x",tp[0],tp[1],tp[2],tp[3]);
+	//Serial.println(buf);
 	t<<=1;
 	t|=(l2[0]>>7);
-	l[0] = (unsigned char)t>>23;
-	l[1] = (unsigned char)t>>15;
-	l[2] = (unsigned char)t>>7;
-	l[3] = (unsigned char)t;
 
-	t = (l2[0]<<23)|(l2[1]<<15)|(l2[2]<<7)|l2[3];
+//	l[0] = (unsigned char)(t>>24);
+//	l[1] = (unsigned char)(t>>16);
+//	l[2] = (unsigned char)(t>>8);
+//	l[3] = (unsigned char)t;
+
+	l[0] = tp[3];
+	l[1] = tp[2];
+	l[2] = tp[1];
+	l[3] = tp[0];
+
+//	l[0] = (t&0xff000000)>>24;
+//	l[1] = (t&0x00ff0000)>>16;
+//	l[2] = (t&0x0000ff00)>>8;
+//	l[1] = (unsigned char)(t>>16);
+//	l[2] = (unsigned char)(t>>8);
+//	l[3] = (unsigned char)t;
+
+
+
+
+
+//	sprintf(buf,"0x%02x 0x%02x 0x%02x 0x%02x",l[0],l[1],l[2],l[3]);
+//	Serial.println(buf);
+
+//	t = (l2[0]<<24)|(l2[1]<<16)|(l2[2]<<8)|l2[3];
+
+	tp[0] = l2[3];
+	tp[1] = l2[2];
+	tp[2] = l2[1];
+	tp[3] = l2[0];
+
 	t<<=1;
-	l2[0] = (unsigned char)t>>23;
-	l2[1] = (unsigned char)t>>15;
-	l2[2] = (unsigned char)t>>7;
-	l2[3] = (unsigned char)t;
+
+	l2[0] = tp[3];
+	l2[1] = tp[2];
+	l2[2] = tp[1];
+	l2[3] = tp[0];
+
+	//l2[0] = (unsigned char)(t>>24);
+	//l2[1] = (unsigned char)(t>>16);
+	//l2[2] = (unsigned char)(t>>8);
+	//l2[3] = (unsigned char)t;
 }
 /*
  *参数包括有：
@@ -695,10 +721,137 @@ inline void fb64x1_shift_left_abit(unsigned char *l, unsigned char *l2)
 
 static void fb64x16_shift_left_abit(void)
 {
+#if 0
+	/*
+	 * 12345678-12345678-12345678-12345678-|-12345678-12345678-12345678-12345678
+	 */
+	unsigned char i;
+	unsigned char *temp0;
+	unsigned char *temp1;
+	unsigned char *temp2;
+	unsigned char *temp3;
+	char buf1[16];
+		
+	for (i=0;i<H;i++) {//全部移完1次,什么时候要补充rgb_backup的数据呢，只能是以最小单行8x16,所以移完
+		//rrrrrrrrrrrrr
+		temp0 = (unsigned char *)&rgb_datas[i].r[0];
+		temp1 = (unsigned char *)&rgb_datas[i].r[1];
+		temp2 = (unsigned char *)&rgb_datas[i].r[2];
+		temp3 = (unsigned char *)&rgb_datas[i].r[3];
+		*temp0<<=1;
+		*temp0|=*temp1>>7;
+
+		*temp1<<=1;
+		*temp1|=*temp2>>7;
+
+		*temp2<<=1;
+		*temp2|=*temp3>>7;
+
+		*temp3<<=1; //fille lowest bit
+
+		temp0 = (unsigned char *)&rgb_backup[i].r[0];
+		temp1 = (unsigned char *)&rgb_backup[i].r[1];
+		temp2 = (unsigned char *)&rgb_backup[i].r[2];
+		temp3 = (unsigned char *)&rgb_backup[i].r[3];
+		rgb_datas[i].r[3]|=*temp0>>7;
+
+		*temp0<<=1;
+		*temp0|=*temp1>>7;
+
+		*temp1<<=1;
+		*temp1|=*temp2>>7;
+
+		*temp2<<=1;
+		*temp2|=*temp3>>7;
+
+		*temp3<<=1; //fille lowest bit
+
+		//gggggggggg
+
+		temp0 = (unsigned char *)&rgb_datas[i].g[0];
+		temp1 = (unsigned char *)&rgb_datas[i].g[1];
+		temp2 = (unsigned char *)&rgb_datas[i].g[2];
+		temp3 = (unsigned char *)&rgb_datas[i].g[3];
+		*temp0<<=1;
+		*temp0|=*temp1>>7;
+
+		*temp1<<=1;
+		*temp1|=*temp2>>7;
+
+		*temp2<<=1;
+		*temp2|=*temp3>>7;
+
+		*temp3<<=1; //fille lowest bit
+
+		temp0 = (unsigned char *)&rgb_backup[i].g[0];
+		temp1 = (unsigned char *)&rgb_backup[i].g[1];
+		temp2 = (unsigned char *)&rgb_backup[i].g[2];
+		temp3 = (unsigned char *)&rgb_backup[i].g[3];
+		rgb_datas[i].g[3]|=*temp0>>7;
+
+		*temp0<<=1;
+		*temp0|=*temp1>>7;
+
+		*temp1<<=1;
+		*temp1|=*temp2>>7;
+
+		*temp2<<=1;
+		*temp2|=*temp3>>7;
+
+		*temp3<<=1; //fille lowest bit
+		////bbbbbbbbbbb
+
+		temp0 = (unsigned char *)&rgb_datas[i].b[0];
+		temp1 = (unsigned char *)&rgb_datas[i].b[1];
+		temp2 = (unsigned char *)&rgb_datas[i].b[2];
+		temp3 = (unsigned char *)&rgb_datas[i].b[3];
+		*temp0<<=1;
+		*temp0|=*temp1>>7;
+
+		*temp1<<=1;
+		*temp1|=*temp2>>7;
+
+		*temp2<<=1;
+		*temp2|=*temp3>>7;
+
+		*temp3<<=1; //fille lowest bit
+
+		temp0 = (unsigned char *)&rgb_backup[i].b[0];
+		temp1 = (unsigned char *)&rgb_backup[i].b[1];
+		temp2 = (unsigned char *)&rgb_backup[i].b[2];
+		temp3 = (unsigned char *)&rgb_backup[i].b[3];
+		rgb_datas[i].b[3]|=*temp0>>7;
+
+		*temp0<<=1;
+		*temp0|=*temp1>>7;
+
+		*temp1<<=1;
+		*temp1|=*temp2>>7;
+
+		*temp2<<=1;
+		*temp2|=*temp3>>7;
+
+		*temp3<<=1; //fille lowest bit
+
+
+
+
+
+
+
+
+
+	}
+#endif
+
+
+
+#if 1
 	unsigned char i;
 	for (i=0;i<H;i++) {
 		fb64x1_shift_left_abit(rgb_datas[i].r, rgb_backup[i].r);
 		fb64x1_shift_left_abit(rgb_datas[i].g, rgb_backup[i].g);
 		fb64x1_shift_left_abit(rgb_datas[i].b, rgb_backup[i].b);
 	}
+#endif
 }

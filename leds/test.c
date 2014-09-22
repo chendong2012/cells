@@ -58,7 +58,7 @@ void print_by_8x16(void)
 {
 	int i=0;
 
-	printf("static struct _rgb_line rgb_datas[H] = {\n");
+	printf("const struct _rgb_quarter_line PROGMEM hz[]={/*8x16*/\n");
 	for (i=0;i<H*W/8;i+=4) {
 		printf("{0x%02x,",r_datas[i]);
 		printf("0x%02x,",g_datas[i]);
@@ -100,7 +100,7 @@ void print_datas(PPMImage *img, unsigned char *data)
 
 unsigned char bit_ofst(unsigned short pixel_index)
 {
-	return pixel_index%8;
+	return (7-(pixel_index%8));
 }
 
 unsigned char byte_ofst(unsigned short pixel_index)

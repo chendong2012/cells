@@ -34,4 +34,46 @@
 #define R_COLOR 0
 #define G_COLOR 1
 #define B_COLOR 2
+
+
+
+
+
+
+
+
+struct line123 {
+	unsigned char f0;
+	unsigned char f1;
+	unsigned char f2;
+	unsigned char f3;
+};
+
+struct _rgb_line { 
+	unsigned char r[4];
+	unsigned char g[4];
+	unsigned char b[4];
+};
+
+struct _rgb_half_line { 
+	unsigned char r[2];
+	unsigned char g[2];
+	unsigned char b[2];
+};
+
+struct _rgb_quarter_line { 
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+};
+struct pixel { 
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+};
+
+
+
+
+
 #endif
