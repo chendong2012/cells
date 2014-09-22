@@ -81,7 +81,6 @@ void print_by_8x16(void)
 		printf("{0x%02x,",r_datas[i+3]);
 		printf("0x%02x,",g_datas[i+3]);
 		printf("0x%02x,},\n",b_datas[i+3]);
-		printf("\n");
 	}
 	printf("};\n");
 }
@@ -164,6 +163,8 @@ void output_rgb_datas(PPMImage *img)
 	output_red_datas(img);
 	printf("=========================\n");
 	printbyline();
+	printf("*******************************\n");
+	print_by_8x16();
 }
 
 
