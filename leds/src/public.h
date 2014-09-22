@@ -31,4 +31,7 @@
 #define DIV_W W/8
 
 
+#define R_COLOR 0
+#define G_COLOR 1
+#define B_COLOR 2
 #endif
