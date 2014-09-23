@@ -1,17 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct {
-		unsigned char r1_bit0:1;
-		unsigned char g1_bit1:1;
-		unsigned char b1_bit2:1;
-		unsigned char x1_bit3:1;
-		unsigned char r2_bit4:1;
-		unsigned char g2_bit5:1;
-		unsigned char b2_bit6:1;
-		unsigned char x2_bit7:1;
-} rgbdata;
-
-typedef struct {
 	unsigned char red,green,blue;
 } PPMPixel;
 
@@ -26,6 +15,7 @@ typedef struct {
    P3
 # The P3 means colors are in ASCII, then 3 columns and 2 rows,
 # then 255 for max color, then RGB triplets
+# rgb数据从上到下，从左到右排放。
 3 2
 255
 255   0   0     0 255   0     0   0 255
@@ -34,18 +24,18 @@ typedef struct {
  *
  * */
 #define H	16
-#define W	32
+#define W	1024 //最大支持1024宽个像素，高为16像素
 
 static unsigned char r_datas[H*W/8];
 static unsigned char g_datas[H*W/8];
 static unsigned char b_datas[H*W/8];
 
-void printbyline(void)
+void printbyline(PPMImage *img)
 {
 	int i=0;
 
 	printf("static struct _rgb_line rgb_datas[H] = {\n");
-	for (i=0;i<H*W/8;i+=4) {
+	for (i=0;i<img->x*img->y/8;i+=4) {
 		printf("{0x%02x,0x%02x,0x%02x,0x%02x,\n",r_datas[i],r_datas[i+1],r_datas[i+2],r_datas[i+3]);
 		printf("0x%02x,0x%02x,0x%02x,0x%02x,\n",g_datas[i],g_datas[i+1],g_datas[i+2],g_datas[i+3]);
 		printf("0x%02x,0x%02x,0x%02x,0x%02x},",b_datas[i],b_datas[i+1],b_datas[i+2],b_datas[i+3]);
@@ -54,30 +44,34 @@ void printbyline(void)
 	printf("};\n");
 }
 
-void print_by_8x16(void)
+void print_by_8x16(PPMImage *img)
 {
 	int i=0;
+	unsigned long x;
+	unsigned long y;
+	x = img->x;
+	y = img->y;
 
 	printf("const struct _rgb_quarter_line PROGMEM hz[]={/*8x16*/\n");
-	for (i=0;i<H*W/8;i+=4) {
+	for (i=0;i<(x*y)/8;i+=x/8) {
 		printf("{0x%02x,",r_datas[i]);
 		printf("0x%02x,",g_datas[i]);
 		printf("0x%02x},\n",b_datas[i]);
 	}
 
-	for (i=0;i<H*W/8;i+=4) {
+	for (i=0;i<img->x*img->y/8;i+=4) {
 		printf("{0x%02x,",r_datas[i+1]);
 		printf("0x%02x,",g_datas[i+1]);
 		printf("0x%02x},\n",b_datas[i+1]);
 	}
 
-	for (i=0;i<H*W/8;i+=4) {
+	for (i=0;i<img->x*img->y/8;i+=4) {
 		printf("{0x%02x,",r_datas[i+2]);
 		printf("0x%02x,",g_datas[i+2]);
 		printf("0x%02x,},\n",b_datas[i+2]);
 	}
 
-	for (i=0;i<H*W/8;i+=4) {
+	for (i=0;i<img->x*img->y/8;i+=4) {
 		printf("{0x%02x,",r_datas[i+3]);
 		printf("0x%02x,",g_datas[i+3]);
 		printf("0x%02x,},\n",b_datas[i+3]);
@@ -117,7 +111,7 @@ void output_red_datas(PPMImage *img)
 
 	for(i=0;i<w*h;i++) {
 		dat = (img->data[i].red&0x01);
-		r_datas[byte_ofst(i)] |= (dat << bit_ofst(i));
+		r_datas[byte_ofst(i)] |= (dat<<bit_ofst(i));
 	}
 
 	printf("unsigned char rdata[%d] = {\n", w*h/8);
@@ -162,9 +156,9 @@ void output_rgb_datas(PPMImage *img)
 	output_green_datas(img);
 	output_red_datas(img);
 	printf("=========================\n");
-	printbyline();
+	printbyline(img);
 	printf("*******************************\n");
-	print_by_8x16();
+	print_by_8x16(img);
 }
 
 
@@ -191,7 +185,7 @@ static PPMImage *readPPM(const char *filename)
 	}
 
 	//check the image format
-	printf("%c%c",buff[0], buff[1]);
+	printf("%c%c",buff[0], buff[1]);/*P6 P10 and so on*/
 	printf("\n");
 	if (buff[0] != 'P' || buff[1] != '6') {
 		fprintf(stderr, "Invalid image format (must be 'P6')\n");
@@ -230,7 +224,7 @@ static PPMImage *readPPM(const char *filename)
 		fprintf(stderr, "Invalid rgb component (error loading '%s')\n", filename);
 		exit(1);
 	}
-	printf("%d", rgb_comp_color);
+	printf("%d", rgb_comp_color);//255
 	printf("\n");
 
 	//check rgb component depth
@@ -242,7 +236,7 @@ static PPMImage *readPPM(const char *filename)
 	while (fgetc(fp) != '\n');
 	//memory allocation for pixel data
 	img->data = (PPMPixel*)malloc(img->x * img->y * sizeof(PPMPixel));
-	rgbdatas = (unsigned char *)malloc((img->x * img->y)/2 + 1 );
+	rgbdatas = (unsigned char *)malloc((img->x * img->y)/2 + 1 );//why
 	if (!img) {
 		fprintf(stderr, "Unable to allocate memory\n");
 		exit(1);
@@ -320,6 +314,11 @@ void changeColorPPM(PPMImage *img)
 
 int main(){
 	PPMImage *image;
+
+	memset((void *)r_datas, 0x00, H*W/8);
+	memset((void *)g_datas, 0x00, H*W/8);
+	memset((void *)b_datas, 0x00, H*W/8);
+
 	image = readPPM("111.ppm");
 	changeColorPPM(image);
 	writePPM("can_bottom2.ppm",image);
