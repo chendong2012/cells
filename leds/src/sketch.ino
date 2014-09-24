@@ -80,11 +80,18 @@ void read_flash_to_hz_mem(unsigned char begin,unsigned char count)
 	}
 }
 static unsigned char hz_offset=0;
-static unsigned char hz_length=8; //how many 8x16
+//static unsigned char hz_length=8; //how many 8x16
+static unsigned char hz_length=HZ_LEN; //how many 8x16
 void fb_shift_init(void)
 {
 	unsigned char i;
 	unsigned char j;
+#if 0
+	read_flash_to_hz_mem(4,4);
+	fill_32x16(0, 0);
+#endif
+
+#if 1
 	hz_offset = 0;
 	if(hz_length>=8) {
 		for(j=0; j<8; j++)
@@ -93,6 +100,7 @@ void fb_shift_init(void)
 		for(j=0; j<hz_length; j++)
 			fill_8x16_from_flash(j, hz_offset++);
 	}
+#endif
 }
 
 void fb_shift_loop(void)
@@ -104,28 +112,32 @@ void fb_shift_loop(void)
 
 		update_32x16();
 		update_32x16();
+		update_32x16();
 
 		fb64x16_shift_left_abit();
 	}
-
+#if 1
 	if(hz_offset>=hz_length) {
 		hz_offset = 0;
 	}
 
 	for(j=4;j<8;j++)
 		fill_8x16_from_flash(j, hz_offset++);
+#endif
 }
 
 void setup()
 {
 	init_serial();
 	init_gpio();
-	clear_framebuffer();
+	//clear_framebuffer();
 	fb_shift_init();
 }
 
 void loop()
 {
+
+	//update_32x16();
 	fb_shift_loop();
 }
 
@@ -161,15 +173,19 @@ static void hw_shift_1bits(unsigned char r1,\
 		unsigned char b2)
 {
 
+#if 1
 	unsigned char datas=0;
 	digitalWrite(SHCP, LOW);
-	datas=|(r1>>5);
-	datas=|(g1>>4);
-	datas=|(b1>>3);
-	datas=|(r2>>2);
-	datas=|(g2>>1);
-	datas=|(b2>>0);
+	datas|=((r1&0x80)>>5);
+	datas|=((g1&0x80)>>4);
+	datas|=((b1&0x80)>>3);
+	datas|=((r2&0x80)>>2);
+	datas|=((g2&0x80)>>1);
+	datas|=((b2&0x80)>>0);
+	
 	PORTD=datas;
+
+#endif
 #if 0
 	digitalWrite(R, r1>>7);
 	digitalWrite(G, g1>>7);
@@ -260,7 +276,7 @@ static void hw_lock_data(void)
 static void output_data(void)
 {
 	digitalWrite(OE, 0);
-	delayMicroseconds(300);
+	delayMicroseconds(500);
 	digitalWrite(OE, 1);
 	//	delayMicroseconds(500);
 }
@@ -270,14 +286,17 @@ static void update_32x16(void)
 {
 	unsigned char line;
 	for(line=0; line<8; line++) {
-		memcpy(rgb.r, (const void *)rgb_datas[line].r, 4);
-		memcpy(rgb.g, (const void *)rgb_datas[line].g, 4);
-		memcpy(rgb.b, (const void *)rgb_datas[line].b, 4);
+		//memcpy(rgb.r, (const void *)rgb_datas[line].r, 4);
+		//memcpy(rgb.g, (const void *)rgb_datas[line].g, 4);
+		//memcpy(rgb.b, (const void *)rgb_datas[line].b, 4);
 
-		memcpy(rgb1.r, (const void *)rgb_datas[line+8].r, 4);
-		memcpy(rgb1.g, (const void *)rgb_datas[line+8].g, 4);
-		memcpy(rgb1.b, (const void *)rgb_datas[line+8].b, 4);
-		hw_shift_32bits(&rgb,&rgb1);
+	//	memcpy(rgb1.r, (const void *)rgb_datas[line+8].r, 4);
+	//	memcpy(rgb1.g, (const void *)rgb_datas[line+8].g, 4);
+	//	memcpy(rgb1.b, (const void *)rgb_datas[line+8].b, 4);
+
+		//hw_shift_32bits(&rgb,&rgb1);
+		hw_shift_32bits(&rgb_datas[line],&rgb_datas[line+8]);
+
 		hw_select_row(line);
 		hw_lock_data();
 		output_data();
@@ -331,11 +350,11 @@ static void clear_framebuffer(void)
 {
 	unsigned char i=0;
 	for (i=0;i<H;i++) {
-		memset(rgb_datas[i].r, 0, W/8);
-		memset(rgb_datas[i].g, 0, W/8);
+		memset(rgb_datas[i].r, 0xff, W/8);
+		memset(rgb_datas[i].g, 0xff, W/8);
 		memset(rgb_datas[i].b, 0, W/8);
 
-		memset(rgb_backup[i].r, 0, W/8);
+		memset(rgb_backup[i].r,0, W/8);
 		memset(rgb_backup[i].g, 0, W/8);
 		memset(rgb_backup[i].b, 0, W/8);
 	}
@@ -418,8 +437,12 @@ static void fill_8x16_from_flash(unsigned char offset_8x16_fb, unsigned char off
 {
 	unsigned char i,j;
 	struct _rgb_line *line;
-	unsigned char offset = offset_flash*16*3;
+	unsigned char offset = offset_flash*16;
+	/*
+		0 1x48  2x48
 
+
+	*/
 	if (offset_8x16_fb < 4) {
 		line = rgb_datas;
 	} else {

@@ -233,6 +233,7 @@ static PPMImage *readPPM(const char *filename)
 	printf("/*w=%d h=%d*/", img->x, img->y);
 	printf("\n");
 
+	printf("#define HZ_LEN %d\n", img->x/8);
 	//read rgb component
 	if (fscanf(fp, "%d", &rgb_comp_color) != 1) {
 		fprintf(stderr, "Invalid rgb component (error loading '%s')\n", filename);
@@ -246,7 +247,6 @@ static PPMImage *readPPM(const char *filename)
 		fprintf(stderr, "'%s' does not have 8-bits components\n", filename);
 		exit(1);
 	}
-
 	while (fgetc(fp) != '\n');
 	//memory allocation for pixel data
 	img->data = (PPMPixel*)malloc(img->x * img->y * sizeof(PPMPixel));

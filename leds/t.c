@@ -61,7 +61,7 @@ int main(int argc, char **argv)
         int i,j;
         for(i = 0; i < strlen(outbuf); i += 2)
         {
-                display (outbuf+i, 2); //使用HZK16字库显示GB2312编码的中文点阵
+                display(outbuf+i, 2); //使用HZK16字库显示GB2312编码的中文点阵
         }
  
         return EXIT_SUCCESS;
@@ -137,7 +137,7 @@ int display(char *incode, int len)
         fseek(HZK,offset,SEEK_SET);
         fread(HZ_16x16,32,1,HZK);//读取汉字的16*16点阵字模
         fclose(HZK);
-	disp_mode0();
+//	disp_mode0();
 #ifdef DISP_MODE1
 	disp_mode1();
 #endif
@@ -168,7 +168,7 @@ void hz_to_rgb(unsigned char fg, unsigned bg)
 		}
 	}
 
-	print_result();
+//	print_result();
 	print_result1();
 }
 
@@ -187,7 +187,7 @@ void print_result(void)
 void print_result1(void)
 {
 	unsigned char i,j;
-        printf("static struct _rgb_half_line rgb_datas[H] = {\n");
+     //   printf("static struct _rgb_half_line rgb_datas[H] = {\n");
 	for(i=0;i<16;i++) {
 		printf("{0x%02x,0x%02x,0x%02x},\n",_r[i]>>8, _g[i]>>8, _b[i]>>8);
 	}
@@ -197,7 +197,7 @@ void print_result1(void)
 	for(i=0;i<16;i++) {
 		printf("{0x%02x,0x%02x,0x%02x},\n", _r[i]&0x00ff, _g[i]&0x00ff, _b[i]&0x00ff);
 	}
-        printf("};\n");
+      //  printf("};\n");
 }
 
 void set_fg(unsigned char line, unsigned char type, unsigned short focus)

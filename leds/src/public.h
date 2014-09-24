@@ -28,7 +28,7 @@
 #define B2 7
 #endif
 
-#define SHCP 7
+#define SHCP 13
 #define OE 8
 #define	LOCK 9
 
