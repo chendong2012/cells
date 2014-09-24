@@ -8,7 +8,7 @@
 #endif
 #include <avr/pgmspace.h>
 #include "pins_arduino.h"
-
+#if 0
 #define R 4
 #define G 5
 #define B 6
@@ -16,7 +16,17 @@
 #define R2 13
 #define G2 14
 #define B2 15
+#endif
 
+#if 1
+#define R 2
+#define G 3
+#define B 4
+
+#define R2 5
+#define G2 6
+#define B2 7
+#endif
 
 #define SHCP 7
 #define OE 8
@@ -55,13 +65,20 @@ struct _rgb_line {
 	unsigned char b[4];
 };
 
+struct _rgb_double_line { 
+	unsigned char r[8];
+	unsigned char g[8];
+	unsigned char b[8];
+};
+
+
 struct _rgb_half_line { 
 	unsigned char r[2];
 	unsigned char g[2];
 	unsigned char b[2];
 };
 
-struct _rgb_quarter_line { 
+struct _rgb_8points { 
 	unsigned char r;
 	unsigned char g;
 	unsigned char b;

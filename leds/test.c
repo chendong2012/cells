@@ -11,6 +11,8 @@ typedef struct {
 
 #define CREATOR "RPFELGUEIRAS"
 #define RGB_COMPONENT_COLOR 255
+
+//#define PRINT_RAW_DATAS
 /*
    P3
 # The P3 means colors are in ASCII, then 3 columns and 2 rows,
@@ -44,37 +46,44 @@ void printbyline(PPMImage *img)
 	printf("};\n");
 }
 
+unsigned long count_8pixels_a_linecolor(unsigned long x)
+{
+	return x/8;
+}
+
+unsigned long total_bytes_a_color(unsigned long x, unsigned long y)
+{
+	return (x*y)/8;
+}
+
+/*from left to right*/
 void print_by_8x16(PPMImage *img)
 {
-	int i=0;
 	unsigned long x;
 	unsigned long y;
+	unsigned long column_bytes_offset;
+	unsigned long a_line_bytes;
+
+	unsigned long total_bytes_acolor;
+	unsigned long lines_begin_bytes;
+
+	int line=0;
 	x = img->x;
 	y = img->y;
+	a_line_bytes = count_8pixels_a_linecolor(x);
+	total_bytes_acolor = total_bytes_a_color(x,y);
 
-	printf("const struct _rgb_quarter_line PROGMEM hz[]={/*8x16*/\n");
-	for (i=0;i<(x*y)/8;i+=x/8) {
-		printf("{0x%02x,",r_datas[i]);
-		printf("0x%02x,",g_datas[i]);
-		printf("0x%02x},\n",b_datas[i]);
-	}
+	printf("const struct _rgb_8points PROGMEM hz[]={/*8x16*/\n");
 
-	for (i=0;i<img->x*img->y/8;i+=4) {
-		printf("{0x%02x,",r_datas[i+1]);
-		printf("0x%02x,",g_datas[i+1]);
-		printf("0x%02x},\n",b_datas[i+1]);
-	}
+	for(column_bytes_offset = 0; column_bytes_offset < a_line_bytes; column_bytes_offset++) {
 
-	for (i=0;i<img->x*img->y/8;i+=4) {
-		printf("{0x%02x,",r_datas[i+2]);
-		printf("0x%02x,",g_datas[i+2]);
-		printf("0x%02x,},\n",b_datas[i+2]);
-	}
+		printf("/*========the number:8x16:%d=========*/\n", column_bytes_offset);
+		for (lines_begin_bytes=0; lines_begin_bytes<total_bytes_acolor; lines_begin_bytes+=a_line_bytes) {
 
-	for (i=0;i<img->x*img->y/8;i+=4) {
-		printf("{0x%02x,",r_datas[i+3]);
-		printf("0x%02x,",g_datas[i+3]);
-		printf("0x%02x,},\n",b_datas[i+3]);
+			printf("{0x%02x,",r_datas[lines_begin_bytes + column_bytes_offset]);
+			printf("0x%02x,",g_datas[lines_begin_bytes + column_bytes_offset]);
+			printf("0x%02x},\n",b_datas[lines_begin_bytes + column_bytes_offset]);
+		}
 	}
 	printf("};\n");
 }
@@ -114,8 +123,10 @@ void output_red_datas(PPMImage *img)
 		r_datas[byte_ofst(i)] |= (dat<<bit_ofst(i));
 	}
 
+#ifdef PRINT_RAW_DATAS
 	printf("unsigned char rdata[%d] = {\n", w*h/8);
 	print_datas(img, r_datas);
+#endif
 }
 
 void output_green_datas(PPMImage *img)
@@ -130,8 +141,10 @@ void output_green_datas(PPMImage *img)
 		g_datas[byte_ofst(i)] |= (dat << bit_ofst(i));
 	}
 
+#ifdef PRINT_RAW_DATAS
 	printf("unsigned char gdata[%d] = {\n", w*h/8);
 	print_datas(img, g_datas);
+#endif
 }
 
 void output_blue_datas(PPMImage *img)
@@ -145,9 +158,10 @@ void output_blue_datas(PPMImage *img)
 		dat = (img->data[i].blue&0x01);
 		b_datas[byte_ofst(i)] |= (dat << bit_ofst(i));
 	}
-
+#ifdef PRINT_RAW_DATAS
 	printf("unsigned char bdata[%d] = {\n", w*h/8);
 	print_datas(img, b_datas);
+#endif
 }
 
 void output_rgb_datas(PPMImage *img)
@@ -155,9 +169,9 @@ void output_rgb_datas(PPMImage *img)
 	output_blue_datas(img);
 	output_green_datas(img);
 	output_red_datas(img);
-	printf("=========================\n");
-	printbyline(img);
-	printf("*******************************\n");
+//	printf("=========================\n");
+//	printbyline(img);
+	printf("/**********print_by_8x16*************/\n");
 	print_by_8x16(img);
 }
 
@@ -185,7 +199,7 @@ static PPMImage *readPPM(const char *filename)
 	}
 
 	//check the image format
-	printf("%c%c",buff[0], buff[1]);/*P6 P10 and so on*/
+	printf("/*%c%c*/",buff[0], buff[1]);/*P6 P10 and so on*/
 	printf("\n");
 	if (buff[0] != 'P' || buff[1] != '6') {
 		fprintf(stderr, "Invalid image format (must be 'P6')\n");
@@ -201,14 +215,14 @@ static PPMImage *readPPM(const char *filename)
 
 	//check for comments
 	c = getc(fp);
-	printf("%c", c);
+	printf("/*%c", c);
 	while (c == '#') {
 		while ((c = getc(fp)) != '\n') {
 			printf("%c", c);
 		}
 		c = getc(fp);
 	}
-	printf("\n");
+	printf("*/\n");
 
 	ungetc(c, fp);
 	//read image size information
@@ -216,7 +230,7 @@ static PPMImage *readPPM(const char *filename)
 		fprintf(stderr, "Invalid image size (error loading '%s')\n", filename);
 		exit(1);
 	}
-	printf("%d %d", img->x, img->y);
+	printf("/*w=%d h=%d*/", img->x, img->y);
 	printf("\n");
 
 	//read rgb component
@@ -224,7 +238,7 @@ static PPMImage *readPPM(const char *filename)
 		fprintf(stderr, "Invalid rgb component (error loading '%s')\n", filename);
 		exit(1);
 	}
-	printf("%d", rgb_comp_color);//255
+	printf("/*color=%d*/", rgb_comp_color);//255
 	printf("\n");
 
 	//check rgb component depth
@@ -246,7 +260,24 @@ static PPMImage *readPPM(const char *filename)
 		fprintf(stderr, "Error loading image '%s'\n", filename);
 		exit(1);
 	}
-
+	/* 8x16     8x16     8x16     8x16     8x16     8x16     8x16*/
+	/*12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 *12345678 12345678 12345678 12345678 12345678 12345678 12345678
+	 * */
 	output_rgb_datas(img);
 #if 0
 	for(i=0; i < img->y;i++) { //一共有多少行
@@ -312,16 +343,21 @@ void changeColorPPM(PPMImage *img)
 	}
 }
 
-int main(){
+int main(int argc, char **argv){
 	PPMImage *image;
 
 	memset((void *)r_datas, 0x00, H*W/8);
 	memset((void *)g_datas, 0x00, H*W/8);
 	memset((void *)b_datas, 0x00, H*W/8);
 
-	image = readPPM("111.ppm");
-	changeColorPPM(image);
-	writePPM("can_bottom2.ppm",image);
+	if (argc != 2) {
+		printf("input file name!!\n");
+		return 0;
+	}
+
+	image = readPPM(argv[1]);
+//	changeColorPPM(image);
+//	writePPM("can_bottom2.ppm",image);
 //	printf("Press any key...");
 //	getchar();
 }
