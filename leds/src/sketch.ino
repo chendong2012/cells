@@ -1,5 +1,7 @@
 #include "public.h"
 #include "a.h"
+#include <CallMe.h>
+#include <Task.h>
 
 /*有三大块显存：
  * 1\rgb_datas 32x16
@@ -56,6 +58,17 @@ typedef struct {
 	byte mode : 1;
 	byte state : 1;
 } DigitalPin;
+
+
+static boolean display(void)
+{
+	Serial.println("d");
+	fb_shift_loop();
+}
+
+CallMe disp_update(200, display);
+
+
 
 void init_serial(void)
 {
@@ -132,15 +145,16 @@ void setup()
 	init_gpio();
 	//clear_framebuffer();
 	fb_shift_init();
+	disp_update.start();
 }
-
+#if 0
 void loop()
 {
 
 	//update_32x16();
 	fb_shift_loop();
 }
-
+#endif
 static void init_gpio(void)
 {
 #if 0
