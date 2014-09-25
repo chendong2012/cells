@@ -59,15 +59,34 @@ typedef struct {
 	byte state : 1;
 } DigitalPin;
 
-
+static unsigned char flash_update=0;
+static unsigned char disp_speed=0;
+static unsigned char flash_offset=0;
+static unsigned char flash_length=HZ_LEN; //how many 8x16
 static boolean display(void)
 {
-	Serial.println("d");
-	fb_shift_loop();
+	unsigned char j;	
+	update_32x16();
+	speed++;
+	if(disp_speed%3==0) {
+		disp_speed=0;
+	} else {
+		return 1;
+	}
+
+	fb64x16_shift_left_abit();
+	update++;
+	if (update%32==0) {
+		update = 0;
+		if(flash_offset>=flash_length) {
+			flash_offset = 0;
+		}
+		for(j=4;j<8;j++)
+			fill_8x16_from_flash(j, flash_offset++);
+	}
 }
 
 CallMe disp_update(200, display);
-
 
 
 void init_serial(void)
@@ -92,9 +111,6 @@ void read_flash_to_hz_mem(unsigned char begin,unsigned char count)
 		hz_mem[i].b = pgm_read_byte(&hz[i+offset].b);
 	}
 }
-static unsigned char hz_offset=0;
-//static unsigned char hz_length=8; //how many 8x16
-static unsigned char hz_length=HZ_LEN; //how many 8x16
 void fb_shift_init(void)
 {
 	unsigned char i;
@@ -105,13 +121,13 @@ void fb_shift_init(void)
 #endif
 
 #if 1
-	hz_offset = 0;
-	if(hz_length>=8) {
+	flash_offset = 0;
+	if(flash_length>=8) {
 		for(j=0; j<8; j++)
-			fill_8x16_from_flash(j, hz_offset++);
+			fill_8x16_from_flash(j, flash_offset++);
 	} else {
-		for(j=0; j<hz_length; j++)
-			fill_8x16_from_flash(j, hz_offset++);
+		for(j=0; j<flash_length; j++)
+			fill_8x16_from_flash(j, flash_offset++);
 	}
 #endif
 }
@@ -130,12 +146,12 @@ void fb_shift_loop(void)
 		fb64x16_shift_left_abit();
 	}
 #if 1
-	if(hz_offset>=hz_length) {
-		hz_offset = 0;
+	if(flash_offset>=flash_length) {
+		flash_offset = 0;
 	}
 
 	for(j=4;j<8;j++)
-		fill_8x16_from_flash(j, hz_offset++);
+		fill_8x16_from_flash(j, flash_offset++);
 #endif
 }
 

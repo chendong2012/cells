@@ -8,6 +8,16 @@
 #define DISP_MODE1
 #define DISP_MODE2
  
+
+
+struct _rgb_8points {
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+};
+
+struct _rgb_8points hz_8points[32];
+
 static unsigned short _r[16];
 static unsigned short _g[16];
 static unsigned short _b[16];
@@ -70,6 +80,7 @@ int main(int argc, char **argv)
 void disp_mode0(void)
 {
 	unsigned char i,j,k;
+	/*打出第一个8x16*/
 		printf("{");
 	for(i = 0; i < 15; i++) {
 		printf("0x%02x,",HZ_16x16[i][0]);
@@ -77,11 +88,12 @@ void disp_mode0(void)
 	printf("0x%02x",HZ_16x16[i][0]);
 	printf("},\n");
 
+	/*打出第二个8x16*/
 	printf("{");
 	for(i = 0; i < 15; i++) {
-		printf("0x%02x,",HZ_16x16[i][0]);
+		printf("0x%02x,",HZ_16x16[i][1]);
 	}
-	printf("0x%02x",HZ_16x16[i][0]);
+	printf("0x%02x",HZ_16x16[i][1]);
 	printf("},\n");
 }
 
@@ -156,7 +168,7 @@ void hz_to_rgb(unsigned char fg, unsigned bg)
 	set_bg(bg);
 	for(i=0;i<16;i++) {
 		temp=0;
-		temp = HZ_16x16[i][0];
+		temp = HZ_16x16[i][0]; //([0]=0x12, [1]=0x34) ==> 0x1234 
 		temp<<=8;
 		
 		temp1 = (unsigned short)HZ_16x16[i][1]; 
@@ -187,13 +199,13 @@ void print_result(void)
 void print_result1(void)
 {
 	unsigned char i,j;
+	/*第一个8x16*/
      //   printf("static struct _rgb_half_line rgb_datas[H] = {\n");
 	for(i=0;i<16;i++) {
 		printf("{0x%02x,0x%02x,0x%02x},\n",_r[i]>>8, _g[i]>>8, _b[i]>>8);
 	}
 
-
-
+	/*第二个8x16*/
 	for(i=0;i<16;i++) {
 		printf("{0x%02x,0x%02x,0x%02x},\n", _r[i]&0x00ff, _g[i]&0x00ff, _b[i]&0x00ff);
 	}
@@ -207,6 +219,16 @@ void set_fg(unsigned char line, unsigned char type, unsigned short focus)
 		_r[line]&=~(1<<focus);
 		_g[line]&=~(1<<focus);
 		_b[line]&=~(1<<focus);
+		if(focus < 8) {
+			hz_8points[line].r=0x00;
+			hz_8points[line].g=0x00;
+			hz_8points[line].b=0x00;
+		}
+		if(focus >=8) {
+			hz_8points[line].r=0x00; hz_8points[line].g=0x00; hz_8points[line].b=0x00;
+		}
+	
+
 		break;
 	case 1://001
 		_r[line]&=~(1<<focus);
@@ -252,27 +274,51 @@ void set_bg(unsigned char type)
 		switch (type) {
 		case 0://000
 			_r[line]=0x0000; _g[line]=0x0000; _b[line]=0x0000;
+
+			hz_8points[line].r=0x00; hz_8points[line].g=0x00; hz_8points[line].b=0x00;
+			hz_8points[line+16].r=0x00; hz_8points[line+16].g=0x00; hz_8points[line+16].b=0x00;
 			break;
 		case 1://001
 			_r[line]=0x0000; _g[line]=0x0000; _b[line]=0xffff;
+
+			hz_8points[line].r=0x00; hz_8points[line].g=0x00; hz_8points[line].b=0xff;
+			hz_8points[line+16].r=0x00; hz_8points[line+16].g=0x00; hz_8points[line+16].b=0xff;
 			break;
 		case 2://010
 			_r[line]=0x0000; _g[line]=0xffff; _b[line]=0x0000;
+
+			hz_8points[line].r=0x00; hz_8points[line].g=0xff; hz_8points[line].b=0x00;
+			hz_8points[line+16].r=0x00; hz_8points[line+16].g=0xff; hz_8points[line+16].b=0x00;
 			break;
 		case 3://011
 			_r[line]=0x0000; _g[line]=0xffff; _b[line]=0xffff;
+
+			hz_8points[line].r=0x00; hz_8points[line].g=0xff; hz_8points[line].b=0xff;
+			hz_8points[line+16].r=0x00; hz_8points[line+16].g=0xff; hz_8points[line+16].b=0xff;
 			break;
 		case 4://100
 			_r[line]=0xffff; _g[line]=0x0000; _b[line]=0x0000;
+
+			hz_8points[line].r=0xff; hz_8points[line].g=0x00; hz_8points[line].b=0x00;
+			hz_8points[line+16].r=0xff; hz_8points[line+16].g=0x00; hz_8points[line+16].b=0x00;
 			break;
 		case 5://101
 			_r[line]=0xffff; _g[line]=0x0000; _b[line]=0xffff;
+
+			hz_8points[line].r=0xff; hz_8points[line].g=0x00; hz_8points[line].b=0xff;
+			hz_8points[line+16].r=0xff; hz_8points[line+16].g=0x00; hz_8points[line+16].b=0xff;
 			break;
 		case 6://110
 			_r[line]=0xffff; _g[line]=0xffff; _b[line]=0x0000;
+
+			hz_8points[line].r=0xff; hz_8points[line].g=0xff; hz_8points[line].b=0x00;
+			hz_8points[line+16].r=0xff; hz_8points[line+16].g=0xff; hz_8points[line+16].b=0x00;
 			break;
 		case 7://111
 			_r[line]=0xffff; _g[line]=0xffff; _b[line]=0xffff;
+
+			hz_8points[line].r=0xff; hz_8points[line].g=0xff; hz_8points[line].b=0xff;
+			hz_8points[line+16].r=0xff; hz_8points[line+16].g=0xff; hz_8points[line+16].b=0xff;
 			break;
 		default:
 			break;
