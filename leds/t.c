@@ -186,6 +186,7 @@ void hz_div_8x16_array()
 {
 	unsigned char i;
 	for(i=0;i<16;i++) {
+		printf("{0x%02x, 0x%02x},\n", HZ_16x16[i][0], HZ_16x16[i][1]);
 		hz_left_8x16[i] = HZ_16x16[i][0];
 		hz_right_8x16[i] = HZ_16x16[i][1];
 	}
