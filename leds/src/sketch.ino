@@ -3,6 +3,29 @@
 #include <CallMe.h>
 #include <Task.h>
 
+static unsigned char hz_left_8x16[16];
+static unsigned char hz_right_8x16[16];
+struct _rgb_8points hz_8points[32];
+static unsigned char HZ_16x16[16][2] = {
+{0x11, 0x00},
+{0x11, 0x00},
+{0x11, 0x00},
+{0x23, 0xfc},
+{0x22, 0x04},
+{0x64, 0x08},
+{0xa8, 0x40},
+{0x20, 0x40},
+{0x21, 0x50},
+{0x21, 0x48},
+{0x22, 0x4c},
+{0x24, 0x44},
+{0x20, 0x40},
+{0x20, 0x40},
+{0x21, 0x40},
+{0x20, 0x80},
+};
+
+
 
 void set_rgb_8points_value(struct _rgb_8points *rgb8points, unsigned char r, unsigned char g, unsigned b);
 void set_bg_8points(struct _rgb_8points *flash_addr, unsigned char bg);
@@ -10,6 +33,7 @@ void set_fg_8points(struct _rgb_8points *flash_addr, unsigned char fg, unsigned 
 void hzk_map_array(unsigned char fg_l, unsigned char bg_l, unsigned char fg_r, unsigned char bg_r);
 void hz_div_8x16_array(void);
 void hz_to_rgb_8x16(unsigned char *datas_8x16, struct _rgb_8points *flash_addr, unsigned char fg, unsigned bg);
+static void fill_8x16_from_mem(unsigned char offset_8x16_fb, unsigned char offset_mem);
 
 
 /*有三大块显存：
@@ -72,8 +96,20 @@ static unsigned char flash_update=0;
 static unsigned char disp_speed=0;
 static unsigned char flash_offset=0;
 static unsigned char flash_length=HZ_LEN; //how many 8x16
+unsigned char i=1;
+unsigned char change_color=1;
 static boolean display(void)
 {
+	update_32x16();
+	if(change_color++%80==0) {
+		hzk_map_array(i, 7, i, 7);
+		fill_8x16_from_mem(0,0);
+		fill_8x16_from_mem(1,1);
+		if(change_color>30) change_color=1;
+	}
+	i++;
+	if(i>7) i=1;
+#if 0
 	unsigned char j;	
 	update_32x16();
 	disp_speed++;
@@ -93,9 +129,10 @@ static boolean display(void)
 		for(j=4;j<8;j++)
 			fill_8x16_from_flash(j, flash_offset++);
 	}
+#endif
 }
 
-CallMe disp_update(200, display);
+CallMe disp_update(2, display);
 
 
 void init_serial(void)
@@ -169,8 +206,12 @@ void setup()
 	init_serial();
 	init_gpio();
 	//clear_framebuffer();
-	fb_shift_init();
+//	fb_shift_init();
 	disp_update.start();
+
+	hzk_map_array(5, 0, 5, 0);
+	fill_8x16_from_mem(0,0);
+	fill_8x16_from_mem(1,1);
 }
 #if 0
 void loop()
@@ -497,6 +538,35 @@ static void fill_8x16_from_flash(unsigned char offset_8x16_fb, unsigned char off
 	}
 }
 
+/*
+ *offset_8x16_fb:0\1\2\3\4\5\6\7
+ *offset_flash  :0\1\2\3\4\5\6\7\8\9\10\11\12\13\14\15....
+ * */
+static void fill_8x16_from_mem(unsigned char offset_8x16_fb, unsigned char offset_mem)
+{
+	unsigned char i,j;
+	struct _rgb_line *line;
+	unsigned char offset = offset_mem*16;
+	/*
+		0 1x48  2x48
+
+
+	*/
+	if (offset_8x16_fb < 4) {
+		line = rgb_datas;
+	} else {
+		line = rgb_backup;
+		offset_8x16_fb -= 4;
+	}
+	/*i表示第几行*/
+	for(i=0; i<16; i++) {
+		/*j表示第几个８列*/
+		line[i].r[offset_8x16_fb] = hz_8points[i+offset].r;
+		line[i].g[offset_8x16_fb] = hz_8points[i+offset].g;
+		line[i].b[offset_8x16_fb] = hz_8points[i+offset].b;
+	}
+}
+
 void fb64x1_shift_left_abit(unsigned char *l, unsigned char *l2)
 {
 
@@ -707,27 +777,6 @@ static void fb64x16_shift_left_abit(void)
 #endif
 }
 //////////////////////////////////=========//////////////
-static unsigned char hz_left_8x16[16];
-struct _rgb_8points hz_8points[32];
-static unsigned char HZ_16x16[16][2] = {
-{0x11, 0x00},
-{0x11, 0x00},
-{0x11, 0x00},
-{0x23, 0xfc},
-{0x22, 0x04},
-{0x64, 0x08},
-{0xa8, 0x40},
-{0x20, 0x40},
-{0x21, 0x50},
-{0x21, 0x48},
-{0x22, 0x4c},
-{0x24, 0x44},
-{0x20, 0x40},
-{0x20, 0x40},
-{0x21, 0x40},
-{0x20, 0x80},
-};
-
 void hz_div_8x16_array(void)
 {
 	unsigned char i;
