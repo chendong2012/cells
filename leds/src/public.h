@@ -89,8 +89,4 @@ struct pixel {
 	unsigned char b;
 };
 
-
-
-
-
 #endif

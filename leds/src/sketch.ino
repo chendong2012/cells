@@ -3,6 +3,15 @@
 #include <CallMe.h>
 #include <Task.h>
 
+
+void set_rgb_8points_value(struct _rgb_8points *rgb8points, unsigned char r, unsigned char g, unsigned b);
+void set_bg_8points(struct _rgb_8points *flash_addr, unsigned char bg);
+void set_fg_8points(struct _rgb_8points *flash_addr, unsigned char fg, unsigned short focus);
+void hzk_map_array(unsigned char fg_l, unsigned char bg_l, unsigned char fg_r, unsigned char bg_r);
+void hz_div_8x16_array(void);
+void hz_to_rgb_8x16(unsigned char *datas_8x16, struct _rgb_8points *flash_addr, unsigned char fg, unsigned bg);
+
+
 /*有三大块显存：
  * 1\rgb_datas 32x16
  * 2\rgb_backup 32x16
@@ -67,7 +76,7 @@ static boolean display(void)
 {
 	unsigned char j;	
 	update_32x16();
-	speed++;
+	disp_speed++;
 	if(disp_speed%3==0) {
 		disp_speed=0;
 	} else {
@@ -75,9 +84,9 @@ static boolean display(void)
 	}
 
 	fb64x16_shift_left_abit();
-	update++;
-	if (update%32==0) {
-		update = 0;
+	flash_update++;
+	if (flash_update%32==0) {
+		flash_update = 0;
 		if(flash_offset>=flash_length) {
 			flash_offset = 0;
 		}
@@ -696,4 +705,131 @@ static void fb64x16_shift_left_abit(void)
 		fb64x1_shift_left_abit(rgb_datas[i].b, rgb_backup[i].b);
 	}
 #endif
+}
+//////////////////////////////////=========//////////////
+static unsigned char hz_left_8x16[16];
+static unsigned char hz_right_8x16[16];
+static unsigned char HZ_16x16[16][2];
+struct _rgb_8points hz_8points[32];
+
+void hz_div_8x16_array(void)
+{
+	unsigned char i;
+	for(i=0;i<16;i++) {
+		hz_left_8x16[i] = HZ_16x16[i][0];
+		hz_right_8x16[i] = HZ_16x16[i][1];
+	}
+}
+
+void hz_to_rgb_8x16(unsigned char *datas_8x16, struct _rgb_8points *flash_addr, unsigned char fg, unsigned bg)
+{
+	unsigned char i,j;
+	unsigned char temp=0;
+	for(i=0;i<16;i++) {
+		set_bg_8points(&flash_addr[i], bg);
+	}
+
+	for(i=0;i<16;i++) {
+		temp=0;
+		temp = datas_8x16[i];
+		for(j=0;j<8;j++) {
+			if(((temp<<j)&0x80)==0x80)
+				set_fg_8points(&flash_addr[i], fg, (7-j));
+		}
+	}
+}
+
+void hzk_map_array(unsigned char fg_l, unsigned char bg_l, unsigned char fg_r, unsigned char bg_r)
+{
+	hz_div_8x16_array();
+	hz_to_rgb_8x16(hz_left_8x16, &hz_8points[0], fg_l, bg_l);
+	hz_to_rgb_8x16(hz_right_8x16, &hz_8points[16], fg_r, bg_r);
+}
+
+
+
+void set_bg_8points(struct _rgb_8points *flash_addr, unsigned char bg)
+{
+		switch (bg) {
+		case 0://000
+			set_rgb_8points_value(flash_addr, 0x00, 0x00, 0x00);
+			break;
+		case 1://001
+			set_rgb_8points_value(flash_addr, 0x00, 0x00, 0xff);
+			break;
+		case 2://010
+			set_rgb_8points_value(flash_addr, 0x00, 0xff, 0x00);
+			break;
+		case 3://011
+			set_rgb_8points_value(flash_addr, 0x00, 0xff, 0xff);
+			break;
+		case 4://100
+			set_rgb_8points_value(flash_addr, 0xff, 0x00, 0x00);
+			break;
+		case 5://101
+			set_rgb_8points_value(flash_addr, 0xff, 0x00, 0xff);
+			break;
+		case 6://110
+			set_rgb_8points_value(flash_addr, 0xff, 0xff, 0x00);
+			break;
+		case 7://111
+			set_rgb_8points_value(flash_addr, 0xff, 0xff, 0xff);
+			break;
+		default:
+			break;
+		}
+}
+
+void set_fg_8points(struct _rgb_8points *flash_addr, unsigned char fg, unsigned short focus)
+{
+	switch (fg) {
+	case 0://000
+		flash_addr->r&=~(1<<focus);
+		flash_addr->g&=~(1<<focus);
+		flash_addr->b&=~(1<<focus);
+		break;
+	case 1://001
+
+		flash_addr->r&=~(1<<focus);
+		flash_addr->g&=~(1<<focus);
+		flash_addr->b|=(1<<focus);
+		break;
+	case 2://010
+		flash_addr->r&=~(1<<focus);
+		flash_addr->g|=(1<<focus);
+		flash_addr->b&=~(1<<focus);
+		break;
+	case 3://011
+		flash_addr->r&=~(1<<focus);
+		flash_addr->g|=(1<<focus);
+		flash_addr->b|=(1<<focus);
+		break;
+	case 4://100
+		flash_addr->r|=(1<<focus);
+		flash_addr->g&=~(1<<focus);
+		flash_addr->b&=~(1<<focus);
+		break;
+	case 5://101
+		flash_addr->r|=(1<<focus);
+		flash_addr->g&=~(1<<focus);
+		flash_addr->b|=(1<<focus);
+		break;
+	case 6://110
+		flash_addr->r|=(1<<focus);
+		flash_addr->g|=(1<<focus);
+		flash_addr->b&=~(1<<focus);
+		break;
+	case 7://111
+		flash_addr->r|=(1<<focus);
+		flash_addr->g|=(1<<focus);
+		flash_addr->b|=(1<<focus);
+		break;
+	}
+}
+
+void set_rgb_8points_value(struct _rgb_8points *rgb8points, unsigned char r, unsigned char g, unsigned b)
+{
+	rgb8points->r=r;
+	rgb8points->g=g;
+	rgb8points->b=b;
 }
