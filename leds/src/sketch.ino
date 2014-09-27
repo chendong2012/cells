@@ -4,9 +4,12 @@
 #include <Task.h>
 
 static unsigned char hz_left_8x16[16];
+static unsigned char hz_8x16[16];
 static unsigned char hz_right_8x16[16];
 struct _rgb_8points hz_8points[32];
-static unsigned char HZ_16x16[16][2] = {
+/*发送左右一行，左右一行。。。*/
+#if 0
+static unsigned char HZ_16x16[16*HZ_COUNT][2] = {
 {0x11, 0x00},
 {0x11, 0x00},
 {0x11, 0x00},
@@ -24,6 +27,7 @@ static unsigned char HZ_16x16[16][2] = {
 {0x21, 0x40},
 {0x20, 0x80},
 };
+#endif
 
 
 
@@ -31,7 +35,7 @@ void set_rgb_8points_value(struct _rgb_8points *rgb8points, unsigned char r, uns
 void set_bg_8points(struct _rgb_8points *flash_addr, unsigned char bg);
 void set_fg_8points(struct _rgb_8points *flash_addr, unsigned char fg, unsigned short focus);
 void hzk_map_array(unsigned char fg_l, unsigned char bg_l, unsigned char fg_r, unsigned char bg_r);
-void hz_div_8x16_array(void);
+void hz_div_8x16_array(unsigned char hz_offset, unsigned char from);
 void hz_to_rgb_8x16(unsigned char *datas_8x16, struct _rgb_8points *flash_addr, unsigned char fg, unsigned bg);
 static void fill_8x16_from_mem(unsigned char offset_8x16_fb, unsigned char offset_mem);
 
@@ -55,7 +59,6 @@ static void fill_8x16_from_flash(unsigned char offset_8x16_fb, unsigned char off
 static void fb64x16_shift_left_abit(void);
 inline void fb64x1_shift_left_abit(unsigned char *l, unsigned char *l2);
 
-void read_flash_to_hz_mem(unsigned char begin,unsigned char count);
 void fb_shift_init(void);
 void fb_shift_loop(void);
 
@@ -94,22 +97,52 @@ typedef struct {
 
 static unsigned char flash_update=0;
 static unsigned char disp_speed=0;
-static unsigned char flash_offset=0;
+static unsigned char flash_offset=0; //8x16 index from 0,1,2,3,...
 static unsigned char flash_length=HZ_LEN; //how many 8x16
 unsigned char i=1;
 unsigned char change_color=1;
+
+static boolean display_hz_rawdata_shift(void)
+{
+	unsigned char j;	
+	update_32x16();
+	disp_speed++;
+	if(disp_speed%3==0) {
+		disp_speed=0;
+	} else {
+		return 1;
+	}
+
+	fb64x16_shift_left_abit();
+	flash_update++;
+	if (flash_update%32==0) {
+		flash_update = 0;
+		if(flash_offset>=flash_length) {
+			flash_offset = 0;
+		}
+
+/*完成把一个中文字装入fb*/
+		hz_div_8x16_array(flash_offset/2,0);
+		hz_to_rgb_8x16(hz_left_8x16, &hz_8points[0], 4, 0);
+		hz_to_rgb_8x16(hz_right_8x16, &hz_8points[16], 4, 0);
+		fill_8x16_from_mem(4,flash_offset++);
+		fill_8x16_from_mem(5,flash_offset++);
+
+/*完成把一个中文字装入fb*/
+		hz_div_8x16_array(flash_offset/2,0);
+		hz_to_rgb_8x16(hz_left_8x16, &hz_8points[0], 4, 0);
+		hz_to_rgb_8x16(hz_right_8x16, &hz_8points[16], 4, 0);
+		fill_8x16_from_mem(6,flash_offset++);
+		fill_8x16_from_mem(7,flash_offset++);
+	}
+}
+
+
+
+
+
 static boolean display(void)
 {
-	update_32x16();
-	if(change_color++%80==0) {
-		hzk_map_array(i, 7, i, 7);
-		fill_8x16_from_mem(0,0);
-		fill_8x16_from_mem(1,1);
-		if(change_color>30) change_color=1;
-	}
-	i++;
-	if(i>7) i=1;
-#if 0
 	unsigned char j;	
 	update_32x16();
 	disp_speed++;
@@ -129,7 +162,6 @@ static boolean display(void)
 		for(j=4;j<8;j++)
 			fill_8x16_from_flash(j, flash_offset++);
 	}
-#endif
 }
 
 CallMe disp_update(2, display);
@@ -141,30 +173,10 @@ void init_serial(void)
 	Serial.print("begin!");
 }
 
-/*
- * begin 是以8x16为单位的，begin 是偏移值:0,1,2
- *0:表示从hz开始，１表示从8x16开始，类推
- *count 要读几块16*8数据
- * */
-void read_flash_to_hz_mem(unsigned char begin,unsigned char count)
-{
-	unsigned char i;
-	unsigned char offset = begin*16;
-
-	for (i=0;i<count*16;i++) {
-		hz_mem[i].r = pgm_read_byte(&hz[i+offset].r);
-		hz_mem[i].g = pgm_read_byte(&hz[i+offset].g);
-		hz_mem[i].b = pgm_read_byte(&hz[i+offset].b);
-	}
-}
 void fb_shift_init(void)
 {
 	unsigned char i;
 	unsigned char j;
-#if 0
-	read_flash_to_hz_mem(4,4);
-	fill_32x16(0, 0);
-#endif
 
 #if 1
 	flash_offset = 0;
@@ -177,6 +189,51 @@ void fb_shift_init(void)
 	}
 #endif
 }
+
+void fb_shift_init_from_raw_data(void)
+{
+	unsigned char i;
+	unsigned char j;
+
+	flash_offset = 0;
+
+	if(flash_length>=8) {
+		hz_div_8x16_array(flash_offset/2,0);
+		hz_to_rgb_8x16(hz_left_8x16, &hz_8points[0], 4, 0);
+		hz_to_rgb_8x16(hz_right_8x16, &hz_8points[16], 4, 0);
+		fill_8x16_from_mem(0,flash_offset++);
+		fill_8x16_from_mem(1,flash_offset++);
+
+		hz_div_8x16_array(flash_offset/2,0);
+		hz_to_rgb_8x16(hz_left_8x16, &hz_8points[0], 4, 0);
+		hz_to_rgb_8x16(hz_right_8x16, &hz_8points[16], 4, 0);
+		fill_8x16_from_mem(2,flash_offset++);
+		fill_8x16_from_mem(3,flash_offset++);
+
+		hz_div_8x16_array(flash_offset/2,0);
+		hz_to_rgb_8x16(hz_left_8x16, &hz_8points[0], 4, 0);
+		hz_to_rgb_8x16(hz_right_8x16, &hz_8points[16], 4, 0);
+		fill_8x16_from_mem(4,flash_offset++);
+		fill_8x16_from_mem(5,flash_offset++);
+
+		hz_div_8x16_array(flash_offset/2,0);
+		hz_to_rgb_8x16(hz_left_8x16, &hz_8points[0], 4, 0);
+		hz_to_rgb_8x16(hz_right_8x16, &hz_8points[16], 4, 0);
+		fill_8x16_from_mem(6,flash_offset++);
+		fill_8x16_from_mem(7,flash_offset++);
+	}
+
+
+
+	if(flash_length>=8) {
+		for(j=0; j<8; j++)
+			fill_8x16_from_flash(j, flash_offset++);
+	} else {
+		for(j=0; j<flash_length; j++)
+			fill_8x16_from_flash(j, flash_offset++);
+	}
+}
+
 
 void fb_shift_loop(void)
 {
@@ -191,14 +248,12 @@ void fb_shift_loop(void)
 
 		fb64x16_shift_left_abit();
 	}
-#if 1
 	if(flash_offset>=flash_length) {
 		flash_offset = 0;
 	}
 
 	for(j=4;j<8;j++)
 		fill_8x16_from_flash(j, flash_offset++);
-#endif
 }
 
 void setup()
@@ -777,14 +832,6 @@ static void fb64x16_shift_left_abit(void)
 #endif
 }
 //////////////////////////////////=========//////////////
-void hz_div_8x16_array(void)
-{
-	unsigned char i;
-	for(i=0;i<16;i++) {
-		hz_left_8x16[i] = HZ_16x16[i][0];
-		hz_right_8x16[i] = HZ_16x16[i][1];
-	}
-}
 
 void hz_to_rgb_8x16(unsigned char *datas_8x16, struct _rgb_8points *flash_addr, unsigned char fg, unsigned bg)
 {
@@ -803,15 +850,6 @@ void hz_to_rgb_8x16(unsigned char *datas_8x16, struct _rgb_8points *flash_addr, 
 		}
 	}
 }
-
-void hzk_map_array(unsigned char fg_l, unsigned char bg_l, unsigned char fg_r, unsigned char bg_r)
-{
-	hz_div_8x16_array();
-	hz_to_rgb_8x16(hz_left_8x16, &hz_8points[0], fg_l, bg_l);
-	hz_to_rgb_8x16(hz_right_8x16, &hz_8points[16], fg_r, bg_r);
-}
-
-
 
 void set_bg_8points(struct _rgb_8points *flash_addr, unsigned char bg)
 {

@@ -5,9 +5,11 @@
  
 #define OUTLEN 1200
 //#define DEBUG
-#define DISP_MODE1
+//#define DISP_MODE1
 //#define DISP_MODE2
-#define DISP_MODE3
+//#define DISP_8x16S_RGB
+
+#define DISP_RAW_DATA
  
 
 
@@ -30,6 +32,7 @@ void print_result(void);
 void print_result1(void);
 void disp_mode1(void);
 void disp_mode2(void);
+void disp_raw_data(void);
 
 void print_result_8x16(struct _rgb_8points *flash_addr);
 void set_fg_8points(struct _rgb_8points *flash_addr, unsigned char fg, unsigned short focus);
@@ -51,9 +54,24 @@ int main(int argc, char **argv)
         size_t inbuf_len = strlen(string);
         char outbuf[OUTLEN];
         char *pin = string;
+        char hz_datas[50][5];
         char *pout = &outbuf[0];  //用"pout=&outbuf" 会引发SIGSERV信号，导致段错误
         size_t outbuf_len = OUTLEN;
- 
+        int i,j;
+       for(i=0;i<strlen(pin)/3;i++) {
+		hz_datas[i][0]=pin[i*3+0];
+		hz_datas[i][1]=pin[i*3+1];
+		hz_datas[i][2]=pin[i*3+2];
+		hz_datas[i][3]=0x00;
+
+       }
+#if 0
+       for(i=0;i<strlen(pin);i++) {
+		printf("0x%02x,", (unsigned char)pin[i]);
+       }
+		printf("--------->0x%02x,", strlen(pin));
+       printf("\n");
+#endif
         memset(outbuf, 0, OUTLEN); //清空输出缓存，否则会有意外结果的
 
 #ifdef DEBUG
@@ -80,12 +98,13 @@ int main(int argc, char **argv)
         printf("\tstrlen(outbuf)= %d\n", strlen(outbuf));
 #endif
  
-        int i,j;
-
-	printf("#define HZ_LEN	%d\n", strlen(outbuf));
+	j = 0;
+	printf("#define HZ_LEN		%d\n", strlen(outbuf));//how many 8x16
+	printf("#define HZ_COUNT	%d\n", strlen(outbuf)/2);//how many 8x16
 	print_head();
         for(i = 0; i < strlen(outbuf); i += 2)
         {
+		printf("/*%s*/\n", hz_datas[j++]);
                 display(outbuf+i, 2); //使用HZK16字库显示GB2312编码的中文点阵
         }
 	print_tail();
@@ -175,18 +194,42 @@ int display(char *incode, int len)
 	disp_mode2();
 #endif
 
-#ifdef DISP_MODE3
+#ifdef DISP_8x16S_RGB
 	hzk_map_array(4, 7, 4, 7);
 #endif
-
+#ifdef DISP_RAW_DATA
+	disp_raw_data();
+#endif
         return EXIT_SUCCESS;
 }
+
+void disp_raw_data(void)
+{
+	unsigned char i;
+	//for(i=0;i<16;i++) {
+	//	printf("{0x%02x, 0x%02x},\n", HZ_16x16[i][0], HZ_16x16[i][1]);
+	//}
+	printf("{");
+	for(i=0;i<16;i++) {
+		printf("0x%02x,", HZ_16x16[i][0]);
+	}
+	printf("},\n");
+
+
+	printf("{");
+	for(i=0;i<16;i++) {
+		printf("0x%02x,", HZ_16x16[i][1]);
+	}
+	printf("},\n");
+}
+
+
+
 
 void hz_div_8x16_array()
 {
 	unsigned char i;
 	for(i=0;i<16;i++) {
-		printf("{0x%02x, 0x%02x},\n", HZ_16x16[i][0], HZ_16x16[i][1]);
 		hz_left_8x16[i] = HZ_16x16[i][0];
 		hz_right_8x16[i] = HZ_16x16[i][1];
 	}
@@ -281,7 +324,9 @@ void print_result1(void)
 void print_head(void)
 {
 
-        printf("const struct _rgb_8points PROGMEM hz[]={/*8x16*/\n");
+        printf("const struct _rgb_8points PROGMEM hz[]={};/*8x16*/\n");
+        printf("const unsigned char PROGMEM HZ_16x16[16*HZ_COUNT][2] = {};\n");
+        printf("static unsigned char HZ_16x16[16*HZ_COUNT][2] = {};\n");
 }
 
 void print_tail(void)
