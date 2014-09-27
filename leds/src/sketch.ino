@@ -4,39 +4,14 @@
 #include <Task.h>
 
 static unsigned char hz_left_8x16[16];
-static unsigned char hz_8x16[16];
 static unsigned char hz_right_8x16[16];
-struct _rgb_8points hz_8points[32];
-/*发送左右一行，左右一行。。。*/
-#if 0
-static unsigned char HZ_16x16[16*HZ_COUNT][2] = {
-{0x11, 0x00},
-{0x11, 0x00},
-{0x11, 0x00},
-{0x23, 0xfc},
-{0x22, 0x04},
-{0x64, 0x08},
-{0xa8, 0x40},
-{0x20, 0x40},
-{0x21, 0x50},
-{0x21, 0x48},
-{0x22, 0x4c},
-{0x24, 0x44},
-{0x20, 0x40},
-{0x20, 0x40},
-{0x21, 0x40},
-{0x20, 0x80},
-};
-#endif
-
-
+struct _rgb_8points hz_8points[64];
 
 void set_rgb_8points_value(struct _rgb_8points *rgb8points, unsigned char r, unsigned char g, unsigned b);
 void set_bg_8points(struct _rgb_8points *flash_addr, unsigned char bg);
-void set_fg_8points(struct _rgb_8points *flash_addr, unsigned char fg, unsigned short focus);
-void hzk_map_array(unsigned char fg_l, unsigned char bg_l, unsigned char fg_r, unsigned char bg_r);
+void to_rgb_8x16(struct raw_8x16  *datas_8x16, struct _rgb_8points *rgb_8x16, unsigned char fg, unsigned char bg);
+void set_fg_apoints(struct _rgb_8points *flash_addr, unsigned char fg, unsigned short focus);
 void hz_div_8x16_array(unsigned char hz_offset, unsigned char from);
-void hz_to_rgb_8x16(unsigned char *datas_8x16, struct _rgb_8points *flash_addr, unsigned char fg, unsigned bg);
 static void fill_8x16_from_mem(unsigned char offset_8x16_fb, unsigned char offset_mem);
 
 
@@ -52,7 +27,6 @@ static void clear_framebuffer(void);
 static void fill_8x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk);
 static void fill_32x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk);
 static void fill_16x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk);
-
 
 static void fill_8x16_from_flash(unsigned char offset_8x16_fb, unsigned char offset_flash);
 
@@ -101,13 +75,19 @@ static unsigned char flash_offset=0; //8x16 index from 0,1,2,3,...
 static unsigned char flash_length=HZ_LEN; //how many 8x16
 unsigned char i=1;
 unsigned char change_color=1;
-
-static boolean display_hz_rawdata_shift(void)
+#if 0
+static boolean display_simple(void)
+{
+	update_32x16();
+}
+#endif
+#if 1
+static boolean display_simple(void)
 {
 	unsigned char j;	
 	update_32x16();
 	disp_speed++;
-	if(disp_speed%3==0) {
+	if(disp_speed%4==0) {
 		disp_speed=0;
 	} else {
 		return 1;
@@ -115,27 +95,25 @@ static boolean display_hz_rawdata_shift(void)
 
 	fb64x16_shift_left_abit();
 	flash_update++;
-	if (flash_update%32==0) {
+	if (flash_update==8) {
 		flash_update = 0;
 		if(flash_offset>=flash_length) {
 			flash_offset = 0;
 		}
+//	to_rgb_8x16(&hz_8x16[flash_offset++], &hz_8points[0], 4, 0);
+//	fill_8x16_from_mem(4,0);
 
-/*完成把一个中文字装入fb*/
-		hz_div_8x16_array(flash_offset/2,0);
-		hz_to_rgb_8x16(hz_left_8x16, &hz_8points[0], 4, 0);
-		hz_to_rgb_8x16(hz_right_8x16, &hz_8points[16], 4, 0);
-		fill_8x16_from_mem(4,flash_offset++);
-		fill_8x16_from_mem(5,flash_offset++);
+//	to_rgb_8x16(&hz_8x16[flash_offset++], &hz_8points[0], 4, 0);
+//	fill_8x16_from_mem(5,0);
 
-/*完成把一个中文字装入fb*/
-		hz_div_8x16_array(flash_offset/2,0);
-		hz_to_rgb_8x16(hz_left_8x16, &hz_8points[0], 4, 0);
-		hz_to_rgb_8x16(hz_right_8x16, &hz_8points[16], 4, 0);
-		fill_8x16_from_mem(6,flash_offset++);
-		fill_8x16_from_mem(7,flash_offset++);
+//	to_rgb_8x16(&hz_8x16[flash_offset++], &hz_8points[0], 4, 0);
+//	fill_8x16_from_mem(6,0);
+
+	to_rgb_8x16((const raw_8x16*)&hz_8x16[flash_offset++], &hz_8points[0], 2, 0);
+	fill_8x16_from_mem(7,0);
 	}
 }
+#endif
 
 
 
@@ -178,53 +156,7 @@ void fb_shift_init(void)
 	unsigned char i;
 	unsigned char j;
 
-#if 1
 	flash_offset = 0;
-	if(flash_length>=8) {
-		for(j=0; j<8; j++)
-			fill_8x16_from_flash(j, flash_offset++);
-	} else {
-		for(j=0; j<flash_length; j++)
-			fill_8x16_from_flash(j, flash_offset++);
-	}
-#endif
-}
-
-void fb_shift_init_from_raw_data(void)
-{
-	unsigned char i;
-	unsigned char j;
-
-	flash_offset = 0;
-
-	if(flash_length>=8) {
-		hz_div_8x16_array(flash_offset/2,0);
-		hz_to_rgb_8x16(hz_left_8x16, &hz_8points[0], 4, 0);
-		hz_to_rgb_8x16(hz_right_8x16, &hz_8points[16], 4, 0);
-		fill_8x16_from_mem(0,flash_offset++);
-		fill_8x16_from_mem(1,flash_offset++);
-
-		hz_div_8x16_array(flash_offset/2,0);
-		hz_to_rgb_8x16(hz_left_8x16, &hz_8points[0], 4, 0);
-		hz_to_rgb_8x16(hz_right_8x16, &hz_8points[16], 4, 0);
-		fill_8x16_from_mem(2,flash_offset++);
-		fill_8x16_from_mem(3,flash_offset++);
-
-		hz_div_8x16_array(flash_offset/2,0);
-		hz_to_rgb_8x16(hz_left_8x16, &hz_8points[0], 4, 0);
-		hz_to_rgb_8x16(hz_right_8x16, &hz_8points[16], 4, 0);
-		fill_8x16_from_mem(4,flash_offset++);
-		fill_8x16_from_mem(5,flash_offset++);
-
-		hz_div_8x16_array(flash_offset/2,0);
-		hz_to_rgb_8x16(hz_left_8x16, &hz_8points[0], 4, 0);
-		hz_to_rgb_8x16(hz_right_8x16, &hz_8points[16], 4, 0);
-		fill_8x16_from_mem(6,flash_offset++);
-		fill_8x16_from_mem(7,flash_offset++);
-	}
-
-
-
 	if(flash_length>=8) {
 		for(j=0; j<8; j++)
 			fill_8x16_from_flash(j, flash_offset++);
@@ -256,17 +188,24 @@ void fb_shift_loop(void)
 		fill_8x16_from_flash(j, flash_offset++);
 }
 
+void fb_shift_init_raw_datas(void)
+{
+	for(i=0;i<8;i++) {
+		to_rgb_8x16((const raw_8x16*)&hz_8x16[flash_offset++], &hz_8points[0], 2, 0);
+		fill_8x16_from_mem(i,0);
+	}
+}
 void setup()
 {
 	init_serial();
 	init_gpio();
 	//clear_framebuffer();
-//	fb_shift_init();
-	disp_update.start();
+#if 0
+	fb_shift_init_raw_datas();
+#endif
+	fb_shift_init();
 
-	hzk_map_array(5, 0, 5, 0);
-	fill_8x16_from_mem(0,0);
-	fill_8x16_from_mem(1,1);
+	disp_update.start();
 }
 #if 0
 void loop()
@@ -411,7 +350,7 @@ static void hw_lock_data(void)
 static void output_data(void)
 {
 	digitalWrite(OE, 0);
-	delayMicroseconds(500);
+	delayMicroseconds(400);
 	digitalWrite(OE, 1);
 	//	delayMicroseconds(500);
 }
@@ -833,99 +772,100 @@ static void fb64x16_shift_left_abit(void)
 }
 //////////////////////////////////=========//////////////
 
-void hz_to_rgb_8x16(unsigned char *datas_8x16, struct _rgb_8points *flash_addr, unsigned char fg, unsigned bg)
+void to_rgb_8x16(const struct raw_8x16 *datas_8x16, struct _rgb_8points *rgb_8x16, unsigned char fg, unsigned char bg)
 {
 	unsigned char i,j;
 	unsigned char temp=0;
 	for(i=0;i<16;i++) {
-		set_bg_8points(&flash_addr[i], bg);
+		set_bg_8points(&rgb_8x16[i], bg);
 	}
 
 	for(i=0;i<16;i++) {
 		temp=0;
-		temp = datas_8x16[i];
+	//	temp = datas_8x16->datas[i];
+		temp = pgm_read_byte(&datas_8x16->datas[i]);
 		for(j=0;j<8;j++) {
 			if(((temp<<j)&0x80)==0x80)
-				set_fg_8points(&flash_addr[i], fg, (7-j));
+				set_fg_apoints(&rgb_8x16[i], fg, (7-j));
 		}
 	}
 }
 
-void set_bg_8points(struct _rgb_8points *flash_addr, unsigned char bg)
+void set_bg_8points(struct _rgb_8points *rgb_8x16, unsigned char bg)
 {
 		switch (bg) {
 		case 0://000
-			set_rgb_8points_value(flash_addr, 0x00, 0x00, 0x00);
+			set_rgb_8points_value(rgb_8x16, 0x00, 0x00, 0x00);
 			break;
 		case 1://001
-			set_rgb_8points_value(flash_addr, 0x00, 0x00, 0xff);
+			set_rgb_8points_value(rgb_8x16, 0x00, 0x00, 0xff);
 			break;
 		case 2://010
-			set_rgb_8points_value(flash_addr, 0x00, 0xff, 0x00);
+			set_rgb_8points_value(rgb_8x16, 0x00, 0xff, 0x00);
 			break;
 		case 3://011
-			set_rgb_8points_value(flash_addr, 0x00, 0xff, 0xff);
+			set_rgb_8points_value(rgb_8x16, 0x00, 0xff, 0xff);
 			break;
 		case 4://100
-			set_rgb_8points_value(flash_addr, 0xff, 0x00, 0x00);
+			set_rgb_8points_value(rgb_8x16, 0xff, 0x00, 0x00);
 			break;
 		case 5://101
-			set_rgb_8points_value(flash_addr, 0xff, 0x00, 0xff);
+			set_rgb_8points_value(rgb_8x16, 0xff, 0x00, 0xff);
 			break;
 		case 6://110
-			set_rgb_8points_value(flash_addr, 0xff, 0xff, 0x00);
+			set_rgb_8points_value(rgb_8x16, 0xff, 0xff, 0x00);
 			break;
 		case 7://111
-			set_rgb_8points_value(flash_addr, 0xff, 0xff, 0xff);
+			set_rgb_8points_value(rgb_8x16, 0xff, 0xff, 0xff);
 			break;
 		default:
 			break;
 		}
 }
 
-void set_fg_8points(struct _rgb_8points *flash_addr, unsigned char fg, unsigned short focus)
+void set_fg_apoints(struct _rgb_8points *rgb_8x16, unsigned char fg, unsigned short focus)
 {
 	switch (fg) {
 	case 0://000
-		flash_addr->r&=~(1<<focus);
-		flash_addr->g&=~(1<<focus);
-		flash_addr->b&=~(1<<focus);
+		rgb_8x16->r&=~(1<<focus);
+		rgb_8x16->g&=~(1<<focus);
+		rgb_8x16->b&=~(1<<focus);
 		break;
 	case 1://001
 
-		flash_addr->r&=~(1<<focus);
-		flash_addr->g&=~(1<<focus);
-		flash_addr->b|=(1<<focus);
+		rgb_8x16->r&=~(1<<focus);
+		rgb_8x16->g&=~(1<<focus);
+		rgb_8x16->b|=(1<<focus);
 		break;
 	case 2://010
-		flash_addr->r&=~(1<<focus);
-		flash_addr->g|=(1<<focus);
-		flash_addr->b&=~(1<<focus);
+		rgb_8x16->r&=~(1<<focus);
+		rgb_8x16->g|=(1<<focus);
+		rgb_8x16->b&=~(1<<focus);
 		break;
 	case 3://011
-		flash_addr->r&=~(1<<focus);
-		flash_addr->g|=(1<<focus);
-		flash_addr->b|=(1<<focus);
+		rgb_8x16->r&=~(1<<focus);
+		rgb_8x16->g|=(1<<focus);
+		rgb_8x16->b|=(1<<focus);
 		break;
 	case 4://100
-		flash_addr->r|=(1<<focus);
-		flash_addr->g&=~(1<<focus);
-		flash_addr->b&=~(1<<focus);
+		rgb_8x16->r|=(1<<focus);
+		rgb_8x16->g&=~(1<<focus);
+		rgb_8x16->b&=~(1<<focus);
 		break;
 	case 5://101
-		flash_addr->r|=(1<<focus);
-		flash_addr->g&=~(1<<focus);
-		flash_addr->b|=(1<<focus);
+		rgb_8x16->r|=(1<<focus);
+		rgb_8x16->g&=~(1<<focus);
+		rgb_8x16->b|=(1<<focus);
 		break;
 	case 6://110
-		flash_addr->r|=(1<<focus);
-		flash_addr->g|=(1<<focus);
-		flash_addr->b&=~(1<<focus);
+		rgb_8x16->r|=(1<<focus);
+		rgb_8x16->g|=(1<<focus);
+		rgb_8x16->b&=~(1<<focus);
 		break;
 	case 7://111
-		flash_addr->r|=(1<<focus);
-		flash_addr->g|=(1<<focus);
-		flash_addr->b|=(1<<focus);
+		rgb_8x16->r|=(1<<focus);
+		rgb_8x16->g|=(1<<focus);
+		rgb_8x16->b|=(1<<focus);
 		break;
 	}
 }

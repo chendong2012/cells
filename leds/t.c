@@ -100,7 +100,7 @@ int main(int argc, char **argv)
  
 	j = 0;
 	printf("#define HZ_LEN		%d\n", strlen(outbuf));//how many 8x16
-	printf("#define HZ_COUNT	%d\n", strlen(outbuf)/2);//how many 8x16
+	printf("#define HZ_8x16_COUNT	%d\n", strlen(outbuf));//how many 8x16
 	print_head();
         for(i = 0; i < strlen(outbuf); i += 2)
         {
@@ -325,8 +325,9 @@ void print_head(void)
 {
 
         printf("const struct _rgb_8points PROGMEM hz[]={};/*8x16*/\n");
-        printf("const unsigned char PROGMEM HZ_16x16[16*HZ_COUNT][2] = {};\n");
-        printf("static unsigned char HZ_16x16[16*HZ_COUNT][2] = {};\n");
+        printf("const struct raw_8x16 PROGMEM hz_8x16[HZ_8x16_COUNT] = {};\n");
+        printf("static struct raw_8x16 hz_8x16[HZ_8x16_COUNT] = {};\n");
+	
 }
 
 void print_tail(void)

@@ -89,4 +89,7 @@ struct pixel {
 	unsigned char b;
 };
 
+struct raw_8x16 {
+	unsigned char datas[16];
+};
 #endif
