@@ -28,7 +28,7 @@ static void fill_8x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk)
 static void fill_32x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk);
 static void fill_16x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk);
 
-static void fill_8x16_from_flash(unsigned char offset_8x16_fb, unsigned char offset_flash);
+static void fill_8x16_from_flash_pic(unsigned char offset_8x16_fb, unsigned char offset_flash);
 
 static void fb64x16_shift_left_abit(void);
 inline void fb64x1_shift_left_abit(unsigned char *l, unsigned char *l2);
@@ -75,13 +75,7 @@ static unsigned char flash_offset=0; //8x16 index from 0,1,2,3,...
 static unsigned char flash_length=HZ_LEN; //how many 8x16
 unsigned char i=1;
 unsigned char change_color=1;
-#if 0
-static boolean display_simple(void)
-{
-	update_32x16();
-}
-#endif
-#if 1
+
 static boolean display_simple(void)
 {
 	unsigned char j;	
@@ -100,24 +94,10 @@ static boolean display_simple(void)
 		if(flash_offset>=flash_length) {
 			flash_offset = 0;
 		}
-//	to_rgb_8x16(&hz_8x16[flash_offset++], &hz_8points[0], 4, 0);
-//	fill_8x16_from_mem(4,0);
-
-//	to_rgb_8x16(&hz_8x16[flash_offset++], &hz_8points[0], 4, 0);
-//	fill_8x16_from_mem(5,0);
-
-//	to_rgb_8x16(&hz_8x16[flash_offset++], &hz_8points[0], 4, 0);
-//	fill_8x16_from_mem(6,0);
-
 	to_rgb_8x16((const raw_8x16*)&hz_8x16[flash_offset++], &hz_8points[0], 2, 0);
 	fill_8x16_from_mem(7,0);
 	}
 }
-#endif
-
-
-
-
 
 static boolean display(void)
 {
@@ -138,7 +118,7 @@ static boolean display(void)
 			flash_offset = 0;
 		}
 		for(j=4;j<8;j++)
-			fill_8x16_from_flash(j, flash_offset++);
+			fill_8x16_from_flash_pic(j, flash_offset++);
 	}
 }
 
@@ -159,13 +139,12 @@ void fb_shift_init(void)
 	flash_offset = 0;
 	if(flash_length>=8) {
 		for(j=0; j<8; j++)
-			fill_8x16_from_flash(j, flash_offset++);
+			fill_8x16_from_flash_pic(j, flash_offset++);
 	} else {
 		for(j=0; j<flash_length; j++)
-			fill_8x16_from_flash(j, flash_offset++);
+			fill_8x16_from_flash_pic(j, flash_offset++);
 	}
 }
-
 
 void fb_shift_loop(void)
 {
@@ -185,7 +164,7 @@ void fb_shift_loop(void)
 	}
 
 	for(j=4;j<8;j++)
-		fill_8x16_from_flash(j, flash_offset++);
+		fill_8x16_from_flash_pic(j, flash_offset++);
 }
 
 void fb_shift_init_raw_datas(void)
@@ -195,6 +174,7 @@ void fb_shift_init_raw_datas(void)
 		fill_8x16_from_mem(i,0);
 	}
 }
+
 void setup()
 {
 	init_serial();
@@ -502,21 +482,16 @@ static void fill_8x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk)
 		line[i].b[offset_8x16_fb] = hz_mem[offset+i].b;
 	}
 }
-
 /*
  *offset_8x16_fb:0\2\3\4\5\6\7
  *offset_flash  :0\1\2\3\4\5\6\7\8\9\10\11\12\13\14\15....
- * */
-static void fill_8x16_from_flash(unsigned char offset_8x16_fb, unsigned char offset_flash)
+ */
+static void fill_8x16_from_flash_pic(unsigned char offset_8x16_fb, unsigned char offset_flash, struct _rgb_8points *rgb_flash_head)
 {
 	unsigned char i,j;
 	struct _rgb_line *line;
 	unsigned char offset = offset_flash*16;
-	/*
-		0 1x48  2x48
 
-
-	*/
 	if (offset_8x16_fb < 4) {
 		line = rgb_datas;
 	} else {
@@ -526,12 +501,11 @@ static void fill_8x16_from_flash(unsigned char offset_8x16_fb, unsigned char off
 	/*i表示第几行*/
 	for(i=0; i<16; i++) {
 		/*j表示第几个８列*/
-		line[i].r[offset_8x16_fb] = pgm_read_byte(&hz[i+offset].r);
-		line[i].g[offset_8x16_fb] = pgm_read_byte(&hz[i+offset].g);
-		line[i].b[offset_8x16_fb] = pgm_read_byte(&hz[i+offset].b);
+		line[i].r[offset_8x16_fb] = pgm_read_byte(&rgb->r);
+		line[i].g[offset_8x16_fb] = pgm_read_byte(&rgb->g);
+		line[i].b[offset_8x16_fb] = pgm_read_byte(&rgb->b);
 	}
 }
-
 /*
  *offset_8x16_fb:0\1\2\3\4\5\6\7
  *offset_flash  :0\1\2\3\4\5\6\7\8\9\10\11\12\13\14\15....
