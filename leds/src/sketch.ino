@@ -28,7 +28,7 @@ static void fill_8x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk)
 static void fill_32x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk);
 static void fill_16x16(unsigned char offset_8x16_fb, unsigned char count_8x16_zk);
 
-static void fill_8x16_from_flash_pic(unsigned char offset_8x16_fb, unsigned char offset_flash);
+static void fill_8x16_from_flash_pic(unsigned char offset_8x16_fb, unsigned char offset_flash, struct _rgb_8points *rgb_flash_head);
 
 static void fb64x16_shift_left_abit(void);
 inline void fb64x1_shift_left_abit(unsigned char *l, unsigned char *l2);
@@ -117,12 +117,12 @@ static boolean display(void)
 		if(flash_offset>=flash_length) {
 			flash_offset = 0;
 		}
-		for(j=4;j<8;j++)
-			fill_8x16_from_flash_pic(j, flash_offset++);
+		//for(j=4;j<8;j++)
+		//	fill_8x16_from_flash_pic(j, flash_offset++);
 	}
 }
 
-CallMe disp_update(2, display);
+CallMe disp_update(2, display_simple);
 
 
 void init_serial(void)
@@ -135,7 +135,7 @@ void fb_shift_init(void)
 {
 	unsigned char i;
 	unsigned char j;
-
+# if 0
 	flash_offset = 0;
 	if(flash_length>=8) {
 		for(j=0; j<8; j++)
@@ -144,6 +144,7 @@ void fb_shift_init(void)
 		for(j=0; j<flash_length; j++)
 			fill_8x16_from_flash_pic(j, flash_offset++);
 	}
+#endif
 }
 
 void fb_shift_loop(void)
@@ -162,9 +163,10 @@ void fb_shift_loop(void)
 	if(flash_offset>=flash_length) {
 		flash_offset = 0;
 	}
-
+#if 0
 	for(j=4;j<8;j++)
 		fill_8x16_from_flash_pic(j, flash_offset++);
+#endif
 }
 
 void fb_shift_init_raw_datas(void)
@@ -180,10 +182,12 @@ void setup()
 	init_serial();
 	init_gpio();
 	//clear_framebuffer();
-#if 0
+#if 1
 	fb_shift_init_raw_datas();
 #endif
+#if 0
 	fb_shift_init();
+#endif
 
 	disp_update.start();
 }
@@ -373,19 +377,19 @@ static void setpixel(unsigned char x, unsigned char y, struct pixel p)
 	bitofst = (7-x%8);
 
 	dat = rgb_datas[y].r[byteofst];
-	if (p.r==0)
+	if (p.rbit==0)
 		dat &=~(0x01<<bitofst);
 	else
 		dat |=(0x01<<bitofst);
 
 	dat = rgb_datas[y].g[byteofst];
-	if (p.g==0)
+	if (p.gbit==0)
 		dat &=~(0x01<<bitofst);
 	else
 		dat |=(0x01<<bitofst);
 
 	dat = rgb_datas[y].b[byteofst];
-	if (p.b==0)
+	if (p.bbit==0)
 		dat &=~(0x01<<bitofst);
 	else
 		dat |=(0x01<<bitofst);
@@ -501,9 +505,9 @@ static void fill_8x16_from_flash_pic(unsigned char offset_8x16_fb, unsigned char
 	/*i表示第几行*/
 	for(i=0; i<16; i++) {
 		/*j表示第几个８列*/
-		line[i].r[offset_8x16_fb] = pgm_read_byte(&rgb->r);
-		line[i].g[offset_8x16_fb] = pgm_read_byte(&rgb->g);
-		line[i].b[offset_8x16_fb] = pgm_read_byte(&rgb->b);
+	//	line[i].r[offset_8x16_fb] = pgm_read_byte(&rgb->r);
+	//	line[i].g[offset_8x16_fb] = pgm_read_byte(&rgb->g);
+	//	line[i].b[offset_8x16_fb] = pgm_read_byte(&rgb->b);
 	}
 }
 /*

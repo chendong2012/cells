@@ -84,10 +84,11 @@ struct _rgb_8points {
 	unsigned char b;
 };
 struct pixel { 
-	unsigned char r;
-	unsigned char g;
-	unsigned char b;
+	unsigned char rbit;
+	unsigned char gbit;
+	unsigned char bbit;
 };
+
 
 struct raw_8x16 {
 	unsigned char datas[16];
