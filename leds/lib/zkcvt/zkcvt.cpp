@@ -1,11 +1,11 @@
 #include "zkcvt.h"
 
-void zkcvt::set_fg(unsigned char fg)
+void zkcvt::setfg(unsigned char fg)
 {
 	_fg = fg;
 }
 
-void zkcvt::set_bg(unsigned char bg)
+void zkcvt::setbg(unsigned char bg)
 {
 	_bg = bg;
 }
@@ -23,7 +23,7 @@ void zkcvt::convert_pixel(unsigned char raw_bit, struct pixel *p)
 	p->bbit = (color&0x04)>>2;
 }
 
-void zkcvt::convert_8_pixels(const struct _raw_8pixels *raw, struct _rgb_8pixels *rgb, unsigned char fg, unsigned char bg)
+void zkcvt::convert_8_pixels(const struct _raw_8pixels *raw, struct _rgb_8pixels *rgb)
 {
 	char i;
 	struct pixel p;
@@ -31,8 +31,8 @@ void zkcvt::convert_8_pixels(const struct _raw_8pixels *raw, struct _rgb_8pixels
 /*must clear rgb*/
 	for(i=7;i>=0;i--) {
 		convert_pixel(raw->dat>>i, &p);
-		rgb->r|=(p.r<<i);
-		rgb->g|=(p.g<<i);
-		rgb->b|=(p.b<<i);
+		rgb->r|=(p.rbit<<i);
+		rgb->g|=(p.gbit<<i);
+		rgb->b|=(p.bbit<<i);
 	}
 }

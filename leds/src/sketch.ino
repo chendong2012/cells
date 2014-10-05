@@ -3,6 +3,10 @@
 #include <CallMe.h>
 #include <Task.h>
 
+
+#include "zkcvt.h"
+class zkcvt zk_cvt;
+
 static unsigned char hz_left_8x16[16];
 static unsigned char hz_right_8x16[16];
 struct _rgb_8points hz_8points[64];
@@ -76,6 +80,11 @@ static unsigned char flash_length=HZ_LEN; //how many 8x16
 unsigned char i=1;
 unsigned char change_color=1;
 
+static boolean display_simple_test(void)
+{
+	update_32x16();
+}
+
 static boolean display_simple(void)
 {
 	unsigned char j;	
@@ -122,7 +131,7 @@ static boolean display(void)
 	}
 }
 
-CallMe disp_update(2, display_simple);
+CallMe disp_update(2, display_simple_test);
 
 
 void init_serial(void)
@@ -177,12 +186,41 @@ void fb_shift_init_raw_datas(void)
 	}
 }
 
+void fb_shift_init_test(void)
+{
+	struct _raw_8pixels raw;
+	struct _rgb_8pixels *rgb;
+	unsigned char i,j;
+
+	/*combine a 8x16*/
+	for(i=0; i<4; i++) {
+		for(j=0;j<16;j++) {
+
+			raw.dat = hz_8x16[flash_offset].datas[j];
+			rgb->r = hz_8points[j].r;
+			rgb->g = hz_8points[j].g;
+			rgb->b = hz_8points[j].b;
+
+			zk_cvt.convert_8_pixels((const struct _raw_8pixels *)&raw, rgb);
+		}
+
+		flash_offset++;
+		fill_8x16_from_mem(i,0);
+	}
+}
+
 void setup()
 {
 	init_serial();
 	init_gpio();
-	//clear_framebuffer();
+	zk_cvt.setfg(4);
+	zk_cvt.setbg(0);
 #if 1
+	fb_shift_init_test();
+#endif
+
+	//clear_framebuffer();
+#if 0
 	fb_shift_init_raw_datas();
 #endif
 #if 0
