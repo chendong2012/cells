@@ -60,9 +60,9 @@ struct line123 {
 };
 
 struct _rgb_line { 
-	unsigned char r[4];
-	unsigned char g[4];
-	unsigned char b[4];
+	unsigned char r[8];
+	unsigned char g[8];
+	unsigned char b[8];
 };
 
 struct _rgb_double_line { 

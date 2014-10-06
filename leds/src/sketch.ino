@@ -4,7 +4,9 @@
 #include <Task.h>
 
 
+
 #include "zkcvt.h"
+#include <fb.h>
 class zkcvt zk_cvt;
 
 static unsigned char hz_left_8x16[16];
@@ -215,6 +217,7 @@ void setup()
 	init_gpio();
 	zk_cvt.setfg(4);
 	zk_cvt.setbg(0);
+	FB.fb_clear();
 #if 1
 	fb_shift_init_test();
 #endif
