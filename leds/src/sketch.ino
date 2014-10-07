@@ -89,6 +89,7 @@ void loop()
 #endif
 static void init_gpio(void)
 {
+
 #if 0
 	pinMode(R, OUTPUT);
 	pinMode(G, OUTPUT);
