@@ -9,9 +9,9 @@ public:
 	void fb_clear(void);
 	void fb_shift_left_screen(void);
 	void fb_shift_left(unsigned char line);
+	struct _rgb_line fb1[H];
+	struct _rgb_line *fb_line_addr(unsigned char line);
 
-	struct _rgb_line fb[H];
-	struct _rgb_line fb_bak[H];
 };
 extern fb FB;
 #endif

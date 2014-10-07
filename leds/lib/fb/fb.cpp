@@ -17,14 +17,14 @@ void fb::fb_draw_pixel(unsigned char x, unsigned char y, struct pixel p)
 	byteofst = x/8;
 	bitofst = (7-x%8);
 
-	fb[y].r[byteofst] &= ~bitofst;
-	fb[y].r[byteofst] |= p.rbit<<bitofst;
+	fb1[y].r[byteofst] &= ~bitofst;
+	fb1[y].r[byteofst] |= p.rbit<<bitofst;
 
-	fb[y].g[byteofst] &= ~bitofst;
-	fb[y].g[byteofst] |= p.gbit<<bitofst;
+	fb1[y].g[byteofst] &= ~bitofst;
+	fb1[y].g[byteofst] |= p.gbit<<bitofst;
 
-	fb[y].b[byteofst] &= ~bitofst;
-	fb[y].b[byteofst] |= p.bbit<<bitofst;
+	fb1[y].b[byteofst] &= ~bitofst;
+	fb1[y].b[byteofst] |= p.bbit<<bitofst;
 }
 
 void fb::fb_draw(unsigned char x, unsigned char y, unsigned char w, unsigned char h, struct pixel *p)
@@ -42,39 +42,44 @@ void fb::fb_draw_custom(unsigned char x, unsigned char y, unsigned char w, unsig
 {
 	unsigned char i;
 	unsigned char byteofst = x/8;
-
+#if 0
 	if ((y+h)>H) {
 		return;
 	}
+#endif
 
 	for(i=0;i<h;i++) {
-		fb[y+i].r[byteofst] = p[i].r;
-		fb[y+i].g[byteofst] = p[i].g;
-		fb[y+i].b[byteofst] = p[i].b;
+		fb1[y+i].r[byteofst] = p[i].r;
+		fb1[y+i].g[byteofst] = p[i].g;
+		fb1[y+i].b[byteofst] = p[i].b;
 	}
 }
 
 void fb::fb_clear(void)
 {
-	memset((void *)fb, 0x00, (W/8)*H*3*2);
-	memset((void *)fb_bak, 0x00, (W/8)*H*3*2);
+	memset((void *)fb1, 0x0, (W/8)*H*3*2);
 }
 
 
 void fb::fb_shift_left(unsigned char line)
 {
-	unsigned char len=W*2;
 	unsigned char i;
-	for(i=0;i<len;i+=2) {
-		fb[line].r[i]<<=1;
-		fb[line].r[i] |= (fb[line].r[i+1]>>7);
+	unsigned char len=(W*2)/8;
 
-		fb[line].g[i]<<=1;
-		fb[line].g[i] |= (fb[line].g[i+1]>>7);
+	for(i=0;i<len-1;i++) {
 
-		fb[line].b[i]<<=1;
-		fb[line].b[i] |= (fb[line].b[i+1]>>7);
+		fb1[line].r[i]<<=1;
+		fb1[line].r[i] |= (fb1[line].r[i+1]>>7);
+
+		fb1[line].g[i]<<=1;
+		fb1[line].g[i] |= (fb1[line].g[i+1]>>7);
+
+		fb1[line].b[i]<<=1;
+		fb1[line].b[i] |= (fb1[line].b[i+1]>>7);
 	}
+	fb1[line].r[i]<<=1;
+	fb1[line].g[i]<<=1;
+	fb1[line].b[i]<<=1;
 }
 
 void fb::fb_shift_left_screen(void)
@@ -83,6 +88,11 @@ void fb::fb_shift_left_screen(void)
 	for(i=0;i<H;i++)
 		fb_shift_left(i);
 }
-// preinstantiate object
 
+struct _rgb_line *fb::fb_line_addr(unsigned char line)
+{
+	return &fb1[line];
+}
+
+// preinstantiate object
 fb FB;
