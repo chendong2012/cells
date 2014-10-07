@@ -66,7 +66,13 @@ struct pixel {
 	unsigned char bbit;
 };
 
-struct mytest {
-	unsigned char a;
+struct raw_8x16 {
+	unsigned char dat[16];
 };
+
+struct _raw_8pixels
+{
+	unsigned char dat;
+};
+
 #endif

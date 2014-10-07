@@ -23,14 +23,22 @@ void zkcvt::convert_pixel(unsigned char raw_bit, struct pixel *p)
 	p->bbit = (color&0x04)>>2;
 }
 
-void zkcvt::convert_8_pixels(const struct _raw_8pixels *raw, struct _rgb_8pixels *rgb)
+/*
+ *		/---r---\
+ *	zk_raw/-----g-----_rgb_8pixels
+ *		\---b---/
+ * */
+void zkcvt::convert_8_pixels(const unsigned char zk_raw, struct _rgb_8pixels *rgb)
 {
 	char i;
 	struct pixel p;
+	rgb->r=0;
+	rgb->g=0;
+	rgb->b=0;
 
 /*must clear rgb*/
 	for(i=7;i>=0;i--) {
-		convert_pixel(raw->dat>>i, &p);
+		convert_pixel(zk_raw>>i, &p);
 		rgb->r|=(p.rbit<<i);
 		rgb->g|=(p.gbit<<i);
 		rgb->b|=(p.bbit<<i);
