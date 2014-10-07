@@ -38,16 +38,25 @@ void init_serial(void)
 	Serial.begin(115200);
 	Serial.println("begin!");
 }
-
+unsigned char zk_test[2]={
+	0x55,
+	0xff,
+};
 void setup()
 {
 	struct pixel p[4];
 	init_serial();
 	init_gpio();
+
+	zk_cvt.set_fb(&FB);
 	zk_cvt.setfg(4);
-	zk_cvt.setbg(1);
+	zk_cvt.setbg(7);
+
 	FB.fb_clear();
 	HW.hw_write_screen();
+
+	zk_cvt.write_pixel(20, 14, 1);
+	zk_cvt.write_block(7,0,8,1, zk_test);
 #if 0
 	p[0].rbit=1; p[0].gbit=0; p[0].bbit=0;
 	p[1].rbit=1; p[1].gbit=0; p[1].bbit=0;
@@ -73,9 +82,9 @@ void setup()
 	FB.fb_draw(20, 14, 4, 1, p);
 	FB.fb_draw(20, 15, 4, 1, p);
 
-#endif
 	FB.fb_draw_custom(8, 0, 8, 16, &hz[16]);
 	FB.fb_draw_custom(16, 0, 8, 16, hz);
+#endif
 	disp_write.start();
 }
 

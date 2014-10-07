@@ -34,20 +34,6 @@
 #define G_COLOR 1
 #define B_COLOR 2
 
-
-
-
-
-
-
-
-struct line123 {
-	unsigned char f0;
-	unsigned char f1;
-	unsigned char f2;
-	unsigned char f3;
-};
-
 struct _rgb_line { 
 	unsigned char r[8];
 	unsigned char g[8];

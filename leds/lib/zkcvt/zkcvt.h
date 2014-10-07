@@ -1,20 +1,23 @@
 #ifndef __ZKC__H
 #define __ZKC__H
 #include "public.h"
+#include "fb.h"
 
 
 class zkcvt {
 public:
 
+	void set_fb(fb *fb_buf)
+	{
+		_fb_buf = fb_buf;
+	}
 	void setfg(unsigned char fg);
 	void setbg(unsigned char bg);
-	void convert_pixel(unsigned char raw_bit, struct pixel *p);
-	void convert_8_pixels(const unsigned char zk_raw, struct _rgb_8pixels *rgb);
+	void write_pixel(unsigned char x, unsigned char y, unsigned char pixel);
+	void write_block(unsigned char x, unsigned char y, unsigned char w, unsigned char h, const unsigned char *zk_raw);
 
 	unsigned char _fg;
 	unsigned char _bg;
-
-	
-
+	fb *_fb_buf;
 };
 #endif

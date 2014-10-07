@@ -10,37 +10,29 @@ void zkcvt::setbg(unsigned char bg)
 	_bg = bg;
 }
 
-void zkcvt::convert_pixel(unsigned char raw_bit, struct pixel *p)
+void zkcvt::write_pixel(unsigned char x, unsigned char y, unsigned char pixel)
 {
 	unsigned char color;
-	if (raw_bit&0x01)
+	struct pixel p;
+	if (pixel&0x01)
 		color = _fg;
 	else 
 		color = _bg;
 
-	p->rbit = color&0x01;
-	p->gbit = (color&0x02)>>1;
-	p->bbit = (color&0x04)>>2;
+	p.rbit = color&0x01;
+	p.gbit = (color&0x02)>>1;
+	p.bbit = (color&0x04)>>2;
+	_fb_buf->fb_draw_pixel(x, y, p);
 }
 
-/*
- *		/---r---\
- *	zk_raw/-----g-----_rgb_8pixels
- *		\---b---/
- * */
-void zkcvt::convert_8_pixels(const unsigned char zk_raw, struct _rgb_8pixels *rgb)
+void zkcvt::write_block(unsigned char x, unsigned char y, unsigned char w, unsigned char h, const unsigned char *zk_raw)
 {
-	char i;
-	struct pixel p;
-	rgb->r=0;
-	rgb->g=0;
-	rgb->b=0;
+	unsigned char i,j;
+	for(i=0; i<h; i++) {
 
-/*must clear rgb*/
-	for(i=7;i>=0;i--) {
-		convert_pixel(zk_raw>>i, &p);
-		rgb->r|=(p.rbit<<i);
-		rgb->g|=(p.gbit<<i);
-		rgb->b|=(p.bbit<<i);
+		/*write 8 pixels*/
+		for(j=0; j<w; j++) {
+			write_pixel(x+j, y+i, zk_raw[i]>>(7-j));
+		}
 	}
 }

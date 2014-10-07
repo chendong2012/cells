@@ -11,6 +11,7 @@ public:
 	void fb_shift_left(unsigned char line);
 	struct _rgb_line fb1[H];
 	struct _rgb_line *fb_line_addr(unsigned char line);
+	struct _rgb_8pixels _ps8[16];
 
 };
 extern fb FB;
