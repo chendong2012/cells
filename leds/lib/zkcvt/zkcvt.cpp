@@ -36,3 +36,34 @@ void zkcvt::write_block(unsigned char x, unsigned char y, unsigned char w, unsig
 		}
 	}
 }
+
+//const unsigned char PROGMEM datas[] =
+void zkcvt::write_block_flash(unsigned char x, unsigned char y, unsigned char w, unsigned char h, unsigned char *zk_raw)
+{
+
+	unsigned char i,j;
+	unsigned char zk_raw;
+
+	for(i=0; i<h; i++) {
+
+		zk_raw = pgm_read_byte(&flash_dat[i]);
+		/*write 8 pixels*/
+		for(j=0; j<w; j++) {
+			write_pixel(x+j, y+i, zk_raw[i]>>(7-j));
+		}
+	}
+}
+
+void zkcvt::write_block_eeprom(unsigned char x, unsigned char y, unsigned char w, unsigned char h, int position)
+{
+	unsigned char i,j;
+	unsigned char zk_raw;
+
+	for(i=0; i<h; i++) {
+		zk_raw = EEPROM.read(position+i);
+		/*write 8 pixels*/
+		for(j=0; j<w; j++) {
+			write_pixel(x+j, y+i, zk_raw[i]>>(7-j));
+		}
+	}
+}

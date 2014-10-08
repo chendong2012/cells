@@ -8,6 +8,7 @@
 #endif
 #include <avr/pgmspace.h>
 #include "pins_arduino.h"
+#include <EEPROM.h>
 
 #define R 2
 #define G 3
