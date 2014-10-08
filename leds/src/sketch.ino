@@ -6,7 +6,6 @@
 #include "fb.h"
 #include "hw.h"
 
-
 #include "a.h"
 zkcvt zk_cvt;
 
@@ -19,20 +18,56 @@ typedef struct {
 
 
 int aaa=0;
-static boolean display_simple_test(void)
+unsigned char fc=0;
+unsigned char s8=0;
+#if 0
+static boolean display_test_flash(void)
 {
 	unsigned char i;
 	HW.hw_write_screen();
-	if(aaa++>24) {
-		for(i=0;i<16;i++) {
-			FB.fb_shift_left(i);
-			aaa = 0;
+	if(aaa++>3) {
+		FB.fb_shift_left_screen();
+		s8++;
+		if(s8>=8) {
+			s8=0;
+			zk_cvt.write_block_flash(32,0,8,16, (unsigned char *)(&hz_8x16[fc*16]));
+			fc++;
+			if(fc>=(sizeof(hz_8x16)>>4)) {
+				fc = 0;
 		}
+		}
+		aaa = 0;
 	}
+	
+}
+#endif
+
+
+static boolean display_test_eeprom(void)
+{
+	unsigned char i;
+	HW.hw_write_screen();
+	if(aaa++>3) {
+		FB.fb_shift_left_screen();
+		s8++;
+		if(s8>=8) {
+			s8=0;
+//			zk_cvt.write_block_flash(32,0,8,16, (unsigned char *)(&hz_8x16[fc*16]));
+
+
+			zk_cvt.write_block_eeprom(32,0,8,16, 512+(fc<<4));
+			fc++;
+			if(fc>=(sizeof(hz_8x16)>>4)) {
+				fc = 0;
+		}
+		}
+		aaa = 0;
+	}
+	
 }
 
-CallMe disp_write(2, display_simple_test);
-
+//CallMe disp_write(2, display_simple_test);
+CallMe disp_write(2, display_test_eeprom);
 void init_serial(void)
 {
 	Serial.begin(115200);
@@ -42,21 +77,37 @@ unsigned char zk_test[2]={
 	0x55,
 	0xff,
 };
+
 void setup()
 {
+	unsigned char i;
 	struct pixel p[4];
 	init_serial();
 	init_gpio();
 
 	zk_cvt.set_fb(&FB);
-	zk_cvt.setfg(4);
-	zk_cvt.setbg(7);
+	zk_cvt.setfg(2);
+	zk_cvt.setbg(0);
+#if 0
+	for(i=0;i<sizeof(hz_8x16);i++) {
+		EEPROM.write(512+i,hz_8x16[i]);
+	}
+#endif
+
 
 	FB.fb_clear();
 	HW.hw_write_screen();
 
-	zk_cvt.write_pixel(20, 14, 1);
-	zk_cvt.write_block(7,0,8,1, zk_test);
+	zk_cvt.write_pixel(0, 14, 1);
+//	zk_cvt.write_block(7,0,8,1, zk_test);
+	
+//	zk_cvt.write_block_flash(0,0,8,16, (unsigned char *)hz_8x16);
+//	zk_cvt.write_block_flash(8,0,8,16, (unsigned char *)(hz_8x16+16));
+//	zk_cvt.write_block_flash(16,0,8,16, (unsigned char *)(hz_8x16+32));
+//	zk_cvt.write_block_flash(24,0,8,16, (unsigned char *)(hz_8x16+48));
+//	for(ii=0;ii<16;ii++)
+//	EEPROM.write(512+ii,0x55+ii);
+//	zk_cvt.write_block_eeprom(23,0,8,16, 612);
 #if 0
 	p[0].rbit=1; p[0].gbit=0; p[0].bbit=0;
 	p[1].rbit=1; p[1].gbit=0; p[1].bbit=0;

@@ -42,14 +42,14 @@ void zkcvt::write_block_flash(unsigned char x, unsigned char y, unsigned char w,
 {
 
 	unsigned char i,j;
-	unsigned char zk_raw;
+	unsigned char data;
 
 	for(i=0; i<h; i++) {
 
-		zk_raw = pgm_read_byte(&flash_dat[i]);
+		data = pgm_read_byte(&zk_raw[i]);
 		/*write 8 pixels*/
 		for(j=0; j<w; j++) {
-			write_pixel(x+j, y+i, zk_raw[i]>>(7-j));
+			write_pixel(x+j, y+i, data>>(7-j));
 		}
 	}
 }
@@ -63,7 +63,7 @@ void zkcvt::write_block_eeprom(unsigned char x, unsigned char y, unsigned char w
 		zk_raw = EEPROM.read(position+i);
 		/*write 8 pixels*/
 		for(j=0; j<w; j++) {
-			write_pixel(x+j, y+i, zk_raw[i]>>(7-j));
+			write_pixel(x+j, y+i, zk_raw>>(7-j));
 		}
 	}
 }
