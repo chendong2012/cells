@@ -5,10 +5,9 @@
 #include "zkcvt.h"
 #include "fb.h"
 #include "hw.h"
+#include "circle.h"
 
 #include "a.h"
-zkcvt zk_cvt;
-
 
 typedef struct {
 	byte pin : 6;
@@ -42,7 +41,7 @@ static boolean display_test_flash(void)
 }
 #endif
 
-
+#if 0
 static boolean display_test_eeprom(void)
 {
 	unsigned char i;
@@ -65,9 +64,9 @@ static boolean display_test_eeprom(void)
 	}
 	
 }
-
+#endif
 //CallMe disp_write(2, display_simple_test);
-CallMe disp_write(2, display_test_eeprom);
+//CallMe disp_write(2, display_test_eeprom);
 void init_serial(void)
 {
 	Serial.begin(115200);
@@ -98,7 +97,7 @@ void setup()
 	FB.fb_clear();
 	HW.hw_write_screen();
 
-	zk_cvt.write_pixel(0, 14, 1);
+//	zk_cvt.write_pixel(0, 14, 1);
 //	zk_cvt.write_block(7,0,8,1, zk_test);
 	
 //	zk_cvt.write_block_flash(0,0,8,16, (unsigned char *)hz_8x16);
@@ -136,7 +135,9 @@ void setup()
 	FB.fb_draw_custom(8, 0, 8, 16, &hz[16]);
 	FB.fb_draw_custom(16, 0, 8, 16, hz);
 #endif
-	disp_write.start();
+	cl.init(1,512,8);
+	cl.start();
+	//disp_write.start();
 }
 
 #if 0

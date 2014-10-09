@@ -67,3 +67,4 @@ void zkcvt::write_block_eeprom(unsigned char x, unsigned char y, unsigned char w
 		}
 	}
 }
+zkcvt zk_cvt;

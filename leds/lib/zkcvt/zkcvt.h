@@ -22,4 +22,6 @@ public:
 	unsigned char _bg;
 	fb *_fb_buf;
 };
+
+extern zkcvt zk_cvt;
 #endif
