@@ -28,6 +28,8 @@
 
 #define H 16
 #define W 32
+#define LINE_BYTES 8
+
 #define DIV_W W/8
 
 
@@ -35,10 +37,14 @@
 #define G_COLOR 1
 #define B_COLOR 2
 
+#define FONT_WIDTH 	8
+#define FONT_HEIGHT	16
+
+
 struct _rgb_line { 
-	unsigned char r[8];
-	unsigned char g[8];
-	unsigned char b[8];
+	unsigned char r[LINE_BYTES];
+	unsigned char g[LINE_BYTES];
+	unsigned char b[LINE_BYTES];
 };
 
 struct _rgb_8pixels { 

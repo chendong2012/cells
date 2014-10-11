@@ -55,11 +55,51 @@ void fb::fb_draw_custom(unsigned char x, unsigned char y, unsigned char w, unsig
 	}
 }
 
-void fb::fb_clear(void)
+void fb::fb_draw_custom_from_flash(unsigned char x, unsigned char y, unsigned char w, unsigned char h, struct _rgb_8pixels *p)
+{
+	unsigned char i;
+	unsigned char byteofst = x/8;
+	struct _rgb_8pixels temp_pix; 
+
+	for(i=0;i<h;i++) {
+		temp_pix.r = pgm_read_byte(&p[i].r);
+		temp_pix.g = pgm_read_byte(&p[i].g);
+		temp_pix.b = pgm_read_byte(&p[i].b);
+
+		fb1[y+i].r[byteofst] = temp_pix.r;
+		fb1[y+i].g[byteofst] = temp_pix.g;
+		fb1[y+i].b[byteofst] = temp_pix.b;
+	}
+}
+
+void fb::fb_clear()
 {
 	memset((void *)fb1, 0x0, (W/8)*H*3*2);
 }
 
+void fb::fb_uphalf_clear()
+{
+	unsigned char x;
+	unsigned char y;
+	struct pixel p={0,0,0};
+
+	for(y=0;y<H;y++) {
+		for(x=0;x<W;x++)
+		fb_draw_pixel(x, y, p);
+	}
+}
+
+void fb::fb_downhalf_clear()
+{
+	unsigned char x;
+	unsigned char y;
+	struct pixel p={0,0,0};
+
+	for(y=0;y<H;y++) {
+		for(x=W;x<2*W;x++)
+		fb_draw_pixel(x, y, p);
+	}
+}
 
 void fb::fb_shift_left(unsigned char line)
 {

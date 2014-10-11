@@ -1,80 +1,65 @@
 #include "circle.h"
-static boolean display_cloop(void);
-CallMe cloop(2, display_cloop);
 
-void circle::init(unsigned char speed, int position, int count)
+void circle::set_paras(unsigned char speed)
 {
 	_speed = speed;
-	_pos_begin = position;
-	_count = count*16;
-	_pos_end = _pos_begin+_count;
-	_pos_current = _pos_begin;
+	_speed_count = 0;
 	_shift = 0;
 }
 
 void circle::start(void)
 {
-	cloop.start();
+	_cm->start();
 }
 
 void circle::stop(void)
 {
-	
-	cloop.stop();
+	_cm->stop();
 }
 
-static boolean display_cloop(void)
+boolean circle::display_cloop(void *p)
 {
-	cl.do_update();
+	circle *_p;
+	_p = (circle *)p;
 
-	if(!cl.is_need_shift())
-		return true;
-	cl.do_shift();
+	_p->do_update();
 
-	if(!cl.is_need_append_datas())
+	if(!_p->is_need_shift())
 		return true;
-	cl.do_append_datas();
+	_p->do_shift();
+
+	if(!_p->is_need_append_datas())
+		return true;
+	_p->do_append_datas();
 }
 
 void circle::do_update(void)
 {
 	HW.hw_write_screen();
+	_speed_count++;
 }
 
 unsigned char circle::is_need_shift(void)
 {
-	_speed++;
-	if(_speed>8) {
-		_speed = 0;
+	if((_speed_count%_speed)==0) {
+		_speed_count = 0;
 		return true;
-	} else {
-		return false;
 	}
+	return false;
 }
 
 void circle::do_shift(void)
 {
 	FB.fb_shift_left_screen();
+	_shift++;
 }
 
 unsigned char circle::is_need_append_datas(void)
 {
-	_shift++;
-	if(_shift>8) {
+
+	if((_shift%FONT_WIDTH)==0) {
 		_shift = 0;
 		return true;
-	} else {
-		return false;
 	}
+	return false;
 }
-
-void circle::do_append_datas(void)
-{
-	zk_cvt.write_block_eeprom(32,0,8,16, _pos_current);
-	_pos_current+=16;
-
-	if(_pos_current>=_pos_end) {
-		_pos_current+=_pos_begin;
-	}
-}
-circle cl;

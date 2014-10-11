@@ -2,10 +2,9 @@
 #include "CallMe.h"
 #include <Task.h>
 
-CallMe::CallMe(unsigned long loopTime, boolean (*callback)(void))
+CallMe::CallMe(unsigned long loopTime)
     : Task(loopTime, &(CallMe::step))
 {
-	this->_callback = callback;
 	this->_looptime = loopTime;
 }
 
@@ -23,5 +22,17 @@ void CallMe::stop()
 void CallMe::step(Task* task)
 {
 	CallMe* dr = (CallMe*)task;
-	dr->_callback();
+	dr->_callback(dr->_p);
 }
+
+void CallMe::cb_func(boolean (*callback)(void *p))
+{
+	this->_callback = callback;
+}
+
+void CallMe::set_cb_para(void *p)
+{
+	_p = p;
+}
+
+
