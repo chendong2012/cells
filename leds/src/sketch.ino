@@ -9,6 +9,7 @@
 #include "circle_e.h"
 #include "circle_f.h"
 #include "circle_f_pic.h"
+#include "circle_mix.h"
 
 #include "a.h"
 
@@ -22,30 +23,11 @@ CallMe cm_flash(2);
 
 circle_f_pic cf_pic_disp;
 CallMe cm_flash_pic(2);
-#if 0
-int aaa=0;
-unsigned char fc=0;
-unsigned char s8=0;
-static boolean display_test_flash(void)
-{
-	unsigned char i;
-	HW.hw_write_screen();
-	if(aaa++>3) {
-		FB.fb_shift_left_screen();
-		s8++;
-		if(s8>=8) {
-			s8=0;
-			zk_cvt.write_block_flash(32,0,8,16, (unsigned char *)(&hz_8x16[fc*16]));
-			fc++;
-			if(fc>=(sizeof(hz_8x16)>>4)) {
-				fc = 0;
-		}
-		}
-		aaa = 0;
-	}
-	
-}
-#endif
+
+circle_mix c_mix;
+
+struct mix_table mt[2];
+
 
 void init_serial(void)
 {
@@ -77,9 +59,14 @@ void init_cf_pic()
 void setup()
 {
 	unsigned char i;
+	int eeprom_addr=512;
 	struct pixel p[4];
 	init_serial();
 	init_gpio();
+
+	mt[0]={TABLE_EEPROM, (void *)&eeprom_addr,8};
+	mt[1]={TABLE_FLASH, (void *)hz_flash, 8};
+	c_mix.set_paras(6, mt, 2);
 
 	zk_cvt.set_fb(&FB);
 	zk_cvt.setfg(2);

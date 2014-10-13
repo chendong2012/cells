@@ -40,6 +40,15 @@
 #define FONT_WIDTH 	8
 #define FONT_HEIGHT	16
 
+#define TABLE_MEMORY	0
+#define TABLE_EEPROM	1
+#define TABLE_FLASH	2
+
+struct mix_table {
+	unsigned char flag;
+	void *addr;
+	unsigned char count;
+};
 
 struct _rgb_line { 
 	unsigned char r[LINE_BYTES];
