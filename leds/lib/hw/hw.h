@@ -2,7 +2,7 @@
 #define __HW__
 #include "public.h"
 
-#define HW_DISP_DELAY 100
+#define HW_DISP_DELAY 300
 class hw {
 public:
 void hw_write_pixel(unsigned char r1,\

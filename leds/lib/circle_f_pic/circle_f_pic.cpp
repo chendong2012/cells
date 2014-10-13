@@ -6,7 +6,7 @@ void circle_f_pic::set_paras(unsigned char speed, struct _rgb_8pixels *flash_add
 	_pos_current = 0;
 	_count = count*FONT_HEIGHT;
 	_pos_end = _pos_begin+_count;
-	flash_addr = _flash_addr;
+	_flash_addr = flash_addr;
 }
 
 void circle_f_pic::install_timer(CallMe *cm)

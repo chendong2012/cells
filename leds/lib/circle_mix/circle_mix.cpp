@@ -29,18 +29,23 @@ void circle_mix::set_timer_para()
 void circle_mix::handle_data(void)
 {
 	unsigned char *p = (unsigned char *)_t[_item_index].addr;
+	int eedat = *(int *)(_t[_item_index].addr);
 	struct _rgb_8pixels *pmem = (struct _rgb_8pixels *)_t[_item_index].addr;
 
 	switch (_t[_item_index].flag) {
+
 	case TABLE_MEMORY:
 		FB.fb_draw_custom(W, 0, FONT_WIDTH, FONT_HEIGHT, (struct _rgb_8pixels *)&pmem[_data_index*16]);
 		break;
+
 	case TABLE_EEPROM:
-		zk_cvt.write_block_eeprom(W, 0, FONT_WIDTH, FONT_HEIGHT,*(int *)&p+_data_index*16);
+		zk_cvt.write_block_eeprom(W, 0, FONT_WIDTH, FONT_HEIGHT, eedat+_data_index*16);
 		break;
+
 	case TABLE_FLASH:
 		zk_cvt.write_block_flash(W, 0, FONT_WIDTH, FONT_HEIGHT,(unsigned char *)&p[_data_index*16]);
 		break;
+
 	default:
 		break;
 	}
@@ -48,7 +53,7 @@ void circle_mix::handle_data(void)
 
 void circle_mix::move_to_next_data(void)
 {
-	if(_data_index<_t[_item_index].count) {
+	if(_data_index<_t[_item_index].count-1) {
 		_data_index++;
 	} else {
 		_data_index=0;
@@ -71,7 +76,7 @@ boolean circle_mix::is_item_handled(void)
 void circle_mix::move_to_next_item(void)
 {
 	_data_index=0;
-	if(_item_index<_tlen) {
+	if(_item_index<_tlen-1) {
 		_item_index++;
 	} else {
 		_item_index=0;

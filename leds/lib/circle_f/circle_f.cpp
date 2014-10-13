@@ -6,6 +6,7 @@ void circle_f::set_paras(unsigned char speed, unsigned char *flash_addr, int cou
 	_pos_current = 0;
 	_count = count*FONT_HEIGHT;
 	_pos_end = _pos_begin+_count;
+	_flash_addr = flash_addr;
 }
 
 void circle_f::install_timer(CallMe *cm)
@@ -30,6 +31,7 @@ void circle_f::do_append_datas(void)
 	zk_cvt.write_block_flash(32,0,FONT_WIDTH, FONT_HEIGHT, (unsigned char *)&_flash_addr[_pos_current]);
 	_pos_current+=FONT_HEIGHT;
 
-	if(_pos_current>=_pos_end)
+	if(_pos_current>=_pos_end) {
 		_pos_current=_pos_begin;
+	}
 }

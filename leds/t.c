@@ -3,14 +3,14 @@
 #include <iconv.h>
 #include <string.h>
  
-#define OUTLEN 1200
+#define OUTLEN 5200
 //#define DEBUG
 //#define DISP_MODE1
 //#define DISP_MODE2
 //#define DISP_8x16S_RGB
 
-#define DISP_RAW_DATA
- 
+//#define DISP_RAW_DATA
+#define DISP_RAW_DATA_ARRAY
 
 
 struct _rgb_8points {
@@ -33,6 +33,7 @@ void print_result1(void);
 void disp_mode1(void);
 void disp_mode2(void);
 void disp_raw_data(void);
+void disp_raw_data_array(void);
 
 void print_result_8x16(struct _rgb_8points *flash_addr);
 void set_fg_8points(struct _rgb_8points *flash_addr, unsigned char fg, unsigned short focus);
@@ -54,7 +55,7 @@ int main(int argc, char **argv)
         size_t inbuf_len = strlen(string);
         char outbuf[OUTLEN];
         char *pin = string;
-        char hz_datas[50][5];
+        char hz_datas[500][5];
         char *pout = &outbuf[0];  //用"pout=&outbuf" 会引发SIGSERV信号，导致段错误
         size_t outbuf_len = OUTLEN;
         int i,j;
@@ -200,8 +201,26 @@ int display(char *incode, int len)
 #ifdef DISP_RAW_DATA
 	disp_raw_data();
 #endif
+
+#ifdef DISP_RAW_DATA_ARRAY
+	disp_raw_data_array();
+#endif
         return EXIT_SUCCESS;
 }
+
+void disp_raw_data_array(void)
+{
+	unsigned char i;
+	for(i=0;i<16;i++) {
+		printf("0x%02x,", HZ_16x16[i][0]);
+	}
+	printf("\n");
+	for(i=0;i<16;i++) {
+		printf("0x%02x,", HZ_16x16[i][1]);
+	}
+	printf("\n");
+}
+
 
 void disp_raw_data(void)
 {
@@ -324,10 +343,11 @@ void print_result1(void)
 void print_head(void)
 {
 
-        printf("const struct _rgb_8points PROGMEM hz[]={};/*8x16*/\n");
-        printf("const struct raw_8x16 PROGMEM hz_8x16[HZ_8x16_COUNT] = {};\n");
-        printf("static struct raw_8x16 hz_8x16[HZ_8x16_COUNT] = {};\n");
-	
+        //printf("const struct _rgb_8points PROGMEM hz[]={};/*8x16*/\n");
+        //printf("const struct raw_8x16 PROGMEM hz_8x16[HZ_8x16_COUNT] = {};\n");
+        //printf("static struct raw_8x16 hz_8x16[HZ_8x16_COUNT] = {};\n");
+
+        printf("const unsigned char PROGMEM hz_flash[] = {\n");
 }
 
 void print_tail(void)

@@ -73,7 +73,7 @@ void print_by_8x16(PPMImage *img)
 	a_line_bytes = count_8pixels_a_linecolor(x);
 	total_bytes_acolor = total_bytes_a_color(x,y);
 
-	printf("const struct _rgb_8points PROGMEM hz[]={/*8x16*/\n");
+	printf("const struct _rgb_8pixels PROGMEM hz[]={/*8x16*/\n");
 
 	for(column_bytes_offset = 0; column_bytes_offset < a_line_bytes; column_bytes_offset++) {
 
