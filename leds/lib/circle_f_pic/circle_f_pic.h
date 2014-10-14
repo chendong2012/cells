@@ -5,7 +5,7 @@
 class circle_f_pic : public circle {
 public:
 	void set_paras(unsigned char speed, struct _rgb_8pixels *flash_addr, int count);
-	void install_timer(CallMe *cm);
+	void install_timer(TimerTask *cm);
 	void set_timer_func();
 	void set_timer_para();
 

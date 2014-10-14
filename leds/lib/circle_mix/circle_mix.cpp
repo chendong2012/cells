@@ -9,7 +9,7 @@ void circle_mix::set_paras(unsigned char speed, struct mix_table *t, unsigned ch
 	_item_index=0;
 }
 
-void circle_mix::install_timer(CallMe *cm)
+void circle_mix::install_timer(TimerTask *cm)
 {
 	_cm = cm;
 	set_timer_func();
@@ -28,22 +28,43 @@ void circle_mix::set_timer_para()
 
 void circle_mix::handle_data(void)
 {
-	unsigned char *p = (unsigned char *)_t[_item_index].addr;
+	int offset = _data_index*16;
+
+	unsigned char *p;
 	int eedat = *(int *)(_t[_item_index].addr);
-	struct _rgb_8pixels *pmem = (struct _rgb_8pixels *)_t[_item_index].addr;
+	struct _rgb_8pixels *prgb;
 
-	switch (_t[_item_index].flag) {
+	unsigned char pos = _t[_item_index].flag>>4;
+	unsigned char zr = _t[_item_index].flag&0x0f;
 
+	p = (unsigned char *)(_t[_item_index].addr);
+	p += offset;
+
+	prgb = (struct _rgb_8pixels *)_t[_item_index].addr;
+	prgb += offset;
+
+	switch (pos) {
 	case TABLE_MEMORY:
-		FB.fb_draw_custom(W, 0, FONT_WIDTH, FONT_HEIGHT, (struct _rgb_8pixels *)&pmem[_data_index*16]);
+		if (zr==TABLE_WITH_RAW) {
+			FB.fb_draw_custom(W, 0, FONT_WIDTH, FONT_HEIGHT, prgb);
+
+		} else if(zr==TABLE_WITH_ZK) {
+			zk_cvt.write_block(W, 0, FONT_WIDTH, FONT_HEIGHT, (const unsigned char *)p);
+		}
 		break;
 
 	case TABLE_EEPROM:
-		zk_cvt.write_block_eeprom(W, 0, FONT_WIDTH, FONT_HEIGHT, eedat+_data_index*16);
+		zk_cvt.write_block_eeprom(W, 0, FONT_WIDTH, FONT_HEIGHT, eedat+offset);
 		break;
 
 	case TABLE_FLASH:
-		zk_cvt.write_block_flash(W, 0, FONT_WIDTH, FONT_HEIGHT,(unsigned char *)&p[_data_index*16]);
+		if (zr==TABLE_WITH_RAW) {
+			FB.fb_draw_custom_from_flash(W, 0, FONT_WIDTH, FONT_HEIGHT, prgb);
+
+		} else if(zr==TABLE_WITH_ZK) {
+			zk_cvt.write_block_flash(W, 0, FONT_WIDTH, FONT_HEIGHT, p);
+
+		}
 		break;
 
 	default:
@@ -62,6 +83,10 @@ void circle_mix::move_to_next_data(void)
 
 void circle_mix::handle_item(void)
 {
+	if(_t[_item_index].flag==0xff) {
+		circle::set_pause(eedat);
+		_item_index++;
+	}
 	handle_data();
 	move_to_next_data();
 }

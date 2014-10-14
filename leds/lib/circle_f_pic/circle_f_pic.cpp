@@ -9,7 +9,7 @@ void circle_f_pic::set_paras(unsigned char speed, struct _rgb_8pixels *flash_add
 	_flash_addr = flash_addr;
 }
 
-void circle_f_pic::install_timer(CallMe *cm)
+void circle_f_pic::install_timer(TimerTask *cm)
 {
 	_cm = cm;
 	set_timer_func();

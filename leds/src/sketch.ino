@@ -1,4 +1,4 @@
-#include "CallMe.h"
+#include "TimerTask.h"
 #include "public.h"
 #include "Task.h"
 
@@ -16,14 +16,14 @@
 
 
 circle_e ce_disp;
-CallMe cm_eeprom(2);
+TimerTask cm_eeprom(2);
 
 circle_f cf_disp;
-CallMe cm_flash(2);
+TimerTask cm_flash(2);
 
 
 circle_f_pic cf_pic_disp;
-CallMe cm_flash_pic(2);
+TimerTask cm_flash_pic(2);
 
 circle_mix c_mix;
 
@@ -58,11 +58,13 @@ void init_cf_pic()
 }
 
 int eeprom_addr=512;
+int pause = 20;
 void init_c_mix(void)
 {
-	mt[0]={TABLE_EEPROM, (void *)&eeprom_addr,8};
-	mt[1]={TABLE_FLASH, (void *)hz_flash, HZ_8x16_COUNT};
-	c_mix.set_paras(6, mt, 2);
+	mt[0]={TABLE_EEPROM | TABLE_WITH_ZK, (void *)&eeprom_addr, 8};
+	mt[1]={0xff, (void *)&pause, 1};
+	mt[2]={TABLE_FLASH | TABLE_WITH_ZK, (void *)hz_flash, HZ_8x16_COUNT};
+	c_mix.set_paras(6, mt, 3);
 	c_mix.install_timer(&cm_flash);
 	c_mix.start();
 }

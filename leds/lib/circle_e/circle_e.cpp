@@ -10,7 +10,7 @@ void circle_e::set_paras(unsigned char speed, int position, int count)
 	_pos_end = _pos_begin+_count;
 }
 
-void circle_e::install_timer(CallMe *cm)
+void circle_e::install_timer(TimerTask *cm)
 {
 	_cm = cm;
 	set_timer_func();

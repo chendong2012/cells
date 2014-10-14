@@ -2,7 +2,7 @@
 #define  __CIRCLE__
 #include "public.h"
 #include "fb.h"
-#include "CallMe.h"
+#include "TimerTask.h"
 #include "hw.h"
 #include "zkcvt.h"
 class circle {
@@ -16,11 +16,13 @@ public:
 	void do_shift(void);
 	unsigned char is_need_append_datas(void);
 	virtual void do_append_datas(void);
+	void set_pause(int tm);
 
 	unsigned char _speed;
 	unsigned char _speed_count;
 	unsigned char _shift;
-	CallMe *_cm;
+	int _pause;
+	TimerTask *_cm;
 };
 //extern circle cl;
 #endif

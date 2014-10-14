@@ -40,8 +40,12 @@
 #define FONT_WIDTH 	8
 #define FONT_HEIGHT	16
 
-#define TABLE_MEMORY	0
-#define TABLE_EEPROM	1
+#define TABLE_MEMORY	0<<4
+#define TABLE_EEPROM	1<<4
+#define TABLE_FLASH	2<<4
+
+#define TABLE_WITH_RAW	0
+#define TABLE_WITH_ZK	1
 #define TABLE_FLASH	2
 
 struct mix_table {

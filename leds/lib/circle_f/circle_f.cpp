@@ -9,7 +9,7 @@ void circle_f::set_paras(unsigned char speed, unsigned char *flash_addr, int cou
 	_flash_addr = flash_addr;
 }
 
-void circle_f::install_timer(CallMe *cm)
+void circle_f::install_timer(TimerTask *cm)
 {
 	_cm = cm;
 	set_timer_func();
