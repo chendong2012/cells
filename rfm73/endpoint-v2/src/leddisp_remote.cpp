@@ -28,11 +28,11 @@ extern user_activity *myu2;
 
 /*
  *命令：
- *3、<ra rp la lp><index><e>
+ *3、<ra rp la lp><index><f><e>
  *	f：指的是关键字
  *	e:指的是类型：帧结束
  * */
-#define LEDDISP_FONT	"f"
+#define LEDDISP_FONT_KEYWORD	"f"
 #define LEDDISP_FONT_BEGIN "b"
 #define LEDDISP_FONT_BEGIN_OK	"b:ok"
 
@@ -43,7 +43,7 @@ extern user_activity *myu2;
 #define LEDDISP_FONT_END_OK	"e:ok"
 
 static void cb_leddisp(unsigned char *dat, unsigned char len);
-IReceive irec_leddisp(LEDDISP_FONT, cb_leddisp);
+IReceive irec_leddisp(LEDDISP_FONT_KEYWORD, cb_leddisp);
 
 static void cb_leddisp(unsigned char *dat, unsigned char len)
 {
