@@ -12,7 +12,11 @@ unsigned int get_count_8x16();
 unsigned char *get_datas();
 int cvt_main(char *argv);
 
-static const char ascii_table[];
+extern const char ascii_table[];
+static unsigned char data_package[1024];
+//static const char ascii_table[95];
+static unsigned int pkg_index=0;
+static unsigned int how_many_8x16=0;
 static const char as[]={
 ' ','!','"','#','$','%','&','\'','(',')','*','+',',','-','.','/','0','1','2','3','4','5','6','7','8','9',':',';','<','=','>','?','@','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','[','\\',']','^','_','`','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','{','|','}','~'
 };
@@ -144,10 +148,6 @@ void print_tail(void)
 	printf("#endif\n");
 #endif
 }
-static unsigned char data_package[1024];
-static unsigned int pkg_index=0;
-
-static unsigned int how_many_8x16=0;
 
 unsigned int get_count_8x16()
 {

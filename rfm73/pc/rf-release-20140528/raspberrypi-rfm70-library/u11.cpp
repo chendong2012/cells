@@ -9,6 +9,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <ISend.h>
+#include "public.h"
+
 
 
 extern unsigned int get_count_8x16();
@@ -78,7 +80,7 @@ static void *thread_handle_rev_datas(void *ptr)
                 isender_fan.msg_handler(p->rev_buff, p->rev_len);
                 irec_time_server.msg_handler(p->rev_buff, p->rev_len);
 
-		isender_leddisp(p->rev_buff, p->rev_len);
+		isender_leddisp.msg_handler(p->rev_buff, p->rev_len);
 
 /*========================add your code end =======================*/
 
@@ -176,11 +178,11 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 	unsigned char addr;
 	unsigned char port;
 	unsigned char ret;
-	int a, b, c, d;
+	int a, b, c, d, i;
 
 	char *p_cvt;
 	unsigned char *p_cvt_datas;
-	unsigned char *cvt_datas_len;
+	unsigned int cvt_datas_len;
 	unsigned char out_datas[1024];
 
 	unsigned char tempbuf[32];
@@ -205,13 +207,12 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 	}
 
 	sscanf((const char *)tempbuf, "%d.%d->%d.%d-%s", &a, &b, &c, &d, ctxbuf);
-
 /*这里要做出选择吗*/
-	if(strncmp(FAN_REMOTE_KEYWORD, ctxbuf, strlen(FAN_REMOTE_KEYWORD))==0) {
+	if(strncmp((const char *)FAN_REMOTE_KEYWORD, (const char *)ctxbuf, strlen(FAN_REMOTE_KEYWORD))==0) {
 		ret = send_package((unsigned char *)ctxbuf, strlen((const char *)ctxbuf), &isender_fan);
 
 
-	} else if (strncmp(LEDDISP_FONT_KEYWORD, ctxbuf, strlen(LEDDISP_FONT_KEYWORD))==0) {
+	} else if (strncmp((const char *)LEDDISP_FONT_KEYWORD, (const char *)ctxbuf, strlen(LEDDISP_FONT_KEYWORD))==0) {
 /*0、预处理*/
 		p_cvt = (char *)(ctxbuf+1);
 		cvt_main(p_cvt);
@@ -250,9 +251,9 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 	for(i=0;i<cvt_datas_len;i+=16) {
 		out_datas[0] = 'f';
 		out_datas[1] = 'd';
-		memcpy(&out_datas[2], p_cvt_data[i],16);
+		memcpy((void *)&out_datas[2], (const void *)&p_cvt_datas[i],16);
 		ret = send_package((unsigned char *)out_datas, 18, &isender_leddisp);
-		
+	
 	}
 
 /*3、发送结束*/

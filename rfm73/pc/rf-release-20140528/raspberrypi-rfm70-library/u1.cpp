@@ -25,6 +25,7 @@ static void *thread_broadcast_time(void *ptr)
 		sleep(5);
 		if (p->m_comm->get_status() == STATUS_LISTEN) {
 			printf("broadcast no clients!!!\n");
+			continue;
 		}
 		broadcast_time();
 	}

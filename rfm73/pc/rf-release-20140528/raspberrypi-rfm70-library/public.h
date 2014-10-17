@@ -18,6 +18,7 @@
 
 
 
+#define FAN_REMOTE_CONTROL
 #ifdef FAN_REMOTE_CONTROL
 #define FAN_REMOTE_KEYWORD "fan"
 #define FAN_REMOTE_SPEED "speed"
