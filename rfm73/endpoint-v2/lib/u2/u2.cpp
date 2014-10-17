@@ -27,6 +27,10 @@ extern IReceive irec_led;
 extern IReceive irec_fan;
 #endif
 
+#ifdef LEDDISP_CONTROL
+extern IReceive irec_leddisp;
+#endif
+
 extern ISend sendors;
 extern CallMe cmrf;
 extern const char * send_cmds[];
@@ -71,6 +75,9 @@ void u2::receive_listener(unsigned char *data, unsigned char len)
 #endif
 #ifdef FAN_REMOTE_CONTROL
 		irec_fan.msg_handler(data, len);
+#endif
+#ifdef LEDDISP_CONTROL
+		irec_leddisp.msg_handler(data, len);
 #endif
 	}
 }

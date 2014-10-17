@@ -74,6 +74,8 @@ extern char g_debug[PACKAGE_LEN];
 #define FAN_SPEED_KEY 5
 #define FAN_STOP_KEY 6
 #endif
+
+
 /*******************************************************/
 
 /*================BROADCAST_REMOTE_CONTROL====================*/
@@ -89,7 +91,9 @@ extern char g_debug[PACKAGE_LEN];
 /*******************************************************/
 
 
-
+#define LEDDISP_CONTROL
+#ifdef LEDDISP_CONTROL
+#endif
 
 /********************键盘功能**************************/
 #define GPIO3_KEY 3
