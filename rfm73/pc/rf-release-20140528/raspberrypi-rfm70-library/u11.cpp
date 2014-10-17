@@ -10,14 +10,20 @@
 #include <unistd.h>
 #include <ISend.h>
 
+
+extern unsigned int get_count_8x16();
+extern unsigned char *get_datas();
+extern int cvt_main(char *argv);
+
+
 static void cb_sent_backmsg(unsigned char *dat, unsigned char len);
 user_activity *myu11=NULL;
 
 /****************************************************************************/
 
 extern IReceive irec_time_server;		/*用于远程想得到当前时间信息*/
-ISend isender_fan("fan", cb_sent_backmsg);	/*fan 控制*/
-
+ISend isender_fan(FAN_REMOTE_KEYWORD, cb_sent_backmsg);	/*fan 控制*/
+ISend isender_leddisp(LEDDISP_FONT_KEYWORD, cb_sent_backmsg);	/*leddisp 控制*/
 /****************************************************************************/
 
 
@@ -71,6 +77,8 @@ static void *thread_handle_rev_datas(void *ptr)
 
                 isender_fan.msg_handler(p->rev_buff, p->rev_len);
                 irec_time_server.msg_handler(p->rev_buff, p->rev_len);
+
+		isender_leddisp(p->rev_buff, p->rev_len);
 
 /*========================add your code end =======================*/
 
@@ -127,6 +135,7 @@ int u11::init_ok()
         pthread_t id;
 	m_sended = 1;
 	isender_fan.setUserObj((user_activity *)this);
+	isender_leddisp.setUserObj((user_activity *)this);
 
         ret = pthread_create(&id, NULL, thread_main, this);
         if(ret) {
@@ -157,9 +166,9 @@ void u11::receive_listener(unsigned char *data, unsigned char len)
 /*对外接口:
  * buf:本地地址(addr:port)，远程地址(addr:port) 发送数据
  *以设置风扇为例：
- *1.81->3.90-fanspeed 	(这是服务器过来的格式)
+ *<1.81->3.90-fanspeed> 	(这是服务器过来)
  *1.81->3.90-fanoff	(这是服务器过来的格式)
- *
+ *http://mountain.eicp.net:19999/test.php?id=1.81->3.90-ledoff'
  * */
 int u11::send_net_package(unsigned char *buf, unsigned char *len)
 {
@@ -168,6 +177,11 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 	unsigned char port;
 	unsigned char ret;
 	int a, b, c, d;
+
+	char *p_cvt;
+	unsigned char *p_cvt_datas;
+	unsigned char *cvt_datas_len;
+	unsigned char out_datas[1024];
 
 	unsigned char tempbuf[32];
 	unsigned char ctxbuf[32];
@@ -191,7 +205,68 @@ int u11::send_net_package(unsigned char *buf, unsigned char *len)
 	}
 
 	sscanf((const char *)tempbuf, "%d.%d->%d.%d-%s", &a, &b, &c, &d, ctxbuf);
-	ret = send_package((unsigned char *)ctxbuf, strlen((const char *)ctxbuf), &isender_fan);
+
+/*这里要做出选择吗*/
+	if(strncmp(FAN_REMOTE_KEYWORD, ctxbuf, strlen(FAN_REMOTE_KEYWORD))==0) {
+		ret = send_package((unsigned char *)ctxbuf, strlen((const char *)ctxbuf), &isender_fan);
+
+
+	} else if (strncmp(LEDDISP_FONT_KEYWORD, ctxbuf, strlen(LEDDISP_FONT_KEYWORD))==0) {
+/*0、预处理*/
+		p_cvt = (char *)(ctxbuf+1);
+		cvt_main(p_cvt);
+		p_cvt_datas = get_datas();
+		cvt_datas_len = get_count_8x16();
+/*1、发送头信息*/
+/*
+ *命令：
+ *１、<ra rp la lp><index><f><b><fg><bg><addr><count>
+ *      f：指的是关键字
+ *      b:指的是类型：开始，帧的起始码
+ *      fg:表示前景色
+ *      bg:表示背景色
+ *      addr:地址
+ *      count:数据总长度,表示多少个8x16
+ * */
+	out_datas[0] = 'f';
+	out_datas[1] = 'b';
+
+	out_datas[2] = '4';
+	out_datas[3] = '0';
+
+	out_datas[4] = '0';
+	out_datas[5] = cvt_datas_len;
+
+	ret = send_package((unsigned char *)out_datas, 6, &isender_leddisp);
+/*2、发送数据*/
+/*
+ *命令：
+ *2、<ra rp la lp><index><f><d><contents>
+ *      f：指的是关键字
+ *      d:指的是类型：数据，帧内容
+ *      contents:数据16 固定字节
+ * */
+
+	for(i=0;i<cvt_datas_len;i+=16) {
+		out_datas[0] = 'f';
+		out_datas[1] = 'd';
+		memcpy(&out_datas[2], p_cvt_data[i],16);
+		ret = send_package((unsigned char *)out_datas, 18, &isender_leddisp);
+		
+	}
+
+/*3、发送结束*/
+/*
+ *命令：
+ *3、<ra rp la lp><index><f><e>
+ *      f：指的是关键字
+ *      e:指的是类型：帧结束
+ * */
+	out_datas[0] = 'f';
+	out_datas[1] = 'e';
+	ret = send_package((unsigned char *)out_datas, 2, &isender_leddisp);
+
+	}
 
 	if (ret == 1) {
 		l = strlen((const char *)&rev_buff[4]);
