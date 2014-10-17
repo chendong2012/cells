@@ -78,10 +78,12 @@ void disp_raw_data_array(void)
 	unsigned char i;
 	for(i=0;i<16;i++) {
 		printf("0x%02x,", HZ_16x16[i][0]);
+		data_package[pkg_index++] = HZ_16x16[i][0];
 	}
 	printf("\n");
 	for(i=0;i<16;i++) {
 		printf("0x%02x,", HZ_16x16[i][1]);
+		data_package[pkg_index++] = HZ_16x16[i][1];
 	}
 	printf("\n");
 }
@@ -133,12 +135,15 @@ void print_tail(void)
 
 	printf("#endif\n");
 }
+unsigned char data_package[1024];
+unsigned int pkg_index=0;
 int main(int argc, char **argv)
 {
         char *string = argv[1];
         char *pin1 = string;
         int i,j,k,l;
 	l=0;
+	memset(data_package, 0x00, 1024);
 print_head();
 	for (i = 0; i < strlen(pin1);) {
 		if (0 == (pin1[i] & 0x80)) {
@@ -148,6 +153,7 @@ print_head();
 					printf("/*%c*/\n",as[j]);
 					for(k=0;k<16;k++) {
 						printf("0x%02x,",(unsigned char)ascii_table[j*16+k]);
+						data_package[pkg_index++] = (unsigned char)ascii_table[j*16+k];
 					}
 					printf("\n");
 				}

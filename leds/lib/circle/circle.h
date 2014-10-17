@@ -17,6 +17,8 @@ public:
 	unsigned char is_need_append_datas(void);
 	virtual void do_append_datas(void);
 	void set_pause(int tm);
+	void dec_pause(void);
+	int get_pause(void);
 
 	unsigned char _speed;
 	unsigned char _speed_count;

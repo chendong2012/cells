@@ -5,6 +5,7 @@ void circle::set_paras(unsigned char speed)
 	_speed = speed;
 	_speed_count = 0;
 	_shift = 0;
+	_pause = 0;
 }
 
 void circle::start(void)
@@ -17,12 +18,32 @@ void circle::stop(void)
 	_cm->stop();
 }
 
+void circle::set_pause(int tm)
+{
+	_pause = tm;
+}
+
+void circle::dec_pause(void)
+{
+	_pause--;
+}
+
+int circle::get_pause(void)
+{
+	return _pause;
+}
+
 boolean circle::display_cloop(void *p)
 {
 	circle *_p;
 	_p = (circle *)p;
 
 	_p->do_update();
+
+	if(_p->get_pause()>0) {
+		_p->dec_pause();
+		return true;
+	}
 
 	if(!_p->is_need_shift())
 		return true;

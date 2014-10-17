@@ -81,12 +81,18 @@ void circle_mix::move_to_next_data(void)
 	}
 }
 
-void circle_mix::handle_item(void)
+void circle_mix::handle_pause_item(void)
 {
+	int eedat = *(int *)(_t[_item_index].addr);
 	if(_t[_item_index].flag==0xff) {
 		circle::set_pause(eedat);
 		_item_index++;
 	}
+}
+
+void circle_mix::handle_item(void)
+{
+	handle_pause_item();
 	handle_data();
 	move_to_next_data();
 }

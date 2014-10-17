@@ -16,6 +16,7 @@ public:
 	void move_to_next_item(void);
 
 	void do_append_datas(void);
+	void handle_pause_item(void);
 
 private:
 	struct mix_table *_t;
