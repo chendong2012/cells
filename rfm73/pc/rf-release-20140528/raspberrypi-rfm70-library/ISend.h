@@ -27,6 +27,7 @@ public:
 	unsigned char send_result;
 	unsigned char strAck[PACKAGE_LEN];
 	unsigned char strAckLen;
+	unsigned char _keywordlen;
 
 
 	ISend(const char *cmdstr, void (*cb)(unsigned char *dat, unsigned char len));
@@ -51,6 +52,12 @@ public:
 	unsigned char getAckDataLen();
 	unsigned char *getItemData(void);
 	unsigned char getItemDataLen(void);
+
+	unsigned char *getKeyword(void);
+	unsigned char getKeywordLen(void);
+	unsigned char compare_keyword(unsigned char *dat);
+
+
 
 	user_activity *_act;
         void (*_cb)(unsigned char *dat, unsigned char len);

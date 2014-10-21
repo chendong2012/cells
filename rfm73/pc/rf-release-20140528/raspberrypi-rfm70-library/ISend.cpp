@@ -50,6 +50,7 @@ ISend::ISend(const char *cmdstr, void (*cb)(unsigned char *dat, unsigned char le
 	setSendResult(RLT_INIT);
 	clearAckData();
 	setCmdStr(cmdstr);
+	_keywordlen = strlen(cmdstr);
 	_cb = cb;
 	creat_send_thread();
 }
@@ -141,10 +142,35 @@ void ISend::onReceive(unsigned char *dat, unsigned char len)
 	return;
 }
 
+unsigned char *ISend::getKeyword(void)
+{
+        return (unsigned char *)&item[1];
+}
+
+unsigned char ISend::getKeywordLen(void)
+{
+        return _keywordlen;
+}
+
+unsigned char ISend::compare_keyword(unsigned char *dat)
+{
+        unsigned char ret;
+        unsigned char *d1 = getKeyword();
+        unsigned char *d2 = &dat[4];
+        unsigned char len = getKeywordLen();
+
+        ret = strncmp((const char *)d1, (const char *)d2, len);
+        if (ret == 0) 
+                return 0;
+        else 
+                return 1;
+}
+
 void ISend::msg_handler(unsigned char *dat, unsigned char len)
 {
 	unsigned char ret;
-        ret = strncmp((char *)&item[1], (const char *)&dat[4], item_len-1);
+//        ret = strncmp((char *)&item[1], (const char *)&dat[4], item_len-1);
+	ret = compare_keyword(dat);
 	if (ret == 0) {
 		if (getStatus() == S_S) {
 			setStatus(S_A);
